@@ -218,6 +218,116 @@ Description: Defines methods for processing data.
 
 5. **Version Control**: Consider generating and committing the LLM documentation alongside your releases for historical reference.
 
+## Using Generated Docs as an AI Agent Skill
+
+After generating documentation, you can split large files into smaller, token-efficient chunks and use them as an AI agent skill. The `docs/revit-api/` folder contains a pre-built example for the Revit API 2025.
+
+### Skill Structure
+
+```
+docs/revit-api/
+├── SKILL.md              # Agent skill definition
+├── INDEX.md              # LLM navigation index
+├── application-services.md
+├── db-a-b.md through db-v-z.md
+└── ... (35 topic-specific files)
+```
+
+### Cursor IDE
+
+1. **Project-level skill** (shared with repository):
+   ```powershell
+   # Copy to your project's .cursor/skills/ folder
+   mkdir -p .cursor/skills
+   cp -r docs/revit-api .cursor/skills/revit-api-docs
+   ```
+
+2. **Personal skill** (available across all projects):
+   ```powershell
+   # Windows
+   xcopy /E /I docs\revit-api %USERPROFILE%\.cursor\skills\revit-api-docs
+   
+   # macOS/Linux
+   cp -r docs/revit-api ~/.cursor/skills/revit-api-docs
+   ```
+
+3. The skill will automatically appear in Cursor's agent skills. When you ask about Revit API, the agent will:
+   - Read `INDEX.md` to find the right file
+   - Load only the specific documentation needed
+   - Minimize token consumption
+
+### VS Code with Continue or Cody
+
+For VS Code extensions like Continue or Cody that support context providers:
+
+1. **Continue**: Add to your `.continue/config.json`:
+   ```json
+   {
+     "contextProviders": [
+       {
+         "name": "folder",
+         "params": {
+           "path": "docs/revit-api",
+           "description": "Revit API 2025 documentation"
+         }
+       }
+     ]
+   }
+   ```
+
+2. **Cody**: Add the docs folder to your workspace and use `@docs/revit-api` mentions.
+
+### Claude Desktop (MCP)
+
+For Claude Desktop, use the Model Context Protocol (MCP) filesystem server:
+
+1. **Install the MCP filesystem server**:
+   ```bash
+   npm install -g @anthropic/mcp-server-filesystem
+   ```
+
+2. **Configure Claude Desktop** (`claude_desktop_config.json`):
+   
+   **Windows** (`%APPDATA%\Claude\claude_desktop_config.json`):
+   ```json
+   {
+     "mcpServers": {
+       "revit-api-docs": {
+         "command": "npx",
+         "args": [
+           "@anthropic/mcp-server-filesystem",
+           "C:\\path\\to\\dll2llm\\docs\\revit-api"
+         ]
+       }
+     }
+   }
+   ```
+   
+   **macOS** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+   ```json
+   {
+     "mcpServers": {
+       "revit-api-docs": {
+         "command": "npx",
+         "args": [
+           "@anthropic/mcp-server-filesystem",
+           "/path/to/dll2llm/docs/revit-api"
+         ]
+       }
+     }
+   }
+   ```
+
+3. **Restart Claude Desktop** and the docs will be available as a resource.
+
+### Alternative: Direct Context
+
+For any LLM interface, you can directly provide files as context:
+
+1. Start with `INDEX.md` to understand the structure
+2. Add specific files based on your query (e.g., `db-e.md` for Element-related questions)
+3. Use `SKILL.md` as a system prompt for navigation guidance
+
 ## Troubleshooting
 
 ### Common Issues
