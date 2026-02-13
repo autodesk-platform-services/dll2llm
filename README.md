@@ -354,10 +354,15 @@ For any LLM interface, you can directly provide files as context:
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
 
-## License
-
-[Your License Here]
-
 ## Acknowledgments
 
 This tool helps bridge the gap between traditional .NET documentation and the needs of modern AI/LLM systems.
+
+## License
+
+This sample is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Please see the [LICENSE](LICENSE) file for full details.
+
+## Written by
+
+Joao Martins [in/jpornelas](https://linkedin.com/in/jpornelas), [Developer Advocate](http://aps.autodesk.com)
