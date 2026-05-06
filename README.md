@@ -4,12 +4,12 @@ A command-line tool that generates LLM-friendly documentation from .NET DLL file
 
 ## Overview
 
-dll2llm reflects .NET assemblies and extracts all public types, methods, properties, constructors, events, and constants — formatting them into structured documentation optimized for LLM consumption. It supports two output modes:
+dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into structured documentation optimized for LLM consumption. It supports two output modes:
 
 - **Monolithic mode** — single `.llm.txt` file (good for small APIs, <~20k lines)
-- **Split skill mode** — a complete Cursor skill folder with `SKILL.md`, `INDEX.md`, and per-namespace topic files (required for large APIs like Revit, AutoCAD)
+- **Split skill mode** — a Cursor skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files (required for large APIs like Revit, AutoCAD)
 
-The `docs/revit-api/` folder in this repository is a pre-built example generated from the Revit API 2025.
+This repository includes pre-built examples under **`docs/revit-api-2025/`** and **`docs/revit-api-2026/`**, generated from the Revit API for those releases.
 
 ## Prerequisites
 
@@ -23,25 +23,29 @@ The `docs/revit-api/` folder in this repository is a pre-built example generated
 dotnet build -c Release
 ```
 
+The executable is emitted under `bin/Release/net8.0/` (or `bin/Debug/net8.0/` after a Debug build).
+
 ## Quick start — generate and install a skill in one command
 
+Adjust the year and install path to match your Revit version.
+
 ```bash
-# Revit API — generate skill and install to ~/.cursor/skills/
-dll2llm.exe "C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll" --install
+# Revit API — generate skill and install to %USERPROFILE%\.cursor\skills\
+dll2llm.exe "C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll" --install
 
 # Revit API — merge DB + UI layers
-dll2llm.exe "C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll" ^
-            "C:\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll" ^
+dll2llm.exe "C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll" ^
+            "C:\Program Files\Autodesk\Revit 2026\RevitAPIUI.dll" ^
             --install
 
-# AutoCAD .NET API
-dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2025\AcDbMgd.dll" ^
-            "C:\Program Files\Autodesk\AutoCAD 2025\AcMgd.dll" ^
-            "C:\Program Files\Autodesk\AutoCAD 2025\AcCoreMgd.dll" ^
+# AutoCAD .NET API (adjust year to your install)
+dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2026\AcDbMgd.dll" ^
+            "C:\Program Files\Autodesk\AutoCAD 2026\AcMgd.dll" ^
+            "C:\Program Files\Autodesk\AutoCAD 2026\AcCoreMgd.dll" ^
             --install
 ```
 
-`--install` implies `--split` and copies the generated skill folder directly to `~/.cursor/skills/`. Restart Cursor after running.
+`--install` implies `--split` and copies the generated skill folder to `%USERPROFILE%\.cursor\skills\<folder-name>\`, where `<folder-name>` is the basename of your `--output` directory (see below). Restart Cursor after running.
 
 ## CLI usage
 
@@ -51,21 +55,23 @@ dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2025\AcDbMgd.dll" ^
 dll2llm.exe RevitAPI.dll RevitAPIUI.dll --split --output ./revit-api-skill
 ```
 
+If you omit `--output` in split mode, the default is **`<directory-of-first-dll>\<first-assembly-name-lower>-skill`** (for example, pointing at `RevitAPI.dll` yields `revitapi-skill` next to that DLL).
+
 Produces:
 
 ```
 revit-api-skill/
-├── SKILL.md       ← Cursor skill definition (auto-generated)
-├── INDEX.md       ← Type-to-file lookup table (auto-generated)
-├── db-architecture.md
-├── db-mechanical.md
-└── ...            ← one file per namespace group
+├── SKILL.md       ← Cursor skill (YAML frontmatter + links to topics)
+├── INDEX.md       ← Topic table + per-type file lookup
+├── db-architecture-b-s.md
+├── db-mechanical-a-r.md
+└── ...            ← one or more files per namespace; large namespaces are split alphabetically
 ```
 
 ### Monolithic mode
 
 ```bash
-# Default output filename (<DllName>.llm.txt)
+# Default output filename (<DllName>.llm.txt next to the DLL)
 dll2llm.exe MyLibrary.dll
 
 # Custom output path
@@ -81,7 +87,7 @@ dll2llm.exe RevitAPI.dll RevitAPIUI.dll --output RevitAPI_full.llm.txt
 |--------|-------------|
 | `<dll> [dll2] ...` | One or more DLL paths to process |
 | `--split` | Generate split skill folder instead of a single file |
-| `--install` | Generate split skill folder and install it to `~/.cursor/skills/` (implies `--split`) |
+| `--install` | Generate split skill folder and copy it to `%USERPROFILE%\.cursor\skills\<output-folder-name>\` (implies `--split`) |
 | `--output <path>` | Output file (monolithic) or directory (split) |
 | `--xml <path>` | Load an additional XML documentation file (useful when XML is not co-located with the DLL) |
 
@@ -97,66 +103,50 @@ dll2llm.exe
 
 ### Split skill folder
 
-Each topic file (`namespace-group.md`) follows this structure:
+Large namespaces are split into multiple topic files when they exceed **50 public types**, using consecutive letter ranges in the filename (for example `db-b-c.md`, `db-architecture-t-w.md`). Small namespaces still get a single file (for example `creation.md`).
 
-```
-# Autodesk.Revit.DB.Architecture
-
-NAMESPACE: Autodesk.Revit.DB.Architecture
---------------------------------------------------------------------------------
-
-[CLASS] AreaBoundaryLocation
-Full Name: Autodesk.Revit.DB.Architecture.AreaBoundaryLocation
-Description: Indicates the location used to compute the area boundary.
-
-  PROPERTIES:
-    AreaBoundaryLocation Center { get; }
-      Description: The boundary is computed at the center of the wall.
-    ...
-
-  METHODS:
-    static bool Equals(object objA, object objB)
-      Description: Determines whether the specified object instances are equal.
-      @objA: The first object to compare.
-      @objB: The second object to compare.
-      Returns: true if the objects are equal.
-```
+Each topic file groups types with the same header pattern: namespace title, `NAMESPACE:` line, separator, then per-type blocks.
 
 ### Monolithic `.llm.txt`
 
-Same content, written as a single file with a header, overview section, and all namespaces in sequence.
+Same conceptual content as the split topics, written as a single file with a header, overview section, and all namespaces in sequence.
+
+### Per-type sections (split and monolithic)
+
+Documentation includes, when applicable:
+
+- Kind, full name, summary and remarks from XML, base type (`Inherits`), directly implemented interfaces
+- Generic type parameter descriptions
+- For enums: numeric values (best-effort for non-`int`/`long` underlying types)
+- **CONSTRUCTORS**, **PROPERTIES**, **METHODS** (with parameter/return/exception text from XML), **EVENTS**, **CONSTANTS/STATIC FIELDS**
 
 ## Why split mode for large APIs
 
-A full Revit API export is ~80,000 lines (~5 MB, ~1.5M tokens). No model's context window can hold that. The split skill approach keeps token usage predictable:
+A full Revit API export is on the order of tens of thousands of lines and millions of tokens. The split skill approach keeps token usage predictable:
 
-- `SKILL.md` (~100 lines) + `INDEX.md` (~500 lines) load first
-- The agent reads the index to identify the relevant namespace
-- Only the matching topic file (~500–1,500 lines) loads into context
-
-Total in-context at any time: well under 5,000 lines regardless of API size.
+- `SKILL.md` stays small; the agent loads it first
+- `INDEX.md` lists every type and which topic file contains it (this file grows with API size)
+- Only the relevant topic file(s) need to be read for a given question
 
 ## Using the generated skill
 
 ### Cursor IDE
 
-The easiest way is to use `--install` which handles this automatically:
-
-```bash
-dll2llm.exe RevitAPI.dll --install
-```
+The easiest way is `--install`, which copies to your user skills directory automatically.
 
 Or copy manually:
 
 ```powershell
 # Windows
 xcopy /E /I ".\revit-api-skill" "%USERPROFILE%\.cursor\skills\revit-api-skill"
+```
 
+```bash
 # macOS/Linux
 cp -r ./revit-api-skill ~/.cursor/skills/revit-api-skill
 ```
 
-Restart Cursor. The skill appears automatically in the agent's skill list.
+Restart Cursor. The skill appears in the agent's skill list.
 
 ### Claude Desktop (MCP filesystem)
 
@@ -167,6 +157,7 @@ npm install -g @anthropic/mcp-server-filesystem
 Add to `claude_desktop_config.json`:
 
 **Windows** (`%APPDATA%\Claude\claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
@@ -179,6 +170,7 @@ Add to `claude_desktop_config.json`:
 ```
 
 **macOS** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
@@ -198,11 +190,11 @@ Restart Claude Desktop and the docs are available as a resource.
 
 ### Must run on a machine with the product installed
 
-Autodesk desktop APIs depend on native and managed binaries that ship with the product (e.g. `RevitNative.dll`, AutoCAD runtime DLLs). The tool resolves dependencies from the DLL's directory; if you copy the DLL elsewhere without its sibling binaries, type loading will fail silently or throw. **Always point the tool at the product's install directory.**
+Autodesk desktop APIs depend on native and managed binaries that ship with the product (for example `RevitNative.dll`, AutoCAD runtime DLLs). The tool resolves dependencies from the DLL's directory; if you copy the DLL elsewhere without its sibling binaries, type loading will fail silently or throw. **Always point the tool at the product's install directory.**
 
 ### Inherited members are not repeated on subclasses
 
-Properties, methods, and events are only documented on the type where they are declared (`DeclaringType == type`). Inherited members from base classes (e.g. `Element.get_Id()` on every Revit element subclass) are not repeated. When writing code, check the base class documentation as well.
+Properties, methods, and events are only documented on the type where they are declared (`DeclaringType == type`). Inherited members from base classes (for example `Element.get_Id()` on every Revit element subclass) are not repeated. When writing code, check the base class documentation as well.
 
 ### No XML = no descriptions
 
