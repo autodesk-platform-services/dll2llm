@@ -1,367 +1,250 @@
 # dll2llm
 
-A command-line tool that generates LLM-friendly documentation from .NET DLL files. This tool helps you create comprehensive text documentation that Large Language Models can easily understand and use to provide accurate information about your .NET libraries.
+A command-line tool that generates LLM-friendly documentation from .NET DLL files, with built-in support for generating ready-to-use **Cursor Agent Skills** directly from any .NET assembly.
 
 ## Overview
 
-dll2llm analyzes .NET assemblies (DLL files) and extracts all public types, methods, properties, constructors, events, and other members, formatting them into a structured text document optimized for LLM consumption.
+dll2llm reflects .NET assemblies and extracts all public types, methods, properties, constructors, events, and constants — formatting them into structured documentation optimized for LLM consumption. It supports two output modes:
 
-## Features
+- **Monolithic mode** — single `.llm.txt` file (good for small APIs, <~20k lines)
+- **Split skill mode** — a complete Cursor skill folder with `SKILL.md`, `INDEX.md`, and per-namespace topic files (required for large APIs like Revit, AutoCAD)
 
-- Extracts complete public API documentation from any .NET DLL
-- Generates human and LLM-readable text format
-- **Includes XML documentation** (descriptions for types, methods, properties, parameters, and return values)
-- Documents all public types including:
-  - Classes (concrete and abstract)
-  - Interfaces
-  - Enums (with values)
-  - Structs
-  - Generic types
-- Provides assembly overview with statistics
-- Includes constructors, properties, methods, events, and constants
-- Groups documentation by namespace
-- Adds usage pattern suggestions
-- Automatically resolves assembly dependencies
+The `docs/revit-api/` folder in this repository is a pre-built example generated from the Revit API 2025.
 
 ## Prerequisites
 
-- .NET Framework or .NET Core/5+ runtime
-- Windows, macOS, or Linux
+- .NET 8 SDK
+- Windows (required for most Autodesk desktop APIs due to native dependencies)
+- The target product must be **installed on the machine running dll2llm**, so its native and managed dependencies can be resolved
 
-## Building from Source
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/dll2llm.git
-   cd dll2llm
-   ```
-
-2. Build the project:
-   ```bash
-   dotnet build -c Release
-   ```
-
-3. The executable will be in:
-   ```
-   bin\Release\net[version]\dll2llm.exe (Windows)
-   bin/Release/net[version]/dll2llm (Linux/macOS)
-   ```
-
-## Quick Start Example
-
-Let's say you have a DLL called `MyCompany.Utils.dll`:
+## Building
 
 ```bash
-# Generate documentation with default name (MyCompany.Utils.llm.txt)
-dll2llm.exe MyCompany.Utils.dll
-
-# Generate with custom output name
-dll2llm.exe MyCompany.Utils.dll MyCompany_Utils_Documentation.txt
-
-# View the generated documentation
-type MyCompany.Utils.llm.txt
+dotnet build -c Release
 ```
 
-The tool will analyze the DLL and create comprehensive documentation of all public APIs.
+## Quick start — generate and install a skill in one command
 
-### Windows Batch Script
-
-For Windows users, a convenient `generate-docs.bat` script is included:
-- Simply drag and drop any DLL file onto `generate-docs.bat`
-- Or run: `generate-docs.bat YourLibrary.dll`
-- The script will generate the documentation and offer to open it
-
-## Usage
-
-### Basic Usage
-
-Generate documentation with default output filename:
 ```bash
+# Revit API — generate skill and install to ~/.cursor/skills/
+dll2llm.exe "C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll" --install
+
+# Revit API — merge DB + UI layers
+dll2llm.exe "C:\Program Files\Autodesk\Revit 2025\RevitAPI.dll" ^
+            "C:\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll" ^
+            --install
+
+# AutoCAD .NET API
+dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2025\AcDbMgd.dll" ^
+            "C:\Program Files\Autodesk\AutoCAD 2025\AcMgd.dll" ^
+            "C:\Program Files\Autodesk\AutoCAD 2025\AcCoreMgd.dll" ^
+            --install
+```
+
+`--install` implies `--split` and copies the generated skill folder directly to `~/.cursor/skills/`. Restart Cursor after running.
+
+## CLI usage
+
+### Split mode (recommended for large APIs)
+
+```bash
+dll2llm.exe RevitAPI.dll RevitAPIUI.dll --split --output ./revit-api-skill
+```
+
+Produces:
+
+```
+revit-api-skill/
+├── SKILL.md       ← Cursor skill definition (auto-generated)
+├── INDEX.md       ← Type-to-file lookup table (auto-generated)
+├── db-architecture.md
+├── db-mechanical.md
+└── ...            ← one file per namespace group
+```
+
+### Monolithic mode
+
+```bash
+# Default output filename (<DllName>.llm.txt)
 dll2llm.exe MyLibrary.dll
+
+# Custom output path
+dll2llm.exe MyLibrary.dll MyLibrary_docs.txt
+
+# Multiple DLLs merged into one file
+dll2llm.exe RevitAPI.dll RevitAPIUI.dll --output RevitAPI_full.llm.txt
 ```
-This creates `MyLibrary.llm.txt` in the same directory as the DLL.
 
-### Custom Output File
+### All options
 
-Specify a custom output filename:
+| Option | Description |
+|--------|-------------|
+| `<dll> [dll2] ...` | One or more DLL paths to process |
+| `--split` | Generate split skill folder instead of a single file |
+| `--install` | Generate split skill folder and install it to `~/.cursor/skills/` (implies `--split`) |
+| `--output <path>` | Output file (monolithic) or directory (split) |
+| `--xml <path>` | Load an additional XML documentation file (useful when XML is not co-located with the DLL) |
+
+### Interactive mode
+
+Run without arguments for a guided prompt:
+
 ```bash
-dll2llm.exe MyLibrary.dll CustomDocumentation.txt
+dll2llm.exe
 ```
 
-### Full Path Examples
+## Output format
 
-Windows:
-```bash
-C:\Tools\dll2llm.exe "C:\Projects\MyApp\bin\Release\MyLibrary.dll" "C:\Docs\MyLibrary_API.txt"
-```
+### Split skill folder
 
-Linux/macOS:
-```bash
-./dll2llm /usr/local/lib/MyLibrary.dll ~/docs/MyLibrary_API.txt
-```
-
-## Output Format
-
-The generated documentation includes:
-
-1. **Header Section**
-   - Source DLL filename
-   - Assembly full name
-   - Generation timestamp
-
-2. **Overview Section**
-   - Total type counts (classes, interfaces, enums, etc.)
-   - Namespace listing with type counts
-
-3. **Detailed Documentation**
-   - Organized by namespace
-   - For each type:
-     - Type kind (CLASS, INTERFACE, ENUM, etc.)
-     - Full name
-     - Inheritance hierarchy
-     - Implemented interfaces
-     - Generic parameters
-     - Constructors with parameters
-     - Properties with access modifiers
-     - Methods with return types and parameters
-     - Events
-     - Constants and static fields
-
-4. **Usage Patterns**
-   - Common namespace imports
-   - Most frequently used types
-
-## Example Output
+Each topic file (`namespace-group.md`) follows this structure:
 
 ```
-# LLM-FRIENDLY LIBRARY DOCUMENTATION
-# Generated from: MyLibrary.dll
-# Assembly: MyLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-# Generated: 2023-11-12 14:30:45
+# Autodesk.Revit.DB.Architecture
 
-================================================================================
-OVERVIEW
-================================================================================
-
-Total Public Types: 25
-  - Classes: 15
-  - Abstract Classes: 2
-  - Interfaces: 5
-  - Enums: 2
-  - Structs: 1
-
-NAMESPACES:
-  - MyLibrary.Core (10 types)
-  - MyLibrary.Utils (8 types)
-  - MyLibrary.Models (7 types)
-
-================================================================================
-DETAILED TYPE DOCUMENTATION
-================================================================================
-
-NAMESPACE: MyLibrary.Core
+NAMESPACE: Autodesk.Revit.DB.Architecture
 --------------------------------------------------------------------------------
 
-[CLASS] Calculator
-Full Name: MyLibrary.Core.Calculator
+[CLASS] AreaBoundaryLocation
+Full Name: Autodesk.Revit.DB.Architecture.AreaBoundaryLocation
+Description: Indicates the location used to compute the area boundary.
 
-Description: Provides basic arithmetic operations.
-
-  CONSTRUCTORS:
-    new Calculator()
-      Description: Initializes a new instance of the Calculator class.
-
-  METHODS:
-    int Add(int a, int b)
-      Description: Adds two integers and returns the result.
-      @a: The first number to add.
-      @b: The second number to add.
-      Returns: The sum of a and b.
-    int Subtract(int a, int b)
-      Description: Subtracts b from a.
-      @a: The number to subtract from.
-      @b: The number to subtract.
-      Returns: The difference between a and b.
-    double Divide(double a, double b)
-      Description: Divides a by b.
-      @a: The dividend.
-      @b: The divisor.
-      Returns: The quotient of a divided by b.
-
-[INTERFACE] IProcessor
-Full Name: MyLibrary.Core.IProcessor
-
-Description: Defines methods for processing data.
+  PROPERTIES:
+    AreaBoundaryLocation Center { get; }
+      Description: The boundary is computed at the center of the wall.
+    ...
 
   METHODS:
-    void Process(string data)
-      Description: Processes the provided data synchronously.
-      @data: The data to process.
-    Task ProcessAsync(string data)
-      Description: Processes the provided data asynchronously.
-      @data: The data to process.
-      Returns: A task representing the asynchronous operation.
+    static bool Equals(object objA, object objB)
+      Description: Determines whether the specified object instances are equal.
+      @objA: The first object to compare.
+      @objB: The second object to compare.
+      Returns: true if the objects are equal.
 ```
 
-## Tips for Best Results
+### Monolithic `.llm.txt`
 
-1. **Ensure DLL Dependencies**: Make sure all dependencies of the target DLL are available in the same directory or in the GAC.
+Same content, written as a single file with a header, overview section, and all namespaces in sequence.
 
-2. **Include XML Documentation**: For best results, ensure the XML documentation file (`.xml`) is in the same directory as the DLL. This file contains descriptions for types, methods, parameters, etc.
+## Why split mode for large APIs
 
-3. **Target Public APIs**: The tool only extracts public types and members, so ensure your library exposes the appropriate public API surface.
+A full Revit API export is ~80,000 lines (~5 MB, ~1.5M tokens). No model's context window can hold that. The split skill approach keeps token usage predictable:
 
-4. **Use with LLMs**: The generated documentation is optimized for LLM consumption. You can:
-   - Include it in your prompts when asking about the library
-   - Use it to train or fine-tune models
-   - Create embeddings for semantic search
+- `SKILL.md` (~100 lines) + `INDEX.md` (~500 lines) load first
+- The agent reads the index to identify the relevant namespace
+- Only the matching topic file (~500–1,500 lines) loads into context
 
-5. **Version Control**: Consider generating and committing the LLM documentation alongside your releases for historical reference.
+Total in-context at any time: well under 5,000 lines regardless of API size.
 
-## Using Generated Docs as an AI Agent Skill
-
-After generating documentation, you can split large files into smaller, token-efficient chunks and use them as an AI agent skill. The `docs/revit-api/` folder contains a pre-built example for the Revit API 2025.
-
-### Skill Structure
-
-```
-docs/revit-api/
-├── SKILL.md              # Agent skill definition
-├── INDEX.md              # LLM navigation index
-├── application-services.md
-├── db-a-b.md through db-v-z.md
-└── ... (35 topic-specific files)
-```
+## Using the generated skill
 
 ### Cursor IDE
 
-1. **Project-level skill** (shared with repository):
-   ```powershell
-   # Copy to your project's .cursor/skills/ folder
-   mkdir -p .cursor/skills
-   cp -r docs/revit-api .cursor/skills/revit-api-docs
-   ```
+The easiest way is to use `--install` which handles this automatically:
 
-2. **Personal skill** (available across all projects):
-   ```powershell
-   # Windows
-   xcopy /E /I docs\revit-api %USERPROFILE%\.cursor\skills\revit-api-docs
-   
-   # macOS/Linux
-   cp -r docs/revit-api ~/.cursor/skills/revit-api-docs
-   ```
+```bash
+dll2llm.exe RevitAPI.dll --install
+```
 
-3. The skill will automatically appear in Cursor's agent skills. When you ask about Revit API, the agent will:
-   - Read `INDEX.md` to find the right file
-   - Load only the specific documentation needed
-   - Minimize token consumption
+Or copy manually:
 
-### VS Code with Continue or Cody
+```powershell
+# Windows
+xcopy /E /I ".\revit-api-skill" "%USERPROFILE%\.cursor\skills\revit-api-skill"
 
-For VS Code extensions like Continue or Cody that support context providers:
+# macOS/Linux
+cp -r ./revit-api-skill ~/.cursor/skills/revit-api-skill
+```
 
-1. **Continue**: Add to your `.continue/config.json`:
-   ```json
-   {
-     "contextProviders": [
-       {
-         "name": "folder",
-         "params": {
-           "path": "docs/revit-api",
-           "description": "Revit API 2025 documentation"
-         }
-       }
-     ]
-   }
-   ```
+Restart Cursor. The skill appears automatically in the agent's skill list.
 
-2. **Cody**: Add the docs folder to your workspace and use `@docs/revit-api` mentions.
+### Claude Desktop (MCP filesystem)
 
-### Claude Desktop (MCP)
+```bash
+npm install -g @anthropic/mcp-server-filesystem
+```
 
-For Claude Desktop, use the Model Context Protocol (MCP) filesystem server:
+Add to `claude_desktop_config.json`:
 
-1. **Install the MCP filesystem server**:
-   ```bash
-   npm install -g @anthropic/mcp-server-filesystem
-   ```
+**Windows** (`%APPDATA%\Claude\claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "revit-api": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-server-filesystem", "C:\\path\\to\\revit-api-skill"]
+    }
+  }
+}
+```
 
-2. **Configure Claude Desktop** (`claude_desktop_config.json`):
-   
-   **Windows** (`%APPDATA%\Claude\claude_desktop_config.json`):
-   ```json
-   {
-     "mcpServers": {
-       "revit-api-docs": {
-         "command": "npx",
-         "args": [
-           "@anthropic/mcp-server-filesystem",
-           "C:\\path\\to\\dll2llm\\docs\\revit-api"
-         ]
-       }
-     }
-   }
-   ```
-   
-   **macOS** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
-   ```json
-   {
-     "mcpServers": {
-       "revit-api-docs": {
-         "command": "npx",
-         "args": [
-           "@anthropic/mcp-server-filesystem",
-           "/path/to/dll2llm/docs/revit-api"
-         ]
-       }
-     }
-   }
-   ```
+**macOS** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "revit-api": {
+      "command": "npx",
+      "args": ["@anthropic/mcp-server-filesystem", "/path/to/revit-api-skill"]
+    }
+  }
+}
+```
 
-3. **Restart Claude Desktop** and the docs will be available as a resource.
+Restart Claude Desktop and the docs are available as a resource.
 
-### Alternative: Direct Context
+---
 
-For any LLM interface, you can directly provide files as context:
+## Known limitations
 
-1. Start with `INDEX.md` to understand the structure
-2. Add specific files based on your query (e.g., `db-e.md` for Element-related questions)
-3. Use `SKILL.md` as a system prompt for navigation guidance
+### Must run on a machine with the product installed
+
+Autodesk desktop APIs depend on native and managed binaries that ship with the product (e.g. `RevitNative.dll`, AutoCAD runtime DLLs). The tool resolves dependencies from the DLL's directory; if you copy the DLL elsewhere without its sibling binaries, type loading will fail silently or throw. **Always point the tool at the product's install directory.**
+
+### Inherited members are not repeated on subclasses
+
+Properties, methods, and events are only documented on the type where they are declared (`DeclaringType == type`). Inherited members from base classes (e.g. `Element.get_Id()` on every Revit element subclass) are not repeated. When writing code, check the base class documentation as well.
+
+### No XML = no descriptions
+
+If the API does not ship an XML documentation file alongside the DLL (common for Inventor's COM interop assembly, some Navisworks assemblies, and older ObjectARX wrappers), the tool produces complete structural documentation (types, signatures, enums) but every description field will be empty.
+
+### Native (unmanaged) DLLs are not supported
+
+The tool uses .NET reflection and only works with managed assemblies. Native C++ DLLs (ObjectARX `.arx` / `.dll`) cannot be processed and will fail immediately.
+
+### COM interop assemblies load but have limited value
+
+Inventor's primary API is COM-based. The .NET interop assembly (`Autodesk.Inventor.Interop.dll`) can be reflected but ships without XML documentation, so the output contains signatures only with no descriptions.
+
+### Large enum values may not convert cleanly
+
+Enum underlying types other than `int` or `long` are handled with a best-effort `Convert.ToInt64` and may be skipped silently on overflow.
+
+### Generic XML key matching — edge cases
+
+The tool generates standard XML doc member keys (backtick arity notation for type definitions, `{curly}` braces for generic type arguments in signatures). Complex generic scenarios (nested generics, generic methods with constraints) may still produce key mismatches and missing descriptions.
+
+---
 
 ## Troubleshooting
 
-### Common Issues
+| Error | Likely cause | Fix |
+|-------|-------------|-----|
+| `Could not load file or assembly` | Missing dependency DLLs | Point the tool at the product's install folder, not a copy of the DLL |
+| `Warning: Could not resolve dependency` | A transitive dependency is missing | Safe to ignore if types load; re-run from the install directory for best results |
+| `Warning: No XML documentation found` | No `.xml` file alongside the DLL | Expected for APIs that don't ship XML; use `--xml` to provide one if available separately |
+| Many `[ERROR DOCUMENTING TYPE]` entries | Incompatible .NET target or native dependency issues | Ensure you are targeting the correct .NET version and running on a machine with the product installed |
+| Access denied on output path | Insufficient permissions | Run from a directory where you have write access, or specify `--output` pointing to a writable location |
 
-1. **"Could not load file or assembly" error**
-   - Ensure all dependency DLLs are in the same directory
-   - Check that you're using the correct .NET version
-
-2. **"Access denied" error**
-   - Run with appropriate permissions
-   - Check output directory write permissions
-
-3. **Large output files**
-   - For very large libraries, the output can be several MB
-   - Consider documenting specific namespaces separately
-
-### Error Messages
-
-- `Usage: DllToLLMDoc.exe <path-to-dll> [output-file.txt]` - No arguments provided
-- `Error: Could not load file or assembly` - DLL not found or dependencies missing
-- `Error: Access to the path '...' is denied` - Insufficient permissions
+---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
-
-## Acknowledgments
-
-This tool helps bridge the gap between traditional .NET documentation and the needs of modern AI/LLM systems.
+Contributions welcome. Please open an issue or pull request.
 
 ## License
 
-This sample is licensed under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-Please see the [LICENSE](LICENSE) file for full details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ## Written by
 
