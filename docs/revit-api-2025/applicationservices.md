@@ -1,12 +1,10 @@
 ﻿# Autodesk.Revit.ApplicationServices
 
-
 NAMESPACE: Autodesk.Revit.ApplicationServices
 --------------------------------------------------------------------------------
 
 [CLASS] Application
 Full Name: Autodesk.Revit.ApplicationServices.Application
-
 Description: Represents the Autodesk Revit Application, providing access to documents, options and other application wide data and settings.
 Implements: IDisposable
 
@@ -128,15 +126,27 @@ Implements: IDisposable
       @sourceModelPath: The path of the file-based or server-based source model.
       @destFilePath: The path of the destination file.
       @overwrite: True if the destination file can be overwritten; otherwise, false.
+      Throws ArgumentException: The given path sourceModelPath is a cloud path which is not supported in this method.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws CentralModelAccessDeniedException: Access to the central model was denied. A possible reason is because the model was under maintenance.
+      Throws CentralModelException: The central model is missing. -or- An internal error happened on the central model, please contact the server administrator.
+      Throws DirectoryNotFoundException: Thrown when the directory of destination file doesn't exist.
+      Throws FileArgumentAlreadyExistsException: The destination file exists and can't be overwritten. -or- destFilePath is pointing to a folder that already exists and cannot be deleted.
+      Throws FileArgumentNotFoundException: The Revit model specified by sourceModelPath doesn't exist.
+      Throws InvalidPathArgumentException: The destination file name includes one or more invalid characters.
+      Throws RevitServerCommunicationException: The server-based central model could not be accessed because of a network communication error.
+      Throws RevitServerInternalException: An internal error happened on the server, please contact the server administrator.
     void Dispose()
     void ExtractPartAtomFromFamilyFile(string familyFilePath, string xmlFilePath)
       Description: Writes a PartAtom XML from the contents of a family file.
       @familyFilePath: The family file to be processed.
       @xmlFilePath: The xml file to be saved.
+      Throws ArgumentException: If 'familyFilePath' or 'xmlFilePath' is or an empty string or if the family file doesn't exist on disk.
     IList<Asset> GetAssets(AssetType assetType)
       Description: Gets all the Assets of the specified type.
       @assetType: The asset type.
       Returns: Returns an array of all the Assets within Revit of the specified type.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     static FailureDefinitionRegistry GetFailureDefinitionRegistry()
       Description: Returns the instance of FailureDefinitionRegistry.
       Returns: The instance of FailureDefinitionRegistry.
@@ -156,6 +166,11 @@ Implements: IDisposable
       Description: Gets the worksharing central GUID of the given server-based model.
       @serverModelPath: The server-based model path.
       Returns: The worksharing central GUID.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws CentralModelException: The central model is missing. -or- An internal error happened on the central model, please contact the server administrator.
+      Throws InapplicableDataException: Thrown when the given model is not created in Revit 2013 or later release.
+      Throws RevitServerCommunicationException: The server-based central model could not be accessed because of a network communication error.
+      Throws RevitServerInternalException: An internal error happened on the server, please contact the server administrator.
     bool IsJournalPlaying()
       Description: Determines if the application is currently in journal playback mode.
       Returns: true if a journal is currently playing back, false otherwise.
@@ -166,40 +181,98 @@ Implements: IDisposable
     Document NewFamilyDocument(string templateFileName)
       Description: New family document, including family, titleblock, and annotation symbol
       @templateFileName: The template file name.
+      Throws ArgumentException: If 'templateFileName' is or an empty string.
+      Throws InvalidOperationException: If the new family document cannot be created.
     Document NewProjectDocument(UnitSystem unitSystem)
       Description: Creates a new project document with no template file specified.
       @unitSystem: The unit system used for the new document.
       Returns: The newly created document.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     Document NewProjectDocument(string templateFileName)
       Description: New project document
       @templateFileName: The template file name.
+      Throws ArgumentException: If 'templateFileName' is or an empty string.
+      Throws InvalidOperationException: If the new project document cannot be created.
     Document NewProjectTemplateDocument(string templateFilename)
       Description: New project template document
       @templateFilename: The template file name.
+      Throws ArgumentException: If 'templateFileName' is or an empty string.
+      Throws InvalidOperationException: If the project template document cannot be created.
     Document OpenDocumentFile(string fileName)
       Description: Opens a document from disk.
       @fileName: The file to be opened.
       Returns: The opened document.
+      Throws ArgumentException: The fileName to be opened is empty.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws CannotOpenBothCentralAndLocalException: Cannot open the local model and the central model in the same Revit session. You can close one to open the other in the same Revit session.
+      Throws CentralModelException: Revit encountered serious errors while trying to open the central model.
+      Throws CorruptModelException: There are too many corrupt elements to open this model.
+      Throws FileAccessException: File cannot be opened in Revit LT because it was last saved in a version of Revit prior to 8.1. -or- File has an invalid extension. Try changing the file's extension and opening it again.
+      Throws FileNotFoundException: The fileName to be opened doesn't exist. -or- File Not Found
+      Throws InsufficientResourcesException: This computer does not have enough memory, disk space, or other necessary resource to open the model.
+      Throws InvalidOperationException: Open is temporarily disabled. -or- The document can not be opened.
+      Throws OperationCanceledException: Opening was canceled by the user or by an API event callback.
     Document OpenDocumentFile(ModelPath modelPath, OpenOptions openOptions, IOpenFromCloudCallback openFromCloudCallback)
       Description: Opens a document from disk or cloud.
       @modelPath: The file to be opened.
       @openOptions: Options for opening the file.
       @openFromCloudCallback: The interface implementation to use when opening a cloud document. Only used for opening cloud model.
       Returns: The opened document.
+      Throws ArgumentException: The modelPath to be opened is empty.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws CannotOpenBothCentralAndLocalException: Cannot open the local model and the central model in the same Revit session. You can close one to open the other in the same Revit session.
+      Throws CentralModelAccessDeniedException: Access to the central model was denied. A possible reason is because the model was under maintenance.
+      Throws CentralModelContentionException: The model on the RevitServer is being accessed by other users. -or- The central model is locked by another client.
+      Throws CentralModelException: Revit encountered serious errors while trying to open the central model. -or- An internal error happened on the central model, please contact the server administrator.
+      Throws CorruptModelException: There are too many corrupt elements to open this model.
+      Throws FileAccessException: File cannot be opened in Revit LT because it was last saved in a version of Revit prior to 8.1. -or- File has an invalid extension. Try changing the file's extension and opening it again.
+      Throws FileNotFoundException: The modelPath to be opened doesn't exist. -or- File Not Found
+      Throws InsufficientResourcesException: This computer does not have enough memory, disk space, or other necessary resource to open the model.
+      Throws InvalidOperationException: Open is temporarily disabled. -or- The cloud model is not saved in current release of Revit. -or- The model is not allowed to access. -or- The document can not be opened. -or- Revit cannot save the transmitted model as a new central because it is already opened.
+      Throws OperationCanceledException: Opening was canceled by the user or by an API event callback.
+      Throws RevitServerCommunicationException: The server-based central model could not be accessed because of a network communication error.
+      Throws RevitServerInternalException: An internal error happened on the server, please contact the server administrator.
+      Throws RevitServerUnauthorizedException: User is not authorized to access the cloud model.
+      Throws WrongUserException: The local file is not owned by the current user, who therefore is not allowed to modify it.
     Document OpenDocumentFile(ModelPath modelPath, OpenOptions openOptions)
       Description: Opens a document from disk or cloud.
       @modelPath: The file to be opened.
       @openOptions: Options for opening the file.
       Returns: The opened document.
+      Throws ArgumentException: The modelPath to be opened is empty.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws CannotOpenBothCentralAndLocalException: Cannot open the local model and the central model in the same Revit session. You can close one to open the other in the same Revit session.
+      Throws CentralModelAccessDeniedException: Access to the central model was denied. A possible reason is because the model was under maintenance.
+      Throws CentralModelContentionException: The model on the RevitServer is being accessed by other users. -or- The central model is locked by another client.
+      Throws CentralModelException: Revit encountered serious errors while trying to open the central model. -or- An internal error happened on the central model, please contact the server administrator.
+      Throws CorruptModelException: There are too many corrupt elements to open this model.
+      Throws FileAccessException: File cannot be opened in Revit LT because it was last saved in a version of Revit prior to 8.1. -or- File has an invalid extension. Try changing the file's extension and opening it again. -or- File was saved by an application that was not developed or licensed by Autodesk.
+      Throws FileNotFoundException: The modelPath to be opened doesn't exist. -or- File Not Found
+      Throws InsufficientResourcesException: This computer does not have enough memory, disk space, or other necessary resource to open the model.
+      Throws InvalidOperationException: Open is temporarily disabled. -or- The cloud model is not saved in current release of Revit. -or- The model is not allowed to access. -or- The document can not be opened. -or- Revit cannot save the transmitted model as a new central because it is already opened.
+      Throws OperationCanceledException: Opening was canceled by the user or by an API event callback.
+      Throws RevitServerCommunicationException: The server-based central model could not be accessed because of a network communication error.
+      Throws RevitServerInternalException: An internal error happened on the server, please contact the server administrator.
+      Throws RevitServerUnauthorizedException: User is not authorized to access the cloud model.
+      Throws ServerModelCorruptedException: The central model is corrupted. This exception is treated starting from Revit 2025.2.
+      Throws WrongUserException: The local file is not owned by the current user, who therefore is not allowed to modify it.
     Document OpenIFCDocument(string fileName, IFCImportOptions importOptions)
       Description: Opens an IFC document from disk using custom options.
       @fileName: The IFC file to be opened.
       @importOptions: The options for this import.
       Returns: The newly created document containing the IFC file.
+      Throws ArgumentException: If 'fileName' is an empty string.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws FileArgumentNotFoundException: If the file specified by 'fileName' cannot be found.
+      Throws InvalidOperationException: If Revit is missing document templates or if the file cannot be opened.
     Document OpenIFCDocument(string fileName)
       Description: Opens an IFC document from disk using default options.
       @fileName: The IFC file to be opened.
       Returns: The newly created document containing the IFC file.
+      Throws ArgumentException: If 'fileName' is an empty string.
+      Throws ArgumentNullException: If is passed as 'fileName' -or- A non-optional argument was null
+      Throws FileArgumentNotFoundException: If the file specified by 'fileName' cannot be found.
+      Throws InvalidOperationException: If Revit is missing document templates or if the file cannot be opened.
     DefinitionFile OpenSharedParameterFile()
       Description: Enables access to shared parameter groups and definitions that are maintained on disk.
       Returns: An object that represents a shared parameters file that exists on disk. Returns if the file does not exist.
@@ -208,18 +281,22 @@ Implements: IDisposable
     static void RegisterFailuresProcessor(IFailuresProcessor processor)
       Description: Replaces Revit's default user interface (if present) with alternative handling for all warnings and errors (including those not generated by your application) for the rest of the Revit session; if your application is not prepared to respond to all warnings and errors, consider use of IFailuresPreprocessor (in your opened Transaction) or the FailuresProcessing event instead of this interface.
       @processor: Instance of Failures Processor to be used by the Revit Application.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetLibraryPaths(IDictionary<string, string> paths)
       Description: Sets path information identifying where Revit searches for content.
       @paths: The map of library paths.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetSystemsAnalysisWorkflows(IDictionary<string, string> paths)
       Description: Sets name and path information identifying systems analysis workflow files.
       @paths: The map of systems analysis workflows.
+      Throws ArgumentNullException: A non-optional argument was null
     void UpdateRenderAppearanceLibrary()
       Description: Updates the stored render appearance library, giving the Revit session access to any new RPC content.
     void WriteJournalComment(string comment, bool timeStamp)
       Description: Writes a comment to the Revit journal file.
       @comment: Text for journal comment.
       @timeStamp: If a time stamp should be included in the journal comment.
+      Throws ArgumentNullException: A non-optional argument was null
 
   EVENTS:
     event EventHandler<DocumentReloadedLatestEventArgs> DocumentReloadedLatest
@@ -303,7 +380,6 @@ Implements: IDisposable
 
 [CLASS] ControlledApplication
 Full Name: Autodesk.Revit.ApplicationServices.ControlledApplication
-
 Description: Represents the Autodesk Revit Application with no access to documents. It provides options and other application wide data and settings for external applications OnStartup/OnShutdown.
 
   PROPERTIES:
@@ -356,13 +432,16 @@ Description: Represents the Autodesk Revit Application with no access to documen
     static void RegisterFailuresProcessor(IFailuresProcessor processor)
       Description: Replaces Revit's default user interface (if present) with alternative handling for all warnings and errors (including those not generated by your application) for the rest of the Revit session; if your application is not prepared to respond to all warnings and errors, consider use of IFailuresPreprocessor (in your opened Transaction) or the FailuresProcessing event instead of this interface.
       @processor: Instance of Failures Processor to be used by the Revit Application.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetLibraryPaths(IDictionary<string, string> paths)
       Description: Sets path information identifying where Revit searches for content.
       @paths: The map of library paths.
+      Throws ArgumentNullException: A non-optional argument was null
     void WriteJournalComment(string comment, bool timeStamp)
       Description: Writes a comment to the Revit journal file.
       @comment: Text for journal comment.
       @timeStamp: If a time stamp should be included in the journal comment.
+      Throws ArgumentNullException: A non-optional argument was null
 
   EVENTS:
     event EventHandler<DocumentReloadedLatestEventArgs> DocumentReloadedLatest
@@ -436,10 +515,8 @@ Description: Represents the Autodesk Revit Application with no access to documen
 
 [ENUM] LanguageType
 Full Name: Autodesk.Revit.ApplicationServices.LanguageType
-
 Description: An enumerated type containing the supported Revit product languages.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - English_USA = 0
@@ -460,12 +537,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - English_GB = 15
     - Unknown = -1
 
+--------------------------------------------------------------------------------
+
 [ENUM] ProductType
 Full Name: Autodesk.Revit.ApplicationServices.ProductType
-
 Description: An enumerated type containing the possible Revit product types.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Architecture = 0
@@ -475,4 +552,5 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - LT = 4
     - Unknown = 5
 
+--------------------------------------------------------------------------------
 

@@ -1,17 +1,16 @@
 ﻿# Autodesk.Revit.DB.Macros
 
-
 NAMESPACE: Autodesk.Revit.DB.Macros
 --------------------------------------------------------------------------------
 
 [CLASS] AddInIdAttribute
 Full Name: Autodesk.Revit.DB.Macros.AddInIdAttribute
-
 Description: The custom AddInId attribute for Macros macros use only.
 Inherits: Attribute
 
   CONSTRUCTORS:
     new AddInIdAttribute(string addInIdStr)
+      Description: Constructs a new AddInIdAttribute.
 
   PROPERTIES:
     ValueType Value { get; }
@@ -21,10 +20,9 @@ Inherits: Attribute
 
 [ABSTRACT CLASS] ApplicationEntryPoint
 Full Name: Autodesk.Revit.DB.Macros.ApplicationEntryPoint
-
 Description: For Revit Macros use only.
 Inherits: Application
-Implements: IDisposable, IEntryPoint
+Implements: IEntryPoint
 
   CONSTRUCTORS:
     new ApplicationEntryPoint()
@@ -45,7 +43,6 @@ Implements: IDisposable, IEntryPoint
 
 [INTERFACE] IEntryPoint
 Full Name: Autodesk.Revit.DB.Macros.IEntryPoint
-
 Description: The interface supporting Document and Application level entry point classes for macros.
 
   PROPERTIES:
@@ -60,17 +57,16 @@ Description: The interface supporting Document and Application level entry point
 
 [CLASS] VendorIdAttribute
 Full Name: Autodesk.Revit.DB.Macros.VendorIdAttribute
-
 Description: The custom VendorId attribute for Macros macros use only.
 Inherits: Attribute
 
   CONSTRUCTORS:
     new VendorIdAttribute(string vendorIdStr)
+      Description: Constructs a new VendorIdAttribute.
 
   PROPERTIES:
     string Value { get; }
       Description: AddInId VendorId value.
 
 --------------------------------------------------------------------------------
-
 

@@ -1,24 +1,1136 @@
-﻿# Autodesk.Revit.DB (Types: P)
+﻿# Autodesk.Revit.DB
+
+NAMESPACE: Autodesk.Revit.DB
+--------------------------------------------------------------------------------
+
+[ABSTRACT CLASS] NamingUtils
+Full Name: Autodesk.Revit.DB.NamingUtils
+Description: A collection of utilities related to element naming.
+
+  METHODS:
+    static int CompareNames(string nameA, string nameB)
+      Description: Compares two object name strings using Revit's comparison rules.
+      @nameA: The first object name to compare.
+      @nameB: The second object name to compare.
+      Returns: An integer indicating the result of the lexical comparison between the two names. Less than zero if nameA comes before nameB in the ordering, zero if nameA and nameB are equivalent, and greater than zero if nameA is comes after nameB in the ordering.
+      Throws ArgumentNullException: A non-optional argument was null
+    static bool IsValidName(string string)
+      Description: Identifies if the input string is valid for use as an object name in Revit.
+      @string: The name to validate.
+      Returns: True if the name is valid for use as a name in Revit, false if it contains prohibited characters and is invalid.
+      Throws ArgumentNullException: A non-optional argument was null
+
+--------------------------------------------------------------------------------
+
+[ENUM] NavisworksCoordinates
+Full Name: Autodesk.Revit.DB.NavisworksCoordinates
+Description: An enumerated type listing possible Coordinates of Navisworks Exporter.
+Inherits: Enum
+
+  Values:
+    - Internal = 0
+    - Shared = 1
+
+--------------------------------------------------------------------------------
+
+[CLASS] NavisworksExportOptions
+Full Name: Autodesk.Revit.DB.NavisworksExportOptions
+Description: Options which controls the Navisworks export.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new NavisworksExportOptions()
+      Description: Create an instance of Navisworks Export Options set with default values.
+
+  PROPERTIES:
+    bool ConvertElementProperties { get; set; }
+      Description: True to convert element properties, false otherwise. Default value is false.
+    bool ConvertLights { get; set; }
+      Description: True to convert lights, false otherwise. Default value is false.
+    bool ConvertLinkedCADFormats { get; set; }
+      Description: True to convert linked CAD formats, false otherwise. Default value is true.
+    NavisworksCoordinates Coordinates { get; set; }
+      Description: Options which specifies the coordinates of Navisworks Exporter. Default value is Shared.
+    bool DivideFileIntoLevels { get; set; }
+      Description: True to divide file into levels, false otherwise. Default value is true.
+    bool ExportElementIds { get; set; }
+      Description: True to export Revit element ids, false to skip these values. Default value is true.
+    bool ExportLinks { get; set; }
+      Description: True to export Revit links found in the main model, false to skip links. Default value is false.
+    bool ExportParts { get; set; }
+      Description: True to export Revit part elements, false to export the original parent elements. Default value is false.
+    bool ExportRoomAsAttribute { get; set; }
+      Description: True to export data for each room converts into a single shared room attribute, false otherwise. Default value is true.
+    bool ExportRoomGeometry { get; set; }
+      Description: True to export Revit room geometry, false otherwise. Default value is true.
+    NavisworksExportScope ExportScope { get; set; }
+      Description: Options which specifies the export scope of Navisworks Exporter. Default value is Model.
+    bool ExportUrls { get; set; }
+      Description: True to export URL parameters, false otherwise. Default value is true.
+    double FacetingFactor { get; set; }
+      Description: Faceting factor. Default value is 1.0.
+    bool FindMissingMaterials { get; set; }
+      Description: True if the file exporter looks for a match for the materials missing from the export, false otherwise. Default value is true.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    NavisworksParameters Parameters { get; set; }
+      Description: Options which specifies the parameter conversion of Navisworks Exporter. Default value is All.
+    ElementId ViewId { get; set; }
+      Description: The element id of the view to export. InvalidElementId by default. Used only when ExportScope = View.
+
+  METHODS:
+    void Dispose()
+    ICollection<ElementId> GetSelectedElementIds()
+      Description: Returns the element ids of the elements to export. Empty by default.
+    void SetSelectedElementIds(ICollection<ElementId> ids)
+      Description: Sets the element ids of the elements to export. Used only when ExportScope = SelectedElements.
+      Throws ArgumentNullException: A non-optional argument was null
+
+--------------------------------------------------------------------------------
+
+[ENUM] NavisworksExportScope
+Full Name: Autodesk.Revit.DB.NavisworksExportScope
+Description: An enumerated type listing possible "Element Scopes" of Navisworks Exporter.
+Inherits: Enum
+
+  Values:
+    - Model = 0
+    - View = 1
+    - SelectedElements = 2
+
+--------------------------------------------------------------------------------
+
+[ENUM] NavisworksParameters
+Full Name: Autodesk.Revit.DB.NavisworksParameters
+Description: An enumerated type listing possible "Parameter conversions" of Navisworks Exporter.
+Inherits: Enum
+
+  Values:
+    - None = 0
+    - Elements = 1
+    - All = 2
+
+--------------------------------------------------------------------------------
+
+[CLASS] NestedFamilyTypeReference
+Full Name: Autodesk.Revit.DB.NestedFamilyTypeReference
+Description: A proxy element representing a nested family type.
+Remarks: This element represents a value of a FamilyType Parameter of a Loaded Family. Each such element corresponds to a nested FamilyType Element in the original Family Document where the family was defined.This element stores only basic information about the nested FamilyType, such as the name of the Type, name of the Family, and a Category.These elements are very low-level and thus bypassed by standard element filters. However, it is possible to obtain a set of applicable elements of this class for a FamilyType parameter of a family by calling Autodesk::Revit::DB::Family::GetFamilyTypeParameterValues
+Inherits: Element
+
+  PROPERTIES:
+    ElementId CategoryId { get; }
+      Description: Category Id of the referenced family
+    string FamilyName { get; }
+      Description: Name of the referenced family
+    string TypeName { get; }
+      Description: Type of the referenced family
+
+--------------------------------------------------------------------------------
+
+[CLASS] NullParameterValue
+Full Name: Autodesk.Revit.DB.NullParameterValue
+Description: A class that represent an empty (null) value of a parameter element.
+Inherits: ParameterValue
+
+  CONSTRUCTORS:
+    new NullParameterValue()
+      Description: Default constructor
+
+--------------------------------------------------------------------------------
+
+[CLASS] NumberingSchema
+Full Name: Autodesk.Revit.DB.NumberingSchema
+Description: A class to support assigning numbers to elements of a particular kind for the purpose of tagging and scheduling them.
+Remarks: Each NumberingSchema controls numbering of elements of one particular kind, typically of the same category such as Rebar or Fabric Reinforcement. Instances of NumberingSchema are also elements and there is always only one of each type in every Revit document. Available types of all built-in numbering schemas are enumerated in NumberingSchemaTypes class. At present, schema elements cannot be manually added, deleted, or copied. Attempts to do so will result in a failure warning and/or exceptions thrown.Elements (e.g. Rebar) belonging to a particular schema (e.g. NumberingSchemaTypes.StructuralNumberingSchemas.Rebar) are organized and numbered in sequences. A sequence is a collection of elements that share the same numbering partition as defined by their respective values of the Partition parameter (NUMBER_PARTITION_PARAM). For a numbering sequence to exist it must contain at least one element. In other words, a sequence is established once there is at least one element of which the partition parameter has a value that differs from other elements (in the same numbering schema). If the last element is removed (deleted or moved to a different sequence) the then empty sequence ceases to exist.Elements get assigned to sequences either upon their creation (based on the then current numbering partition value), or by explicitly modifying the Partition parameter of an element, or by using the AssignElementsToSequence method. It is highly recommended using that method over explicitly changing the Partition parameter, because the methods applies changes to sequences and element numbers immediately, while changed parameters get into effect only after the current transaction is closed.In addition to directly or indirectly changing the Partition parameter of elements, numbering sequences can be reorganized by using methods of the NumberingSchema class. The String) method moves all elements of an existing sequence to a new sequence that does not exist yet in the schema, thus effectively renaming the Partition parameter on all the affected elements. The String) method removes all elements from one sequence and appends them to elements of another existing sequence while applying the matching policy. The method MergeSequences takes elements of all specified sequences and moves them all into a newly created sequence. All the merged elements will be renumbered and matched as needed based on the matching algorithm.Elements in different sequences are numbered independently, meaning that there may be elements with the same number in two sequences even though the elements are different. Likewise, there may be perfectly identical elements in two or more sequences bearing different numbers. However, within each one numbering sequence any two identical elements will always have the same number, while different elements will never have the same number within a numbering sequence. Revit refers to this rule as the matching policy.Enumerable elements are always numbered automatically upon their creation. Each new element will get an incrementally higher number. However, thanks to the matching policy, new elements that match existing elements within the same sequence will get the same number assigned. Elements will keep their assigned numbers as long as it is possible. This means, for example, that if some previously created elements (e.g. Rebar) get deleted, all remaining elements (within the same numbering sequence) will keep their numbers, which may result in gaps in the respective numbering sequence. Gaps can be removed by invoking String) for sequences in which gaps are not desired.Numbers are stored as values of a numbering parameter on each numbered element. The Id of the parameter is obtained by querying the NumberingParameterId property. The value of the number can be obtained by querying the parameter for the respective numbered element. The value is read-only and thus cannot be set; it is always computed based on relations of elements across numbering partitions and the matching policy within the numbering sequence of each element.Even though numbers are always assigned automatically to all elements of a schema, the method Int32) gives the programmer a way to explicitly overwrite a specific number as long as the new number is unique in the numbering sequence. The caller specifies a number to be changed and a new value that is to be applied, providing the value does not exist yet in the same numbering sequence. Although this operation may seem rather limited, it provides the programmer with freedom to change practically any number even if it may be achieved in multiple steps.
+Inherits: Element
+
+  PROPERTIES:
+    static int MaximumStartingNumber { get; }
+      Description: A static property defining the maximum number a numbering sequence can use as its starting number (the lowest number in the sequence).
+    ElementId NumberingParameterId { get; }
+      Description: Id of the parameter that stores values of the numbers on enumerated elements.
+    NumberingSchemaType SchemaType { get; }
+      Description: Identifies the kind of elements/objects this numbering schema is used for.
+
+  METHODS:
+    void AppendSequence(string fromPartition, string toPartition)
+      Description: Appends all elements of one numbering sequence to the end of another sequence.
+      @fromPartition: Name of the partition that determines which numbering sequence to append. The sequence must exist already, otherwise an exception will be thrown.
+      @toPartition: Name of a partition into which the source sequence is going to be appended. The sequence must exist already, otherwise an exception will be thrown.
+      Throws ArgumentException: The sequence fromPartition does not exist in the schema. -or- The sequence toPartition does not exist in the schema. -or- Given partition names fromPartition and toPartition must be different.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present. -or- Thrown if there is an element that cannot have new value of the NUMBER_PARTITION_PARAM parameter assigned. It may be an indication that the element is not free to be edited at present.
+    void AssignElementsToSequence(ISet<ElementId> elementIds, string partitionName)
+      Description: Assigns the input elements to a sequence identified by the given partition name.
+      @elementIds: Ids of elements which are to be added to a sequence. All elements must be valid and belonging to this schema.
+      @partitionName: Name of the target sequence's partition
+      Throws ArgumentException: the given partitionName cannot be used as a valid name of a numbering partition because it contains characters that are considered invalid, such as non-printable characters or those that cannot be used in a file's name. -or- Thrown when elementIds contains Ids that are either invalid or of elements not from this schema.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present. -or- Thrown if there is an element that cannot have new value of the NUMBER_PARTITION_PARAM parameter assigned. It may be an indication that the element is not free to be edited at present.
+    IList<ElementId> ChangeNumber(string partition, int fromNumber, int toNumber)
+      Description: Replaces an existing number with a new one (that does not exist yet).
+      @partition: Name of the partition that identifies the sequence containing the number to be changed.
+      @fromNumber: Number to be changed; there must already be an element with that number in the sequence.
+      @toNumber: Number to change to; no element must have this number yet in the sequence.
+      Returns: A collection of elements affected by the change of the number
+      Throws ArgumentException: The sequence partition does not exist in the schema. -or- The specified sequence does not contain any elements with the given fromNumber. -or- There already are elements with the given toNumber in the specified sequence.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The value of toNumber must be in the range from 1 to the maximum value for an Integer type
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present.
+    static int GetMinimumNumberOfDigits(Document document)
+      Description: Returns the minimum number of digits to be used for formating the Number parameter of all enumerable elements of the given document.
+      @document: The document this value is going to be applied to.
+      Returns: The current number of formatting digits
+      Throws ArgumentNullException: A non-optional argument was null
+    static NumberingSchema GetNumberingSchema(Document document, NumberingSchemaType schemaType)
+      Description: Returns an instance of the specified Numbering Schema in the given document.
+      @document: A document to get the numbering schema from.
+      @schemaType: The type of a built-in schema to get.
+      Returns: Instance of the specified schema.
+      Throws ArgumentException: The given schemaType has an invalid Id.
+      Throws ArgumentNullException: A non-optional argument was null
+    IList<string> GetNumberingSequences()
+      Description: Returns all numbering sequences within this numbering schema.
+      Returns: A collection of partition names of all numbering sequences currently present in this schema.
+    IList<IntegerRange> GetNumbers(string partition)
+      Description: Returns all numbers currently used in the given numbering sequence
+      @partition: Name of the partition that identifies the sequence. The sequence must exist.
+      Returns: A collection of integer ranges
+      Throws ArgumentException: The sequence partition does not exist in the schema.
+      Throws ArgumentNullException: A non-optional argument was null
+    static ISet<ElementId> GetSchemasInDocument(Document document)
+      Description: Returns a set of Ids of all Numbering Schema elements for a given document.
+      @document: A document to get numbering schema from.
+      Returns: Ids of NumberingSchema elements. An empty set if no schemas are found in the given document.
+      Throws ArgumentNullException: A non-optional argument was null
+    static bool IsValidPartitionName(string name, out string message)
+      Description: Tests if the given string can be used as a name for a numbering partition.
+      @name: A name to validate.
+      @message: Optional string to receive an error message to possibly show to the end user in case the name is found invalid. This argument may be null.
+      Returns: Returns True if the name can be used; or False if the string contains invalid characters.
+      Throws ArgumentNullException: A non-optional argument was null
+    void MergeSequences(IList<string> sourcePartitions, string newPartition)
+      Description: Merges all elements from given numbering sequences to a new sequence.
+      @sourcePartitions: A collection of partition names identifying the sequences to be merged together. There must be at least two names in the list. All the sequences must exist already.
+      @newPartition: Name of a new partition into which the source sequences will be merged. Leading and trailing white space is ignored in the given string and will be removed automatically.
+      Throws ArgumentException: The sourcePartitions list must contain at least two names. -or- Either one or more sequences in the sourcePartitions list does not exist in the schema, or the list contains duplicated names. -or- The sequence newPartition does already exist in the schema. -or- the given newPartition cannot be used as a valid name of a numbering partition because it contains characters that are considered invalid, such as non-printable characters or those that cannot be used in a file's name.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present. -or- Thrown if there is an element that cannot have new value of the NUMBER_PARTITION_PARAM parameter assigned. It may be an indication that the element is not free to be edited at present.
+    void MoveSequence(string fromPartition, string newPartition)
+      Description: Moves all elements of a numbering sequence from one partition to another.
+      @fromPartition: Name of the partition that determines which numbering sequence to move. The sequence must exist already, otherwise an exception will be thrown.
+      @newPartition: Name of a partition into which the source sequence is going to be moved. The schema must not have a sequence for this partition yet (i.e. the schema does not have an element that was assigned to such a partition.) Leading and trailing white space is ignored in the given string and will be removed automatically.
+      Throws ArgumentException: The sequence fromPartition does not exist in the schema. -or- The sequence newPartition does already exist in the schema. -or- the given newPartition cannot be used as a valid name of a numbering partition because it contains characters that are considered invalid, such as non-printable characters or those that cannot be used in a file's name.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present. -or- Thrown if there is an element that cannot have new value of the NUMBER_PARTITION_PARAM parameter assigned. It may be an indication that the element is not free to be edited at present.
+    void RemoveGaps(string partition)
+      Description: Removes gaps, if any, in a numbering sequence
+      @partition: Name of the partition that identifies the sequence. The sequence must exist.
+      Throws ArgumentException: The sequence partition does not exist in the schema.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present.
+    static void SetMinimumNumberOfDigits(Document document, int value)
+      Description: Sets a new value for the minimum number of digits to be used for formating the Number parameter of all numbered elements of the given document.
+      @document: The document in which the new value will be in applied.
+      @value: New value for the minimum number of digits.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The minimum number of digits must be in range from 1 to 10.
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
+    void ShiftNumbers(string partition, int firstNumber)
+      Description: Shifts all numbers in the sequence so the starting number has the given value.
+      @partition: Name of the partition that identifies the sequence. The sequence must exist.
+      @firstNumber: Value for the new first (lowest) number of the sequence.
+      Throws ArgumentException: The sequence partition does not exist in the schema.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: firstNumber must be in range between 1 and MaximumStartingNumber.
+      Throws InvalidOperationException: Either the schema or its document cannot be modified at present.
+
+--------------------------------------------------------------------------------
+
+[CLASS] NumberingSchemaType
+Full Name: Autodesk.Revit.DB.NumberingSchemaType
+Description: A type for identifying a NumberingSchema of a particular kind.
+Remarks: Each numbering schema is applicable to a certain category of Revit elements. For example, the Rebar numbering schema (built-in) is used and only applicable to Rebar elements. With that schema present, all Rebar elements automatically will get their respective numbers and those numbers would not correspond in any way to numbers of other enumerable elements that belong to different numbering schemas.There are only built-in schemas available currently.
+Inherits: GuidEnum
+
+  CONSTRUCTORS:
+    new NumberingSchemaType(Guid guid)
+      Description: Creates a new NumberingSchemaType instance.
+      @guid: The identifier for the NumberingSchemaType.
+
+--------------------------------------------------------------------------------
+
+[ABSTRACT CLASS] NumberingSchemaTypes
+Full Name: Autodesk.Revit.DB.NumberingSchemaTypes
+Description: Provides a container of all Revit built-in NumberingSchemaType instances.
+
+--------------------------------------------------------------------------------
+
+[CLASS] NumberSystem
+Full Name: Autodesk.Revit.DB.NumberSystem
+Description: An annotation that consists of a series of numeric tags attached to and describing a host element.
+Remarks: For a component-based stair, you can display tread/riser numbers for a run in plan, elevation, or section view. Sketch-based stair is not supported.
+Inherits: Element
+
+  PROPERTIES:
+    double JustifyOffset { get; set; }
+      Description: The offset to the justification curve.
+    NumberSystemJustifyOption JustifyOption { get; set; }
+      Description: The number justify option of number system.
+    NumberSystemDisplayRule NumberDisplayRule { get; set; }
+      Description: The display rule of the number system.
+    LinkElementId NumberedElementId { get; }
+      Description: The LinkElementId of the numbered host element.
+    TagOrientation NumberOrientation { get; set; }
+      Description: The number orientation of number system.
+    LinkElementId PlacementLevelId { get; }
+      Description: The id of the base level of stairs on which the NumberSystem is placed.
+    double ReferenceOffset { get; set; }
+      Description: The offset to the reference curve.
+
+  METHODS:
+    static NumberSystem Create(Document document, ElementId viewId, LinkElementId hostElementId, StairsNumberSystemReferenceOption referenceOption, LinkElementId placementLevelId)
+      Description: Creates a new instance of a NumberSystem associated to a host element, a view, and a reference level of stairs if in a multistory stairs.
+      @document: The document.
+      @viewId: The view in which the NumberSystem will be created.
+      @hostElementId: The host id on which the NumberSystem will be created.
+      @referenceOption: The reference option of the NumberSystem.
+      @placementLevelId: The id of the level on which the NumberSystem will be placed. The placement level must be one of the base levels of a stairs group members. It is suggested to get the level from MultistoryStairs.GetStairsPlacementLevels().
+      Returns: The created NumberSystem.
+      Throws ArgumentException: viewId is not valid for placement of a NumberSystem (only floor plan views and elevation views are permitted). -or- hostElementId is not valid as a host for NumberSystem (only StairsRun elements are permitted in this release). -or- The reference option is not valid for a NumberSystem. -or- The placementLevelId is not one of the stairs base levels. -or- The hostElementId already has a number system.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+    static NumberSystem Create(Document document, ElementId viewId, LinkElementId numberedElementId, Reference referenceCurve)
+      Description: Creates a new instance of a NumberSystem associated to a host element and a view.
+      @document: The document.
+      @viewId: The view in which the NumberSystem will be created.
+      @numberedElementId: The host id on which the NumberSystem will be created.
+      @referenceCurve: The reference curve along which the NumberSystem will be created. It is suggested to get the new reference via GetNumberSystemReference() from the host element.
+      Returns: The created NumberSystem.
+      Throws ArgumentException: viewId is not valid for placement of a NumberSystem (only floor plan views and elevation views are permitted). -or- numberedElementId is not valid as a host for NumberSystem (only StairsRun elements are permitted in this release). -or- The referenceCurve is not valid for NumberSystem on numberedElementId. -or- The numberedElementId already has a NumberSystem.
+      Throws ArgumentNullException: A non-optional argument was null
+    Reference GetReferencePick()
+      Description: Gets the reference curve.
+      Returns: The pick of reference curve.
+    void SetReferencePick(Reference referencePick)
+      Description: Sets the reference pick.
+      @referencePick: The pick to set.
+      Throws ArgumentException: The referencePick is not a valid reference.
+      Throws ArgumentNullException: A non-optional argument was null
+
+--------------------------------------------------------------------------------
+
+[ENUM] NumberSystemDisplayRule
+Full Name: Autodesk.Revit.DB.NumberSystemDisplayRule
+Description: The available options for display of numeric values in the number system.
+Inherits: Enum
+
+  Values:
+    - All = 0
+    - Odd = 1
+    - Even = 2
+    - StartAndEnd = 3
+
+--------------------------------------------------------------------------------
+
+[ENUM] NumberSystemJustifyOption
+Full Name: Autodesk.Revit.DB.NumberSystemJustifyOption
+Description: The available options for justification of the numbers in a number system.
+Inherits: Enum
+
+  Values:
+    - Front = 0
+    - Center = 1
+    - Back = 2
+
+--------------------------------------------------------------------------------
+
+[CLASS] NumericRevisionSettings
+Full Name: Autodesk.Revit.DB.NumericRevisionSettings
+Description: Contains settings that apply to Revisions with the Numeric RevisionNumberType.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new NumericRevisionSettings(int startNumber, string prefix, string suffix)
+      Description: Constructs a NumericRevisionSettings object.
+      @startNumber: The start number for the sequence.
+      @prefix: The prefix string for each revision number in the sequence.
+      @suffix: The suffix string for each revision number in the sequence.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The given value for startNumber is negative.
+    new NumericRevisionSettings()
+      Description: Constructs a NumericRevisionSettings with a simple, default numbering sequence.
+    new NumericRevisionSettings(NumericRevisionSettings other)
+      Description: Constructs a new copy of the input NumericRevisionSettings object.
+      Throws ArgumentException: other is not a valid NumericRevisionSettings.
+      Throws ArgumentNullException: A non-optional argument was null
+
+  PROPERTIES:
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    int MinimumDigits { get; set; }
+      Description: Controls the minimum number of digits for a revision number.
+    string Prefix { get; set; }
+      Description: The prefix string that will be prepended to the number of each revision with Numeric RevisionNumberingType.
+    int StartNumber { get; set; }
+      Description: The start number for the sequence.
+    string Suffix { get; set; }
+      Description: The suffix string that will be appended to the number of each revision with Numeric RevisionNumberingType.
+
+  METHODS:
+    void Dispose()
+    bool IsEqual(NumericRevisionSettings other)
+      Description: Determines whether a specified NumericRevisionSettings is the same as 'this'.
+      @other: The specified NumericRevisionSettings with which to compare.
+      Returns: True, if two NumericRevisionSettings are the same.
+      Throws ArgumentNullException: A non-optional argument was null
+    bool IsValid()
+      Description: Determines whether the NumericRevisionSettings object is in a valid state.
+      Returns: True if the NumericRevisionSettings is valid.
+
+--------------------------------------------------------------------------------
+
+[CLASS] NurbSpline
+Full Name: Autodesk.Revit.DB.NurbSpline
+Description: A nurb spline.
+Remarks: The nurb spline lies in the plane defined by control point, weight,knots,degree.
+Inherits: Curve
+
+  PROPERTIES:
+    IList<XYZ> CtrlPoints { get; }
+      Description: Returns the control points of the nurb spline.
+    int Degree { get; }
+      Description: Returns the degree of the nurb spline.
+    bool isRational { get; }
+      Description: Returns whether the nurb spline is rational or not.
+    DoubleArray Knots { get; set; }
+      Description: Return/set the knots of the nurb spline.
+    DoubleArray Weights { get; }
+      Description: Returns the weights of the nurb spline.
+
+  METHODS:
+    static NurbSpline Create(HermiteSpline hermiteSpline)
+      Description: Creates a new geometric NurbSpline object from a HermiteSpline.
+      @hermiteSpline: The hermite spline that will be converted to NurbSpline.
+      Returns: The new NurbSpline object.
+    static Curve CreateCurve(HermiteSpline hermiteSpline)
+      Description: Creates a new geometric Curve object by converting the given HermiteSpline. The created curve may be a NURBSpline or a simpler curve such as line or arc.
+      @hermiteSpline: The HermiteSpline that will be converted.
+      Returns: The new Curve object.
+      Throws ArgumentException: The given hermite spline has to be non-periodic. -or- Curve length is too small for Revit's tolerance (as identified by Application.ShortCurveTolerance).
+      Throws ArgumentNullException: A non-optional argument was NULL
+    static Curve CreateCurve(IList<XYZ> controlPoints, IList<double> weights)
+      Description: Creates a new geometric Curve object from NURBS curve data containing just control points and weights. The created curve may be a NURBSpline or a simpler curve such as line or arc.
+      @controlPoints: The control points of the NURBSpline.
+      @weights: The weights of the NURBSpline.
+      Returns: The new Curve object.
+      Throws ArgumentException: The number of control points must be at least 2. -or- The number of weights must be the same as the number of control points and all weights must be positive.
+      Throws ArgumentNullException: A non-optional argument was NULL
+      Throws ArgumentsInconsistentException: Curve length is too small for Revit's tolerance (as identified by Application.ShortCurveTolerance).
+    static Curve CreateCurve(int degree, IList<double> knots, IList<XYZ> controlPoints, IList<double> weights)
+      Description: Creates a new geometric Curve object from NURBS curve data, which includes weights. The created curve may be a NURBSpline or a simpler curve such as line or arc.
+      @degree: The degree of the NURBSpline.
+      @knots: The knots of the NURBSpline.
+      @controlPoints: The control points of the NURBSpline.
+      @weights: The weights of the NURBSpline.
+      Returns: The new Curve object.
+      Throws ArgumentException: The degree must be at least 1. -or- The number of control points must be greater than degree. -or- The number of knots must equal the sum of number of control points, degree and 1. -or- An interior knot must not repeat itself more than degree times. -or- The number of weights must be the same as the number of control points and all weights must be positive.
+      Throws ArgumentNullException: A non-optional argument was NULL
+      Throws ArgumentsInconsistentException: Curve length is too small for Revit's tolerance (as identified by Application.ShortCurveTolerance).
+    static Curve CreateCurve(int degree, IList<double> knots, IList<XYZ> controlPoints)
+      Description: Creates a new geometric Curve object from NURBS curve data, which does not include weights. The created curve may be a NURBSpline or a simpler curve such as line or arc.
+      @degree: The degree of the NURBSpline.
+      @knots: The knots of the NURBSpline.
+      @controlPoints: The control points of the NURBSpline.
+      Returns: The new Curve object.
+      Throws ArgumentException: The degree must be at least 1. -or- The number of control points must be greater than degree. -or- The number of knots must equal the sum of number of control points, degree and 1. -or- An interior knot must not repeat itself more than degree times.
+      Throws ArgumentNullException: A non-optional argument was NULL
+      Throws ArgumentsInconsistentException: Curve length is too small for Revit's tolerance (as identified by Application.ShortCurveTolerance).
+    void SetControlPointsAndWeights(IList<XYZ> ctrlPoints, DoubleArray weights)
+      Description: Set the control points, weights simultaneously.
+
+--------------------------------------------------------------------------------
+
+[CLASS] NurbsSurfaceData
+Full Name: Autodesk.Revit.DB.NurbsSurfaceData
+Description: A class used to represent the definition of a NURBS surface.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new NurbsSurfaceData(NurbsSurfaceData other)
+      Description: Copy constructor.
+      @other: The NurbsSurfaceData to copy.
+      Throws ArgumentNullException: A non-optional argument was null
+
+  PROPERTIES:
+    int DegreeU { get; }
+      Description: The degree of the spline in the u-direction.
+    int DegreeV { get; }
+      Description: The degree of the spline in the v-direction.
+    bool IsRational { get; }
+      Description: Tells if the spline is rational or not. If it is true (rational), then the NURBS is a piecewise rational polynomial function. If it is false (non-rational), then the NURBS is a piecewise polynomial function.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    bool ReverseOrientation { get; }
+      Description: If true, the surface's orientation is opposite to the canonical parametric orientation, otherwise it is the same. The canonical parametric orientation is a counter-clockwise sense of rotation in the uv-parameter plane. Extrinsically, the oriented normal vector for the canonical parametric orientation points in the direction of the cross product dS/du x dS/dv, which S(u, v) is the parameterized surface.
+
+  METHODS:
+    static NurbsSurfaceData Create(int degreeU, int degreeV, IList<double> knotsU, IList<double> knotsV, IList<XYZ> controlPoints, IList<double> weights, bool bReverseOrientation)
+      Description: Construct NurbsSurfaceData based on NURBS surface data, where the weights are supplied. The NURBS surface will be (piecewise) polynomial if all the weights are equal, rational if not. Note: A rational polynomial is a quotient of two polynomials; this includes a polynomial, which can be thought of as a quotient with denominator equal to 1.
+      @degreeU: The degree of the spline in the u-direction; must be positive.
+      @degreeV: The degree of the spline in the v-direction; must be positive.
+      @knotsU: Knot values in the u-direction. The number of knots in the u-direction must be at least 2 * (degreeU + 1).
+      @knotsV: Knot values in the v-direction. The number of knots in the v-direction must be at least 2 * (degreeV + 1).
+      @controlPoints: One dimensional array of points representing the two dimensional net of control points of the NURBS surface in u and v directions. The total number of control points must equal numControlPtsU times numControlPtsV, where numControlPtsU and numControlPtsV are the numbers of control points in u and v directions, and they must satisfy the following conditions: numControlPtsU = number of knots in u - degreeU - 1.numControlPtsV = number of knots in v - degreeV - 1. The convention for 2d (idxU, idxV) to 1d (idx) conversion of array indexes: idxV first. That is, idxU is outer loop and idxV is inner loop. In other words, idx = idxU * numControlPtsV + idxV.
+      @weights: Array of weights assigned to the control points. The number of weights must equal the number of control points. All weights should be greater than zero.
+      @bReverseOrientation: If true, the surface's orientation is opposite to the canonical parametric orientation, otherwise it is the same. The canonical parametric orientation is a counter-clockwise sense of rotation in the uv-parameter plane. Extrinsically, the oriented normal vector for the canonical parametric orientation points in the direction of the cross product dS/du x dS/dv, which S(u, v) is the parameterized surface.
+      Throws ArgumentException: The U-degree value must be at least 1. -or- The V-degree value must be at least 1. -or- The number of knots in the U direction must be at least 2 times the U-degree plus 1. -or- The number of knots in the V direction must be at least 2 times the V-degree plus 1. -or- The number of control points must equal (number of U-knots - U-degree - 1) * (number of V-knots - V-degree - 1). -or- The number of weights must be the same as the number of control points and all weights must be positive or all zero.
+      Throws ArgumentNullException: A non-optional argument was null
+    void Dispose()
+    IList<XYZ> GetControlPoints()
+      Description: Get the list of control points.
+    IList<double> GetKnotsU()
+      Description: Get the list of knots in the u-direction.
+    IList<double> GetKnotsV()
+      Description: Get the list of knots in the v-direction.
+    IList<double> GetWeights()
+      Description: Get the list of weights.
+    bool IsValid()
+      Description: Check if the object contains a valid NurbsSurfaceData.
+      Returns: True if it is a valid NurbsSurfaceData, false otherwise.
+
+--------------------------------------------------------------------------------
+
+[CLASS] OBJExportOptions
+Full Name: Autodesk.Revit.DB.OBJExportOptions
+Description: The export options used by exporting to OBJ file format.
+Inherits: BIMExportOptions
+
+  CONSTRUCTORS:
+    new OBJExportOptions(ExportResolution resolutionType)
+      Description: Constructs a new instance of OBJExportOptions with all predefined tessellation settings, depending on export resolution type. Note: in case of Custom resolution type, tessellation settings won't be predefined and will have default values.
+      @resolutionType: The type of export resolution.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+    new OBJExportOptions()
+      Description: Constructs a new instance of OBJExportOptions with default values of all properties.
+
+  PROPERTIES:
+    double GridAspectRatio { get; set; }
+      Description: The maximum aspect ratio allowed in the grid placed across the face. The minimum allowed value is 1.0. The maximum allowed value is 10.0. By default this property is ignored.
+    double MaxEdgeLength { get; set; }
+      Description: The maximum length allowed for any chord on an edge or between any two adjacent grid lines. This is a percentage value. By exporting, the real value of maximum edge length is calculated as a percent from the length of the diameter of the body bounding box. The minimum allowed value is 0.1%. The maximum allowed value is 10.0%. By default this property is ignored.
+    double NormalTolerance { get; set; }
+      Description: The maximum change in the surface normal between adjacent nodes in the mesh. This property is defined in degrees. The minimum allowed value is 1.0 degrees. The maximum allowed value is 45.0 degrees. Default value is 15.0 degrees.
+    double SurfaceTolerance { get; set; }
+      Description: The maximum distance between mesh triangles and model geometry. This is a percentage value. By exporting, the real value of surface tolerance is calculated as a percent from the length of the diameter of the body bounding box. The minimum allowed value is 0.001%. The maximum allowed value is 1.0%. Default value is 0.1%.
+    ExportUnit TargetUnit { get; set; }
+      Description: The unit type of geometry in the resultant OBJ file. Default value is ExportUnit::Default.
+
+  METHODS:
+    bool IsGridAspectRatioSet()
+      Description: Checks whether the GridAspectRatio tessellation parameter is explicitly set.
+      Returns: True if GridAspectRatio tessellation parameter is explicitly set, false otherwise.
+    bool IsMaxEdgeLengthSet()
+      Description: Checks whether the MaxEdgeLength tessellation parameter is explicitly set.
+      Returns: True if MaxEdgeLength tessellation parameter is explicitly set, false otherwise.
+    bool IsNormalToleranceSet()
+      Description: Checks whether the NormalTolerance tessellation parameter is explicitly set.
+      Returns: True if NormalTolerance tessellation parameter is explicitly set, false otherwise.
+    bool IsSurfaceToleranceSet()
+      Description: Checks whether the SurfaceTolerance tessellation parameter is explicitly set.
+      Returns: True if SurfaceTolerance tessellation parameter is explicitly set, false otherwise.
+    static bool IsValidForGridAspectRatio(double value)
+      Description: Checks whether the value is allowed (is in the allowed range) for GridAspectRatio tessellation parameter.
+      @value: The value to be checked.
+      Returns: True if the value is valid for GridAspectRatio, false otherwise.
+    static bool IsValidForMaxEdgeLength(double value)
+      Description: Checks whether the value is allowed (is in the allowed range) for MaxEdgeLength tessellation parameter.
+      @value: The value to be checked.
+      Returns: True if the value is valid for MaxEdgeLength, false otherwise.
+    static bool IsValidForNormalTolerance(double value)
+      Description: Checks whether the value is allowed (is in the allowed range) for NormalTolerance tessellation parameter.
+      @value: The value to be checked.
+      Returns: True if the value is valid for NormalTolerance, false otherwise.
+    static bool IsValidForSurfaceTolerance(double value)
+      Description: Checks whether the value is allowed (is in the allowed range) for SurfaceTolerance tessellation parameter.
+      @value: The value to be checked.
+      Returns: True if the value is valid for SurfaceTolerance, false otherwise.
+    void SetTessellationSettings(ExportResolution resolutionType)
+      Description: Sets all the tessellation parameters to its predefined values for the given resolution type.
+      @resolutionType: Type of exporting resolution.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+
+--------------------------------------------------------------------------------
+
+[CLASS] OBJImportOptions
+Full Name: Autodesk.Revit.DB.OBJImportOptions
+Description: The import options used to import OBJ format files.
+Inherits: BaseImportOptions
+
+  CONSTRUCTORS:
+    new OBJImportOptions(OBJImportOptions option)
+      Description: Constructs a new instance of OBJImportOptions as a copy of the import options.
+      @option: The OBJ options to be copied.
+      Throws ArgumentNullException: A non-optional argument was null
+    new OBJImportOptions()
+      Description: Constructs a new instance of OBJImportOptions with default values of all properties.
+
+--------------------------------------------------------------------------------
+
+[CLASS] OffsetSurface
+Full Name: Autodesk.Revit.DB.OffsetSurface
+Description: A mathematical representation of an offset surface. Definition of offset surface, quoted from the STEP manual ISO 10303-42:2000(E): This is a procedural definition of a simple offset surface at a normal distance from the originating surface. Distance may be positive, negative, or zero to indicate the preferred side of the surface. The offset surface takes its parametrization directly from that of its basis surface, corresponding points having identical parameter values. The offset surface is parametrized as O(u, v) = S(u, v) + d*N(u, v), where N(u, v) is the oriented unit normal vector of the basis surface S at parameter value (u, v), and d is the signed offset distance.In Revit, we restrict the types of basis surfaces for which an OffsetSurf can be created for the following reasons:The offsets of Plane, CylindricalSurface, ConicalSurface and RevolvedSurface are of the same type as the original surface and they have closed form solutions. So those surfaces are not taken as basis surfaces of the OffsetSurface class. That leaves HermiteSurface and RuledSurface.As a Revit surface, we require the OffsetSurface to be C2 continuous. That implies that the basis surface should be C3 continuous. That is because the OffsetSurface evaluation involves the normal of the basis surface and the order of continuity of the normal is one less than that of the surface.HermiteSurfaces in general are not C3 continuous, even though some of them can be. A RuledSurface will be C3 continuous if its parametric curves are C3 continuous. So we don't allow a HermiteSurface to be a basis surface and allow only RuledSurfaces whose parametric curves are C3 continuous as basis surfaces of the OffsetSurface class.The OffsetSurface class will own a copy of the basis surface and use it for many of its methods, which may implicitly assume that the OffsetSurface and the basis surface have the same envelope. So we keep the envelopes of the OffsetSurf and its basis surface in sync.
+Inherits: Surface
+
+  METHODS:
+    Surface GetBasisSurface()
+      Description: Returns a copy of basis surface of this OffsetSurface.
+      Returns: Basis surface of this OffsetSurface.
+    double GetOffsetDistance()
+      Description: Returns offset distance of this OffsetSurface.
+      Returns: Offset distance of this OffsetSurface.
+    bool IsOrientationSameAsBasisSurface()
+      Description: Indicates whether the orientation of the OffsetSurface is same as that of its basis surface, in the sense that their oriented normals at any (u, v) have the same direction.
+      Returns: True if the orientation of the OffsetSurface is same as that of its basis surface, false otherwise.
+
+--------------------------------------------------------------------------------
+
+[ENUM] OpenConflictResult
+Full Name: Autodesk.Revit.DB.OpenConflictResult
+Description: The result of the open conflict.
+Inherits: Enum
+
+  Values:
+    - KeepLocalChanges = 0
+    - DiscardLocalChangesAndOpenLatestVersion = 1
+    - Cancel = 2
+    - DetachFromCentral = 3
+
+--------------------------------------------------------------------------------
+
+[ENUM] OpenConflictScenario
+Full Name: Autodesk.Revit.DB.OpenConflictScenario
+Description: The kinds of conflicts happened during open.
+Inherits: Enum
+
+  Values:
+    - Rollback = 0
+    - Relinquished = 1
+    - OutOfDate = 2
+    - VersionArchived = 3
+
+--------------------------------------------------------------------------------
+
+[ENUM] OpenForeignOption
+Full Name: Autodesk.Revit.DB.OpenForeignOption
+Description: Options for opening files saved by an application that was not developed or licensed by Autodesk.
+Inherits: Enum
+
+  Values:
+    - Open = 0
+    - DoNotOpen = 1
+    - Prompt = 2
+
+--------------------------------------------------------------------------------
+
+[CLASS] Opening
+Full Name: Autodesk.Revit.DB.Opening
+Description: An opening in an Autodesk Revit project or family document.
+Remarks: The object represents a variety of different types of openings: A rectangular opening in a wall created by two boundary points in a revit project.An opening created by a set of curves applied to a roof, floor, ceiling, beam, brace or column.A vertical shaft opening extending one or more levels.A simple opening created on a wall or ceiling in a family document. Depending upon the type of opening, some of the properties of this class will not be available. This object derived from the Element base object and such supports all the methods of that object such as the ability to retrieve the parameters of that object. This object also supports access to a structural analytical model but this feature is only available with Autodesk Revit Structure.
+Inherits: Element
+
+  PROPERTIES:
+    CurveArray BoundaryCurves { get; }
+      Description: The geometry information for non-rectangular openings in project documents, or for all openings in family documents.
+    IList<XYZ> BoundaryRect { get; }
+      Description: Retrieves the geometry information if the opening boundary is a rect.
+    Element Host { get; }
+      Description: Retrieves the host element of this opening.
+    bool IsRectBoundary { get; }
+      Description: Retrieves the information whether the opening has a rectangular boundary.
+    bool IsTransparentIn3D { get; set; }
+      Description: Indicates if the opening is transparent in 3D view when loaded into the project.
+    bool IsTransparentInElevation { get; set; }
+      Description: Indicates if the opening is transparent in elevation view when loaded into the project.
+    ElementId SketchId { get; }
+      Description: Returns id of the Sketch or invalidElementId if element deon't own the Sketch.
+
+--------------------------------------------------------------------------------
+
+[ENUM] OpeningWrappingCondition
+Full Name: Autodesk.Revit.DB.OpeningWrappingCondition
+Description: Used by CompoundStructure to describe which shell layers participate in wrapping at openings.
+Inherits: Enum
+
+  Values:
+    - None = 0
+    - Exterior = 1
+    - Interior = 2
+    - ExteriorAndInterior = 3
+
+--------------------------------------------------------------------------------
+
+[CLASS] OpenOptions
+Full Name: Autodesk.Revit.DB.OpenOptions
+Description: This class contains options available for opening a document from disk.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new OpenOptions()
+      Description: Constructs a new instance of the options class using default values.
+
+  PROPERTIES:
+    bool AllowOpeningLocalByWrongUser { get; set; }
+      Description: Specifies whether a local file is allowed to be opened as read-only by a user other than its owner.
+    bool Audit { get; set; }
+      Description: Specifies whether to expand all elements in order to check for corruption.
+    DetachFromCentralOption DetachFromCentralOption { get; set; }
+      Description: An option that specifies whether or not a workset-enabled document is detached from its central document.
+    bool IgnoreExtensibleStorageSchemaConflict { get; set; }
+      Description: Specifies whether to ignore the error of schema conflict.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    OpenForeignOption OpenForeignOption { get; set; }
+      Description: An option that specifies how to open files saved by an application that was not developed or licensed by Autodesk.
+
+  METHODS:
+    void Dispose()
+    WorksetConfiguration GetOpenWorksetsConfiguration()
+      Description: Gets the object used to configure the worksets to open when the model is opened.
+      Returns: The options. If , all user-created worksets will be opened.
+    void SetOpenWorksetsConfiguration(WorksetConfiguration openConfiguration)
+      Description: Sets the object used to configure the worksets to open when the model is opened.
+      @openConfiguration: The options. If , all user-created worksets will be opened.
+
+--------------------------------------------------------------------------------
+
+[ABSTRACT CLASS] OptionalFunctionalityUtils
+Full Name: Autodesk.Revit.DB.OptionalFunctionalityUtils
+Description: A collection of utilities that can be used to determine if a particular set of functionality is installed and available.
+
+  METHODS:
+    static bool Is3DMImportLinkAvailable()
+      Description: Checks whether the 3DM Import/Link functionality is available in the installed Revit.
+      Returns: True if the 3DM Import/Link functionality is available in the installed Revit.
+    static bool IsAXMImportLinkAvailable()
+      Description: Checks whether the AXM Import/Link functionality is available in the installed Revit.
+      Returns: True if the AXM Import/Link functionality is available in the installed Revit.
+    static bool IsDGNExportAvailable()
+      Description: Checks whether the DGN Export functionality is available in the installed Revit.
+      Returns: True if the DGN Export functionality is available in the installed Revit.
+    static bool IsDGNImportLinkAvailable()
+      Description: Checks whether the DGN Import/Link functionality is available in the installed Revit.
+      Returns: True if the DGN Import/Link functionality is available in the installed Revit.
+    static bool IsDWFExportAvailable()
+      Description: Checks whether the DWF/DWFx Export functionality is available in the installed Revit.
+      Returns: True if the DWF/DWFx Export functionality is available in the installed Revit.
+    static bool IsDWGExportAvailable()
+      Description: Checks whether the DWG Export functionality is available in the installed Revit.
+      Returns: True if the DWG Export functionality is available in the installed Revit.
+    static bool IsDWGImportLinkAvailable()
+      Description: Checks whether the DWG Import/Link functionality is available in the installed Revit.
+      Returns: True if the DWG Import/Link functionality is available in the installed Revit.
+    static bool IsDXFExportAvailable()
+      Description: Checks whether the DXF Export functionality is available in the installed Revit.
+      Returns: True if the DXF Export functionality is available in the installed Revit.
+    static bool IsFBXExportAvailable()
+      Description: Checks whether the FBX Export functionality is available in the installed Revit.
+      Returns: True if the FBX Export functionality is available in the installed Revit.
+    static bool IsGraphicsAvailable()
+      Description: Checks whether the graphics functionality is available to support display, print, and export functionality.
+      Returns: True if the Graphics functionality is available in the installed Revit.
+    static bool IsIFCAvailable()
+      Description: Checks whether IFC functionality is available in the installed Revit.
+      Returns: True if the IFC functionality is available in the installed Revit.
+    static bool IsNavisworksExporterAvailable()
+      Description: Checks whether a Navisworks Exporter is available in the installed Revit.
+      Returns: True if a Navisworks Exporter is available in the installed Revit.
+    static bool IsOBJImportLinkAvailable()
+      Description: Checks whether the OBJ Import/Link functionality is available in the installed Revit.
+      Returns: True if the OBJ Import/Link functionality is available in the installed Revit.
+    static bool IsPDFImportAvailable()
+      Description: Checks whether PDF import is available in the installed Revit.
+      Returns: True if a PDF import is available in the installed Revit.
+    static bool IsSATImportLinkAvailable()
+      Description: Checks whether the SAT Import/Link functionality is available in the installed Revit.
+      Returns: True if the SAT Import/Link functionality is available in the installed Revit.
+    static bool IsShapeImporterAvailable()
+      Description: Checks whether the ShapeImporter functionality is available in the installed Revit.
+      Returns: True if the ShapeImporter functionality is available in the installed Revit.
+    static bool IsSKPImportLinkAvailable()
+      Description: Checks whether the SKP Import/Link functionality is available in the installed Revit.
+      Returns: True if the SKP Import/Link functionality is available in the installed Revit.
+    static bool IsSTEPImportLinkAvailable()
+      Description: Checks whether the STEP Import/Link functionality is available in the installed Revit.
+      Returns: True if the STEP Import/Link functionality is available in the installed Revit.
+    static bool IsSTLImportLinkAvailable()
+      Description: Checks whether the STL Import/Link functionality is available in the installed Revit.
+      Returns: True if the STL Import/Link functionality is available in the installed Revit.
+
+--------------------------------------------------------------------------------
+
+[CLASS] Options
+Full Name: Autodesk.Revit.DB.Options
+Description: User preferences for parsing of geometry.
+Remarks: This class determines the output of the Element.Geometry property.
+Inherits: APIObject
+
+  CONSTRUCTORS:
+    new Options(Options pOptions)
+      Description: Copy constructor.
+    new Options()
+      Description: Creates a default Options object.
+
+  PROPERTIES:
+    bool ComputeReferences { get; set; }
+      Description: Determines whether or not references to geometric objects are computed.
+    ViewDetailLevel DetailLevel { get; set; }
+      Description: The detail level for the geometry extracted with these options.
+    bool IncludeNonVisibleObjects { get; set; }
+      Description: Whether to extract element geometry objects not set as Visible. The default is false.
+    View View { get; set; }
+      Description: The view used for geometry extraction.
+
+--------------------------------------------------------------------------------
+
+[ENUM] OrdinateDimensionLineStyle
+Full Name: Autodesk.Revit.DB.OrdinateDimensionLineStyle
+Description: The ordinate dimension line style.
+Inherits: Enum
+
+  Values:
+    - None = 0
+    - Continuous = 1
+    - Segmented = 2
+
+--------------------------------------------------------------------------------
+
+[CLASS] OrdinateDimensionSetting
+Full Name: Autodesk.Revit.DB.OrdinateDimensionSetting
+Description: Represents a collection of Ordinate Dimension settings that can be associated to an ordinate DimensionType.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new OrdinateDimensionSetting()
+      Description: Constructs a new OrdinateDimensionSetting object with default settings.
+
+  PROPERTIES:
+    double DimensionLineLength { get; set; }
+      Description: Specifies the dimension line segment length. This setting is enabled when Dimension Line Style is Segmented.
+    OrdinateDimensionLineStyle DimensionLineStyle { get; set; }
+      Description: Specifies the dimension line style.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    ElementId OriginTickMarkId { get; set; }
+      Description: Specifies the id of the tick mark element to use for the dimension origin.
+    OrdinateOriginVisibility OriginVisibility { get; set; }
+      Description: Specifies thevisibility of the origin witness line for the ordinate dimension (this is the first witness line in the string).
+    OrdinateTextOrientation TextOrientation { get; set; }
+      Description: Specifies where to align the dimension text.
+    OrdinateTextPosition TextPosition { get; set; }
+      Description: Specifies the dimension text position.
+
+  METHODS:
+    void Dispose()
+
+--------------------------------------------------------------------------------
+
+[ENUM] OrdinateOriginVisibility
+Full Name: Autodesk.Revit.DB.OrdinateOriginVisibility
+Description: The ordinate origin visibility.
+Inherits: Enum
+
+  Values:
+    - None = 0
+    - WitnessLineWithText = 1
+    - WitnessLineOnly = 2
+
+--------------------------------------------------------------------------------
+
+[ENUM] OrdinateTextOrientation
+Full Name: Autodesk.Revit.DB.OrdinateTextOrientation
+Description: The ordinate dimension text orientation.
+Inherits: Enum
+
+  Values:
+    - ParallelToDimensionLine = 0
+    - ParallelToWitnessLine = 1
+
+--------------------------------------------------------------------------------
+
+[ENUM] OrdinateTextPosition
+Full Name: Autodesk.Revit.DB.OrdinateTextPosition
+Description: The ordinate dimension text position.
+Inherits: Enum
+
+  Values:
+    - EndOfWitnessLine = 0
+    - NextToWitnessLine = 1
+
+--------------------------------------------------------------------------------
+
+[CLASS] Outline
+Full Name: Autodesk.Revit.DB.Outline
+Description: Outline is a generic object that provides a bounding box/bounding outline. It supports operations to scale and transform. It also supports intersections and contains operations.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new Outline(XYZ minimumPoint, XYZ maximumPoint)
+      Description: Constructor that uses a minimum and maximum XYZ point to initialize the outline.
+      @minimumPoint: The minimum point
+      @maximumPoint: The maximum point.
+      Throws ArgumentNullException: A non-optional argument was null
+    new Outline(Outline other)
+      Description: Constructs a new copy of the input Outline object.
+      Throws ArgumentNullException: A non-optional argument was null
+
+  PROPERTIES:
+    bool IsEmpty { get; }
+      Description: Identifies if the outline represents an empty outline.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    XYZ MaximumPoint { get; set; }
+      Description: The maximum point of the bounding box.
+    XYZ MinimumPoint { get; set; }
+      Description: The minimum point of the bounding box.
+
+  METHODS:
+    void AddPoint(XYZ point)
+      Description: Adds a point to the bounding box, expanding it if the point is outside the existing boundary.
+      @point: The point to add.
+      Throws ArgumentNullException: A non-optional argument was null
+    bool Contains(XYZ point, double tolerance)
+      Description: Determine if this Outline contains the specified point to within a tolerance.
+      @point: The point to test for containment.
+      @tolerance: The tolerance to use when determining whether the point is contained. Defaults to zero.
+      Returns: True if this outline contains the given point, or false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
+    bool ContainsOtherOutline(Outline otherOutline, double tolerance)
+      Description: Determine if this Outline contains another Outline to within tolerance.
+      @otherOutline: The outline to test for containment.
+      @tolerance: The tolerance to use when determining whether the point is contained. Defaults to zero.
+      Returns: True if this outline contains the given outline, or false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
+    void Dispose()
+    double GetDiagonalLength()
+      Description: Get the length of outline's diagonal. If called on empty outline, 0. is returned
+      Returns: The length of the diagonal.
+    bool Intersects(Outline outline, double tolerance)
+      Description: Determine if this Outline intersects the input Outline to within a specified tolerance.
+      @outline: The outline to test for intersection with this one.
+      @tolerance: The tolerance to use when determining intersection. Defaults to zero.
+      Returns: True if the given outline intersects this outline.
+      Throws ArgumentNullException: A non-optional argument was null
+    bool IsScaleValid(double scale)
+      Description: Checks if given scale is valid. Should be greater than zero.
+      @scale: The scale.
+      Returns: True if the scale is valid, false otherwise.
+    void Scale(double scale)
+      Description: Scales the bounding box by given scale.
+      @scale: The scale value. It should be greater than zero.
+      Throws ArgumentException: The scale is invalid.
+
+--------------------------------------------------------------------------------
+
+[CLASS] OverrideGraphicSettings
+Full Name: Autodesk.Revit.DB.OverrideGraphicSettings
+Description: Settings to override display of elements in a view.
+Implements: IDisposable
+
+  CONSTRUCTORS:
+    new OverrideGraphicSettings(OverrideGraphicSettings overrideGraphicSettings)
+      Description: Creates a new instance of an OverrideGraphicSettings object based on an existing OverrideGraphicSettings object.
+      Throws ArgumentNullException: A non-optional argument was null
+    new OverrideGraphicSettings()
+      Description: Creates a new instance of an OverrideGraphicSettings object.
+
+  PROPERTIES:
+    Color CutBackgroundPatternColor { get; }
+      Description: The override color of the background pattern of cut faces.
+    ElementId CutBackgroundPatternId { get; }
+      Description: The ElementId of the cut face background fill pattern override. A value of InvalidElementId means no override is set.
+    Color CutForegroundPatternColor { get; }
+      Description: The override color of the foreground pattern of cut faces.
+    ElementId CutForegroundPatternId { get; }
+      Description: The ElementId of the cut face foreground fill pattern override. A value of InvalidElementId means no override is set.
+    Color CutLineColor { get; }
+      Description: Cut surface line color.
+    ElementId CutLinePatternId { get; }
+      Description: ElementId of the cut surface line pattern.
+    int CutLineWeight { get; }
+      Description: Cut surface line weight.
+    ViewDetailLevel DetailLevel { get; }
+      Description: The detail level.
+    bool Halftone { get; }
+      Description: Value of the halftone override.
+    static int InvalidPenNumber { get; }
+      Description: The invalidPenNumber for clearing line weight overrides.
+    bool IsCutBackgroundPatternVisible { get; }
+      Description: The visibility of the cut face background fill pattern.
+    bool IsCutForegroundPatternVisible { get; }
+      Description: The visibility of the cut face foreground fill pattern.
+    bool IsSurfaceBackgroundPatternVisible { get; }
+      Description: The visibility of the surface background fill pattern.
+    bool IsSurfaceForegroundPatternVisible { get; }
+      Description: The visibility of the surface foreground fill pattern.
+    bool IsValidObject { get; }
+      Description: Specifies whether the .NET object represents a valid Revit entity.
+    Color ProjectionLineColor { get; }
+      Description: Projection surface line color.
+    ElementId ProjectionLinePatternId { get; }
+      Description: Id of the projection surface line pattern.
+    int ProjectionLineWeight { get; }
+      Description: The projection surface line weight.
+    Color SurfaceBackgroundPatternColor { get; }
+      Description: The override color of the surface background pattern.
+    ElementId SurfaceBackgroundPatternId { get; }
+      Description: The ElementId of the surface background fill pattern override. A value of InvalidElementId means no override is set.
+    Color SurfaceForegroundPatternColor { get; }
+      Description: The override color of the surface foreground pattern.
+    ElementId SurfaceForegroundPatternId { get; }
+      Description: The ElementId of the surface foreground fill pattern override. A value of InvalidElementId means no override is set.
+    int Transparency { get; }
+      Description: Transparency of surfaces.
+
+  METHODS:
+    void Dispose()
+    OverrideGraphicSettings SetCutBackgroundPatternColor(Color color)
+      Description: Sets the override color of the background pattern of cut faces.
+      @color: Value of the cut face background color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutBackgroundPatternId(ElementId fillPatternId)
+      Description: Sets the ElementId of the cut face background pattern override. The fill pattern must be a drafting pattern. A value of InvalidElementId means no override is set.
+      @fillPatternId: Value of the cut face background fill pattern override.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutBackgroundPatternVisible(bool fillPatternVisible)
+      Description: Sets the visibility of the cut face background fill pattern.
+      @fillPatternVisible: Value of the visibility of the cut face background fill pattern.
+      Returns: Reference to the changed object.
+    OverrideGraphicSettings SetCutForegroundPatternColor(Color color)
+      Description: Sets the override color of the foreground pattern of cut faces.
+      @color: Value of the cut face foreground color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutForegroundPatternId(ElementId fillPatternId)
+      Description: Sets the ElementId of the cut face foreground pattern override. The fill pattern must be a drafting pattern. A value of InvalidElementId means no override is set.
+      @fillPatternId: Value of the cut face foreground fill pattern override.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutForegroundPatternVisible(bool fillPatternVisible)
+      Description: Sets the visibility of the cut face foreground fill pattern.
+      @fillPatternVisible: Value of the visibility of the cut face foreground fill pattern.
+      Returns: Reference to the changed object.
+    OverrideGraphicSettings SetCutLineColor(Color color)
+      Description: Sets the cut surface line color.
+      @color: Value of the cut surface line color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutLinePatternId(ElementId linePatternId)
+      Description: Sets the ElementId of the cut surface line pattern.
+      @linePatternId: ElementId of the cut surface line pattern for the override. InvalidElementId means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetCutLineWeight(int lineWeight)
+      Description: Sets the cut surface line weight.
+      @lineWeight: Value of the cut surface line weight for the override. InvalidPenNumber means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentException: Line weight must be a positive integer less than 17 or invalidPenNumber.
+    OverrideGraphicSettings SetDetailLevel(ViewDetailLevel detailLevel)
+      Description: Sets the detail level.
+      @detailLevel: Value of the detail level. ViewDetailLevel.Undefined means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+    OverrideGraphicSettings SetHalftone(bool halftone)
+      Description: Sets the halftone value.
+      @halftone: True if the override displays in halftone, false otherwise.
+      Returns: Reference to the changed object.
+    OverrideGraphicSettings SetProjectionLineColor(Color color)
+      Description: Sets the projection surface line color.
+      @color: Value of the projection surface line color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetProjectionLinePatternId(ElementId linePatternId)
+      Description: Sets the ElementId of the projection surface line pattern.
+      @linePatternId: ElementId of the projection surface line pattern for the override. InvalidElementId means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetProjectionLineWeight(int lineWeight)
+      Description: Sets the projection surface line weight.
+      @lineWeight: Value of the projection surface line weight for the override. InvalidPenNumber means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentException: Line weight must be a positive integer less than 17 or invalidPenNumber.
+    OverrideGraphicSettings SetSurfaceBackgroundPatternColor(Color color)
+      Description: Sets the override color of the surface background pattern.
+      @color: Value of the surface background color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetSurfaceBackgroundPatternId(ElementId fillPatternId)
+      Description: Sets the ElementId of the surface background pattern override. The fill pattern must be a drafting pattern. A value of InvalidElementId means no override is set.
+      @fillPatternId: Value of the surface background fill pattern override.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetSurfaceBackgroundPatternVisible(bool fillPatternVisible)
+      Description: Sets the visibility of the surface background fill pattern.
+      @fillPatternVisible: Value of the visibility of the surface background fill pattern.
+      Returns: Reference to the changed object.
+    OverrideGraphicSettings SetSurfaceForegroundPatternColor(Color color)
+      Description: Sets the override color of the surface foreground pattern.
+      @color: Value of the surface foreground color for the override. InvalidColorValue means no override is set.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetSurfaceForegroundPatternId(ElementId fillPatternId)
+      Description: Sets the ElementId of the surface foreground pattern override. The fill pattern must be a drafting pattern. A value of InvalidElementId means no override is set.
+      @fillPatternId: Value of the surface foreground fill pattern override.
+      Returns: Reference to the changed object.
+      Throws ArgumentNullException: A non-optional argument was null
+    OverrideGraphicSettings SetSurfaceForegroundPatternVisible(bool fillPatternVisible)
+      Description: Sets the visibility of the surface foreground fill pattern.
+      @fillPatternVisible: Value of the visibility of the surface foreground fill pattern.
+      Returns: Reference to the changed object.
+    OverrideGraphicSettings SetSurfaceTransparency(int transparency)
+      Description: Sets the projection surface transparency.
+      @transparency: Value of the transparency of the projection surface (0 = opaque, 100 = fully transparent).
+      Returns: Reference to the changed object.
+      Throws ArgumentException: Transparency must be greater than 0 and less than 100.
+
+--------------------------------------------------------------------------------
+
+[ENUM] OverridePermissions
+Full Name: Autodesk.Revit.DB.OverridePermissions
+Description: Types of overrides that can be applied to a category.
+Inherits: Enum
+
+  Values:
+    - ViewDetailLevel = 1
+    - Halftone = 2
+    - CutLines = 3
+    - CutFills = 4
+    - ProjectionLines = 5
+    - ProjectionFills = 6
+    - Surfaces = 7
+
+--------------------------------------------------------------------------------
 
 [ENUM] PageOrientationType
 Full Name: Autodesk.Revit.DB.PageOrientationType
-
 Description: An enumerated type listing all Page Orientation types of Print Setting
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Portrait = 0
     - Landscape = 1
     - Auto = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] Panel
 Full Name: Autodesk.Revit.DB.Panel
-
 Description: This object represents a curtain panel.
 Inherits: FamilyInstance
-Implements: IDisposable
 
   PROPERTIES:
     bool Lockable { get; }
@@ -33,26 +1145,22 @@ Implements: IDisposable
       Description: Finds the id of the host panel (i.e., wall) associated with this panel. If a host panel is present, then it is displayed instead of the curtain panel.
       Returns: Element id of the host panel associated with this panel. Otherwise, InvalidElementId is returned
     void GetRefGridLines(ref ElementId uGridLineId, ref ElementId vGridLineId)
+      Description: This method is used to get the reference gridlines.
 
 --------------------------------------------------------------------------------
-
 
 [CLASS] PanelType
 Full Name: Autodesk.Revit.DB.PanelType
-
 Description: An object that represents a curtain panel type.
 Inherits: FamilySymbol
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PanelTypeSet
 Full Name: Autodesk.Revit.DB.PanelTypeSet
-
 Description: A set that contains panel types.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PanelTypeSet()
@@ -90,16 +1198,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PanelTypeSetIterator
 Full Name: Autodesk.Revit.DB.PanelTypeSetIterator
-
 Description: An iterator to a panel type set.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PanelTypeSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -114,27 +1221,23 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PaperPlacementType
 Full Name: Autodesk.Revit.DB.PaperPlacementType
-
 Description: An enumerated type listing all Paper Placement types of Print Setting.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Center = 0
     - LowerLeft = 1
     - LowerLeft = 1
 
+--------------------------------------------------------------------------------
 
 [CLASS] PaperSize
 Full Name: Autodesk.Revit.DB.PaperSize
-
 Description: An object that represents a Paper Size of Print Setup within the Autodesk Revit project.
 Remarks: This object derived from the APIObject base object.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     string Name { get; }
@@ -142,13 +1245,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PaperSizeSet
 Full Name: Autodesk.Revit.DB.PaperSizeSet
-
 Description: A set that can contain any number of paper size objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PaperSizeSet()
@@ -186,16 +1287,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PaperSizeSetIterator
 Full Name: Autodesk.Revit.DB.PaperSizeSetIterator
-
 Description: An iterator to a set of paper size objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PaperSizeSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -210,14 +1310,11 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PaperSource
 Full Name: Autodesk.Revit.DB.PaperSource
-
 Description: An object that represents a Paper Source of Print Setup within the Autodesk Revit project.
 Remarks: This object derived from the APIObject base object.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     string Name { get; }
@@ -225,13 +1322,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PaperSourceSet
 Full Name: Autodesk.Revit.DB.PaperSourceSet
-
 Description: A set that can contain any number of paper source objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PaperSourceSet()
@@ -266,16 +1361,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PaperSourceSetIterator
 Full Name: Autodesk.Revit.DB.PaperSourceSetIterator
-
 Description: An iterator to a set of paper source objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PaperSourceSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -290,14 +1384,11 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Parameter
 Full Name: Autodesk.Revit.DB.Parameter
-
 Description: The parameter object contains the value data assigned to that parameter.
 Remarks: The piece of data contained within the parameter can be either a Double, Integer, String or ElementId. The parameter object can be retrieved from any Element object using either a built in id, definition object or shared parameter guid. All Elements within Autodesk Revit contain Parameters. These are options that can be accessed in a generic fashion. Revit contains many built in parameter types but users and now developers, via the API, can add their own parameters in the form of shared parameters. The developer should become familiar with the Revit user interface for added and managing parameters and shared parameters before using this API. The user interface components can be found in the following locations: Element Properties dialog, Shared Parameters dialog (available from the File menu), Project Parameters dialog (available from the Settings menu), Family Types dialog (available from the Settings menu when editing a family). There are several relationships between the objects that make up the APIs exposure of parameters. The parameter object contains the data value. Parameter objects can be retrieved from Elements if you know its built-in id, its definition or its shared parameter guid. Each parameter has a definition. New parameters can be added to Elements by adding a ParameterBinding object to the Document object.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     Definition Definition { get; }
@@ -332,6 +1423,8 @@ Implements: IDisposable
     void AssociateWithGlobalParameter(ElementId gpId)
       Description: Associates this parameter with a global parameter in the same document.
       @gpId: Id of a global parameter contained in this parameter's document
+      Throws ArgumentException: The input gpId is not of a valid global parameter of the given document. -or- This parameter does not exist in the document anymore. -or- This parameter is either not parameterizable or does not match the type of the global parameter.
+      Throws ArgumentNullException: A non-optional argument was NULL
     string AsString()
       Description: Provides access to the string contents of the parameter.
       Returns: The string contained in the parameter.
@@ -346,42 +1439,56 @@ Implements: IDisposable
       Description: Tests whether this parameter can be associated with the given global parameter.
       @gpId: Id of a global parameter contained in this parameter's document
       Returns: True if this parameter can be associated with the given global parameter; False otherwise.
+      Throws ArgumentException: The input gpId is not of a valid global parameter of the given document. -or- This parameter does not exist in the document anymore.
+      Throws ArgumentNullException: A non-optional argument was NULL
     bool CanBeAssociatedWithGlobalParameters()
       Description: Tests whether this parameter can be associated with any global parameter.
       Returns: True if the given parameter can be associated (is parametrizable); False otherwise.
+      Throws ArgumentException: This parameter does not exist in the document anymore.
     bool ClearValue()
       Description: Clears the parameter to its initial value.
       Returns: The ClearValue method will return True if the parameter was successfully cleared to its initial value, otherwise false.
+      Throws InvalidOperationException: The parameter is read-only, or the parameter is not a shared parameter, or the shared parameter has HideWhenNoValue set to false.
     void DissociateFromGlobalParameter()
       Description: Dissociates this parameter from a global parameter.
+      Throws ArgumentException: This parameter does not exist in the document anymore. -or- This parameter is either not parameterizable or does not match the type of the global parameter.
     ElementId GetAssociatedGlobalParameter()
       Description: Returns a global parameter, if any, currently associated with this parameter.
       Returns: Id of a global parameter or InvalidElemetnId.
+      Throws ArgumentException: This parameter does not exist in the document anymore.
     ForgeTypeId GetTypeId()
       Description: Gets the identifier of the parameter.
     ForgeTypeId GetUnitTypeId()
       Description: Gets the identifier of the unit quantifying the parameter value.
       Returns: Identifier of the unit of the parameter.
+      Throws InvalidOperationException: Thrown if this parameter is not of value type.
     bool Set(ElementId value)
       Description: Sets the parameter to a new element id.
       @value: The new element id to which the parameter is to be set.
       Returns: The Set method will return True if the parameter was successfully set to the new value, otherwise false.
+      Throws InvalidOperationException: The parameter is read-only.
     bool Set(double value)
       Description: Sets the parameter to a new real number value.
       @value: The new double value to which the parameter is to be set.
       Returns: The Set method will return True if the parameter was successfully set to the new value, otherwise false.
+      Throws InvalidOperationException: The parameter is read-only.
+      Throws ArgumentException: Value must be a finite number.
     bool Set(int value)
       Description: Sets the parameter to a new integer value.
       @value: The new integer value to which the parameter is to be set.
       Returns: The Set method will return True if the parameter was successfully set to the new value, otherwise false.
+      Throws InvalidOperationException: The parameter is read-only.
     bool Set(string value)
       Description: Sets the parameter to a new string of text.
       @value: The new text value to which the parameter is to be set.
       Returns: The Set method will return True if the parameter was successfully set to the new value, otherwise false.
+      Throws InvalidOperationException: The parameter is read-only.
     static List<Parameter> SetMultiple(IList<Tuple<Parameter, ParameterValue>> values)
       Description: Sets multiple parameters to new values.
       @values: A list of pairs of parameters and their corresponding values.
       Returns: The list of parameters that were not set successfully, if any.
+      Throws InvalidOperationException: The parameter is read-only.
+      Throws ArgumentException: Value must be a finite number.
     bool SetValueString(string valueString)
       Description: Set the parameter value according to the input string.
       @valueString: The string that represents the parameter value.
@@ -389,16 +1496,21 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterDownloadOptions
 Full Name: Autodesk.Revit.DB.ParameterDownloadOptions
-
 Description: An option class used for downloading parameters from the Parameters Service.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new ParameterDownloadOptions(ISet<ElementId> categories, bool isInstance, bool visible, ForgeTypeId groupTypeId)
+      Description: Creates a new ParameterDownloadOptions instance. Category bindings are represented by an ElementIdSet populated with category identifiers.
+      @categories: The category identifiers.
+      @isInstance: True if binding to Element instances, false if binding to Element types.
+      @visible: True if the parameter is visible to the user, false if it is hidden and accessible only via the API.
+      @groupTypeId: Properties palette group identifier.
+      Throws ArgumentNullException: A non-optional argument was null
     new ParameterDownloadOptions()
+      Description: Default constructor.
 
   PROPERTIES:
     bool IsInstance { get; set; }
@@ -416,19 +1528,18 @@ Implements: IDisposable
       Description: Get properties palette group identifier.
     void SetCategories(ISet<ElementId> categories)
       Description: Set categories for binding.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetGroupTypeId(ForgeTypeId groupTypeId)
       Description: Set properties palette group identifier.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterElement
 Full Name: Autodesk.Revit.DB.ParameterElement
-
 Description: An Element that stores a user-defined parameter.
 Remarks: Revit supports both built-in and user-defined parameters. Built-in parameters ship with the application, and they are not stored in Revit documents. User-defined parameters are dynamically created, and they are stored in the documents that use them, wrapped in ParameterElement objects. Different subclasses of ParemeterElement represent different kinds of user-defined parameters.
 Inherits: Element
-Implements: IDisposable
 
   METHODS:
     InternalDefinition GetDefinition()
@@ -437,25 +1548,24 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterFilterElement
 Full Name: Autodesk.Revit.DB.ParameterFilterElement
-
 Description: Admits elements that satisfy two conditions: The element's category must be one of a certain set of allowed categories.The element must pass a series of filter rules.
 Inherits: FilterElement
-Implements: IDisposable
 
   METHODS:
     bool AllRuleParametersApplicable(ElementFilter elementFilter)
       Description: Checks that the parameters of the rules used by the given ElementFilter are valid for this filter's categories.
       @elementFilter: The ElementFilter containing the rules to check.
       Returns: True if all the parameters of the given rules are valid for this filter, otherwise false.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool AllRuleParametersApplicable(Document aDocument, ICollection<ElementId> categories, ElementFilter elementFilter)
       Description: Checks that the parameters of the given ElementFilter (representing a combination of rules) are valid for the given set of categories.
       @aDocument: The document containing the filter, categories, and parameters involved in this validation.
       @categories: The set of categories against which to check the rule parameters.
       @elementFilter: The ElementFilter representing the combination of rules to check.
       Returns: True if all the parameters of the given rules are valid for this filter, otherwise false.
+      Throws ArgumentNullException: A non-optional argument was null
     void ClearRules()
       Description: Removes all rules from this filter.
     static ParameterFilterElement Create(Document aDocument, string name, ICollection<ElementId> categories, ElementFilter elementFilter)
@@ -463,23 +1573,30 @@ Implements: IDisposable
       @aDocument: The document in which to create the ParameterFilterElement.
       @name: The user-visible name for the new ParameterFilterElement.
       @categories: The categories for the new ParameterFilterElement.
-      @elementFilter: The rules for the new ParameterFilterElement, represented as an ElementFilter. ElementFilter is either an ElementParameterFilter or an ElementLogicalFilter representing a Boolean combination of ElementParameterFilters. In addition, we check that each ElementParameterFilter satisfies the following conditions: Its array of FilterRules is not empty and contains: Any number of FilterRules of type FilterValueRule, FilterInverseRule, and SharedParameterApplicableRule or Exactly one FilterCategoryRule containing only one category from categories stored by this ParameterFilterElement or Exactly two rules: the first one is a FilterCategoryRule containing only one category from categories stored by this ParameterFilterElement and the second one is a FilterRule of type FilterValueRule, FilterInverseRule, or SharedParameterApplicableRule. Note that cases in the second and third bullet are currently allowed only if the parent node of ElementParameterFilter is LogicalOrFilter.
+      @elementFilter: The rules for the new ParameterFilterElement, represented as an ElementFilter. ElementFilter is either an ElementParameterFilter or an ElementLogicalFilter representing a Boolean combination of ElementParameterFilters. In addition, we check that each ElementParameterFilter satisfies the following conditions: Its array of FilterRules is not empty and contains: Any number of FilterRules of type FilterValueRule, FilterInverseRule, and SharedParameterApplicableRule orExactly one FilterCategoryRule containing only one category from categories stored by this ParameterFilterElement orExactly two rules: the first one is a FilterCategoryRule containing only one category from categories stored by this ParameterFilterElement and the second one is a FilterRule of type FilterValueRule, FilterInverseRule, or SharedParameterApplicableRule. Note that cases in the second and third bullet are currently allowed only if the parent node of ElementParameterFilter is LogicalOrFilter.
       Returns: A pointer to the new ParameterFilterElement.
+      Throws ArgumentException: name is an empty string or contains only whitespace. -or- name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~". -or- The given value for name is already in use as a filter element name. -or- One of the given rules refers to a parameter that does not apply to this filter's categories.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentsInconsistentException: The ElementFilter is not acceptable for use by a ParameterFilterElement.
     static ParameterFilterElement Create(Document aDocument, string name, ICollection<ElementId> categories)
       Description: Creates a new ParameterFilterElement in the given document.
       @aDocument: The document in which to create the ParameterFilterElement.
       @name: The user-visible name for the new ParameterFilterElement.
       @categories: The categories for the new ParameterFilterElement.
       Returns: A pointer to the new ParameterFilterElement.
+      Throws ArgumentException: name is an empty string or contains only whitespace. -or- name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~". -or- The given value for name is already in use as a filter element name.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ElementFilterIsAcceptableForParameterFilterElement(Document aDocument, ISet<ElementId> categories, ElementFilter elementFilter)
       Description: Checks that an ElementFilter is acceptable for use in defining the filtering rules for a given list of categories (i.e., for view filtering).
       @aDocument: The document in which to create the ParameterFilterElement.
       @categories: The categories for the new ParameterFilterElement.
       @elementFilter: The ElementFilter to validate.
+      Throws ArgumentNullException: A non-optional argument was null
     bool ElementFilterIsAcceptableForParameterFilterElement(ElementFilter elementFilter)
       Description: Checks that an ElementFilter is acceptable for use in defining the filtering rules for a ParameterFilterElement (i.e., for view filtering).
       @elementFilter: The ElementFilter to validate.
       Returns: True if the ElementFilter is acceptable for use by an ParameterFilterElement, false if not.
+      Throws ArgumentNullException: A non-optional argument was null
     ICollection<ElementId> GetCategories()
       Description: Gets the categories admitted by this filter.
     ElementFilter GetElementFilter()
@@ -492,19 +1609,22 @@ Implements: IDisposable
       Description: Retrieves a list of the parameters associated with all rules in the filter that are combined (using logical AND) with a FilterCategoryRule corresponding to single %categoryId%.
       @categoryId: The category for which parameters should be found.
       Returns: A set of parameter identifiers.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetCategories(ICollection<ElementId> categories)
       Description: Sets the categories admitted by this filter.
+      Throws ArgumentNullException: A non-optional argument was null
     bool SetElementFilter(ElementFilter elementFilter)
       Description: Sets the rules that must be satisfied for a given element to pass this filter.
       @elementFilter: An ElementFilter representing the rules. It may be an ElementParameterFilter representing a conjunction of one or more FilterRules, or an ElementLogicalFilter (of type LogicalAndFilter or LogicalOrFilter) representing a logical combination of FilterRules, using AND/OR operations.
       Returns: Returns true if this ParameterFilterElement was changed, false if not. It will not be changed if the input rules are equivalent to the ParameterFilterElement's existing rules.
+      Throws ArgumentException: One of the given rules refers to a parameter that does not apply to this filter's categories.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentsInconsistentException: The ElementFilter is not acceptable for use by a ParameterFilterElement.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterFilterRuleFactory
 Full Name: Autodesk.Revit.DB.ParameterFilterRuleFactory
-
 Description: Contains functions that create appropriate FilterRule objects based on the parameters given.
 Implements: IDisposable
 
@@ -518,224 +1638,275 @@ Implements: IDisposable
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateBeginsWithRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document begin with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateContainsRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document contain a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateContainsRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document contain a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEndsWithRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document end with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEndsWithRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document end with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEqualsRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document equal a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEqualsRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document equal a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEqualsRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document equal a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEqualsRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document equal a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateEqualsRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document equal a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterOrEqualRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document are greater than or equal to a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterOrEqualRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document are greater than or equal to a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterOrEqualRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document are greater than or equal to a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterOrEqualRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document are greater than or equal to a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterOrEqualRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document are greater than or equal to a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document are greater than a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document are greater than a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document are greater than a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document are greater than a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateGreaterRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document are greater than a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateHasNoValueParameterRule(ElementId parameter)
       Description: Creates a filter rule that determines whether an element's parameter does not have a value.
       @parameter: The parameter to be evaluated by the filter.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateHasValueParameterRule(ElementId parameter)
       Description: Creates a filter rule that determines whether an element's parameter has a value.
       @parameter: The parameter to be evaluated by the filter.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateIsAssociatedWithGlobalParameterRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether a parameter is associated with a certain global parameter.
       @parameter: A parameter that can be associated with an existing global parameter of a compatible type.
       @value: The global parameter used to test the association.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateIsNotAssociatedWithGlobalParameterRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether a parameter is not associated with a certain global parameter.
       @parameter: A parameter that can be associated with an existing global parameter of a compatible type.
       @value: The global parameter used to test the association.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessOrEqualRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document are less than or equal to a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessOrEqualRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document are less than or equal to a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessOrEqualRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document are less than or equal to a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessOrEqualRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document are less than or equal to a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessOrEqualRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document are less than or equal to a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document are less than a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document are less than a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document are less than a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document are less than a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateLessRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document are less than a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotBeginsWithRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document do not begin with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotBeginsWithRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document do not begin with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotContainsRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document do not contain a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotContainsRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document do not contain a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEndsWithRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document do not end with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEndsWithRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document do not end with a certain string value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value for which values from the document will be searched.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEqualsRule(ElementId parameter, ElementId value)
       Description: Creates a filter rule that determines whether ElementId values from the document do not equal a certain value.
       @parameter: An ElementId-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEqualsRule(ElementId parameter, int value)
       Description: Creates a filter rule that determines whether integer values from the document do not equal a certain value.
       @parameter: An integer-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEqualsRule(ElementId parameter, double value, double epsilon)
       Description: Creates a filter rule that determines whether double-precision values from the document do not equal a certain value.
       @parameter: A double-typed parameter used to get values from the document for a given element.
       @value: The user-supplied value against which values from the document will be compared.
       @epsilon: Defines the tolerance within which two values may be considered equal.
+      Throws ArgumentException: The given value for value is not finite -or- The given value for value is not a number -or- The given value for epsilon is not finite -or- The given value for epsilon is not a number
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEqualsRule(ElementId parameter, string value)
       Description: Creates a filter rule that determines whether strings from the document do not equal a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       Returns: Created filter rule object.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateNotEqualsRule(ElementId parameter, string value, bool caseSensitive)
       Description: Creates a filter rule that determines whether strings from the document do not equal a certain value.
       @parameter: A string-typed parameter used to get values from the document for a given element.
       @value: The user-supplied string value against which values from the document will be compared.
       @caseSensitive: If true, the string comparison will be case-sensitive.
+      Throws ArgumentNullException: A non-optional argument was null
     static FilterRule CreateSharedParameterApplicableRule(string parameterName)
       Description: Creates a filter rule that tests elements for support of a shared parameter.
       @parameterName: The name of the parameter that elements must support to satisfy this rule.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] ParameterFilterUtilities
 Full Name: Autodesk.Revit.DB.ParameterFilterUtilities
-
 Description: Contains static utility functions for enumerating the categories and parameters that are available for use by ParameterFilterElement objects.
 
   METHODS:
@@ -747,30 +1918,32 @@ Description: Contains static utility functions for enumerating the categories an
       @aDoc: The document containing the categories and parameters to query.
       @categories: The categories for which to determine the common parameters.
       Returns: The set of filterable parameters common to the given categories.
+      Throws ArgumentNullException: A non-optional argument was null
     static IList<ElementId> GetInapplicableParameters(Document aDoc, ICollection<ElementId> categories, IList<ElementId> parameters)
       Description: Returns the parameters that are not among the set of filterable parameters common to the given categories.
       @aDoc: The document containing the categories and parameters to query.
       @categories: The categories that define the set of possibly filterable parameters.
       @parameters: The parameters desired for use in a parameter filter.
       Returns: A list of parameters from the given array that are not valid for use in a parameter filter with the given categories.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsParameterApplicable(Element element, ElementId parameter)
       Description: Used to determine whether the element supports the given parameter.
       @element: The element to query for support of the given parameter.
       @parameter: The parameter for which to query support.
       Returns: True if the element supports the given parameter, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> RemoveUnfilterableCategories(ICollection<ElementId> categories)
       Description: Removes from the given set the categories that are not filterable.
       @categories: The set of categories to check.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterMap
 Full Name: Autodesk.Revit.DB.ParameterMap
-
 Description: A map that can contain a mapping of a parameter name (a String) to a parameter.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new ParameterMap()
@@ -810,16 +1983,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] ParameterMapIterator
 Full Name: Autodesk.Revit.DB.ParameterMapIterator
-
 Description: An iterator to a map relating a parameter name (the key, a String) to a parameter.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new ParameterMapIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -836,13 +2008,11 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterSet
 Full Name: Autodesk.Revit.DB.ParameterSet
-
 Description: A set that contains parameters.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new ParameterSet()
@@ -880,16 +2050,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] ParameterSetIterator
 Full Name: Autodesk.Revit.DB.ParameterSetIterator
-
 Description: An iterator to a parameter set.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new ParameterSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -904,18 +2073,16 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] ParametersOrder
 Full Name: Autodesk.Revit.DB.ParametersOrder
-
 Description: The order of the parameters.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Ascending = 0
     - Descending = 1
 
+--------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] ParameterTypeId
 Full Name: Autodesk.Revit.DB.ParameterTypeId
@@ -8178,10 +9345,8 @@ Full Name: Autodesk.Revit.DB.ParameterTypeId
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] ParameterUtils
 Full Name: Autodesk.Revit.DB.ParameterUtils
-
 Description: A utility class of functions related to parameters.
 
   METHODS:
@@ -8190,16 +9355,36 @@ Description: A utility class of functions related to parameters.
       @document: Document in which to record the name of the parameter's owning account.
       @parameterTypeId: Parameter identifier.
       Returns: Name of the owning account.
+      Throws AccessDeniedException: Thrown when the user is not authorized to access the requested information.
+      Throws ArgumentException: Thrown when the parameter identifier does not include an account identifier.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws Autodesk::Revit::Exceptions::NetworkCommunicationError: Thrown when communication with the remote service is unsuccessful.
+      Throws ResourceNotFoundException: Thrown when the requested information is not found.
+      Throws ServerInternalException: Thrown when the remote service reports an internal error.
+      Throws UnauthenticatedException: Thrown when the user is not signed in.
     static SharedParameterElement DownloadParameter(Document document, ParameterDownloadOptions options, ForgeTypeId parameterTypeId)
       Description: Create a shared parameter element in the given document according to a parameter definition downloaded from the Parameters Service.
       @document: Document in which to create a shared parameter from a downloaded definition.
       @options: Parameter download options.
       @parameterTypeId: Parameter identifier.
       Returns: The shared parameter instance.
+      Throws ArgumentException: Thrown when the parameter identifier does not include a GUID, when required bindings are not assigned, when the requested group identifier does not identify a group that accommodates user-defined parameters, when a parameter with a matching GUID is already present in the given family document, when the given project document already contains an incompatible parameter definition with the same GUID, or when a parameter with a matching name is already present in the given family document.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws DefaultValueException: Thrown when the target document is a family and the downloaded parameter is a Family Type parameter and no family of the requisite category exists in the family document.
+      Throws NetworkCommunicationException: Thrown when communication with the Parameters Service is unsuccessful.
+      Throws ResourceNotFoundException: Thrown when the requested parameter definition is not found on the Parameters Service.
+      Throws SchemaException: Thrown when there is an error interpreting a downloaded parameter definition.
     static ParameterDownloadOptions DownloadParameterOptions(ForgeTypeId parameterTypeId)
       Description: Retrieves settings associated with the given parameter from the Parameters Service.
       @parameterTypeId: Parameter identifier.
       Returns: Settings associated with a parameter.
+      Throws AccessDeniedException: Thrown when the user is not authorized to access the requested information.
+      Throws ArgumentException: Thrown when the given parameter identifier is empty.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws Autodesk::Revit::Exceptions::NetworkCommunicationError: Thrown when communication with the Parameters Service is unsuccessful.
+      Throws ResourceNotFoundException: Thrown when the requested parameter is not found.
+      Throws ServerInternalException: Thrown when the Parameters Service reports an internal error.
+      Throws UnauthenticatedException: Thrown when the user is not signed in.
     static IList<ForgeTypeId> GetAllBuiltInGroups()
       Description: Gets the identifiers of all built-in parameter groups.
       Returns: The built-in group identifiers.
@@ -8210,29 +9395,33 @@ Description: A utility class of functions related to parameters.
       Description: Gets the BuiltInParameter value corresponding to built-in parameter identified by the given ForgeTypeId.
       @parameterTypeId: The parameter identifier.
       Returns: The BuiltInParameter value corresponding to the given parameter identifier.
+      Throws ArgumentException: parameterTypeId is not a built-in parameter identifier. See IsBuiltInParameter(ForgeTypeId) and GetParameterTypeId(BuiltInParameter).
+      Throws ArgumentNullException: A non-optional argument was NULL
     static ForgeTypeId GetParameterTypeId(BuiltInParameter builtInParam)
       Description: Gets the ForgeTypeId identifying the built-in parameter corresponding to the given BuiltInParameter value.
       @builtInParam: The BuiltInParameter value.
       Returns: Identifier of the parameter corresponding to the given BuiltInParameter value.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     static bool IsBuiltInGroup(ForgeTypeId groupTypeId)
       Description: Checks whether a ForgeTypeId identifies a built-in parameter group.
       @groupTypeId: The identifier to check.
       Returns: True if the ForgeTypeId identifies a built-in parameter group, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsBuiltInParameter(ElementId parameterId)
       Description: Checks whether an ElementId identifies a built-in parameter.
       @parameterId: The identifier to check.
       Returns: True if the ElementId identifies a built-in parameter, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsBuiltInParameter(ForgeTypeId parameterTypeId)
       Description: Checks whether a ForgeTypeId identifies a built-in parameter.
       @parameterTypeId: The identifier to check.
       Returns: True if the ForgeTypeId identifies a built-in parameter, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterValue
 Full Name: Autodesk.Revit.DB.ParameterValue
-
 Description: A class that holds a value of a parameter element.
 Remarks: This is a non-instantiable base class. Classes that actually store a value of a certain type are all derived from this base class, once class per each value type.
 Implements: IDisposable
@@ -8248,19 +9437,18 @@ Implements: IDisposable
     bool IsEqual(ParameterValue other)
       Description: Tests equality with another instance of the same class.
       @other: The instance to compare with
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsSameType(ParameterValue other)
       Description: Tests another instance is of the same value type.
       @other: The instance to compare with
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterValuePresenceRule
 Full Name: Autodesk.Revit.DB.ParameterValuePresenceRule
-
 Description: Tests whether an element's parameter has a value or not.
 Inherits: FilterRule
-Implements: IDisposable
 
   PROPERTIES:
     ElementId Parameter { get; set; }
@@ -8268,17 +9456,17 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ParameterValueProvider
 Full Name: Autodesk.Revit.DB.ParameterValueProvider
-
 Description: Gets the value of a parameter from any element passed to GetStringValue, GetDoubleValue, GetIntegerValue, or GetElementIdValue.
-Remarks: For any parameter, only one of isStringValueSupported, isDoubleValueSupported, isIntegerValueSupported, isElementIdValueSupported will return true. No attempt to convert between types is made. For example, calling GetStringValue, passing the identifier of a numeric-typed parameter will give an empty string. No exception will be thrown, and ParameterValueProvider will not attempt to convert the numeric value to a string.If an element doesn't have the requested parameter or the element's parameter doesn't have a valid value, ParameterValueProvider will attempt to get the parameter value from the element's type - see .
+Remarks: For any parameter, only one of isStringValueSupported, isDoubleValueSupported, isIntegerValueSupported, isElementIdValueSupported will return true. No attempt to convert between types is made. For example, calling GetStringValue, passing the identifier of a numeric-typed parameter will give an empty string. No exception will be thrown, and ParameterValueProvider will not attempt to convert the numeric value to a string.If an element doesn't have the requested parameter or the element's parameter doesn't have a valid value, ParameterValueProvider will attempt to get the parameter value from the element's type - see GetTypeId.
 Inherits: FilterableValueProvider
-Implements: IDisposable
 
   CONSTRUCTORS:
     new ParameterValueProvider(ElementId parameter)
+      Description: Constructs an instance of ParameterValueProvider.
+      @parameter: The parameter used to provide a string, integer, and double-precision, or ElementId value on request for a given element.
+      Throws ArgumentNullException: A non-optional argument was null
 
   PROPERTIES:
     ElementId Parameter { get; set; }
@@ -8286,14 +9474,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Part
 Full Name: Autodesk.Revit.DB.Part
-
 Description: This element represents a part of another element.
 Remarks: A part is associated with a PartMaker element that creates it.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     bool Excluded { get; set; }
@@ -8307,10 +9492,13 @@ Implements: IDisposable
     bool CanOffsetFace(Face face)
       Description: Checks if it is possible to offset the given face.
       @face: face to be checked.
+      Throws ArgumentNullException: A non-optional argument was null
     double GetFaceOffset(Face face)
       Description: Get face offset of the given part face.
       @face: The face whose offset is required.
       Returns: Returns the value of the offset.
+      Throws ArgumentException: face does not belong to the part.
+      Throws ArgumentNullException: A non-optional argument was null
     ICollection<LinkElementId> GetSourceElementIds()
       Description: Gets a collection of elements from which this Part is created by the PartMaker. May return more than one source only if there is merge involved somewhere in the history of this Part.
       Returns: The collection of elements
@@ -8320,36 +9508,36 @@ Implements: IDisposable
     void ResetFaceOffset(Face face)
       Description: Resets the offset applied to the given part face.
       @face: The face whose offset needs to be reset.
+      Throws ArgumentException: face does not belong to the part.
+      Throws ArgumentNullException: A non-optional argument was null
     void ResetPartShape()
       Description: Resets all face offsets applied to part faces.
     void SetFaceOffset(Face face, double offset)
       Description: Offsets the given part face in the direction that points out of the solid shape with the specified amount. Negative value will offset the face into the solid shape.
       @face: The face to offset.
       @offset: The magnitude of the offset.
+      Throws ArgumentException: face does not belong to the part. -or- The face to be offset should be planar and satisfy constraints of its parent element
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PartEdgeConditionOrientation
 Full Name: Autodesk.Revit.DB.PartEdgeConditionOrientation
-
 Description: Relative orientation of the right/lower and left/upper edge condition profiles.
 Remarks: A family-based profile defines the shape of the left/upper profile and this value defines how a matching right/lower profile is obtained.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Complement = 0
     - Mirrored = 1
     - MirroredAndRotated = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] PartMaker
 Full Name: Autodesk.Revit.DB.PartMaker
-
 Description: PartMaker is an element which takes some source elements (e.g., a wall with all its layers) and creates one or more Parts out of it. The logic according to which these Parts are created is non-trivial and PartMaker uses various PartMakerMethods which represents these logics. This element manages the strategy to make Part elements for one or more original elements.
 Inherits: Element
-Implements: IDisposable
 
   METHODS:
     ICollection<LinkElementId> GetSourceElementIds()
@@ -8358,16 +9546,17 @@ Implements: IDisposable
     bool IsSourceElement(ElementId elemId)
       Description: Is the element a source for this PartMaker
       Returns: Returns true if elemId is among the source elements of this PartMaker
+      Throws ArgumentNullException: A non-optional argument was null
     void SetSourceElementIds(ICollection<ElementId> sourceElementIds)
       Description: Set the source elements for the PartMaker.
       @sourceElementIds: Elements to be the sources for this PartMaker.
+      Throws ArgumentException: One or more element ids was not permitted to be a source for this PartMaker Elements should be Parts that have no PartMaker yet
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PartMakerMethodToDivideVolumes
 Full Name: Autodesk.Revit.DB.PartMakerMethodToDivideVolumes
-
 Description: By-References dividing strategy used by PartMaker element. TODO_REFACTOR("LegacyMechanismOfMovingElements") returns true if - the Host Elements are not floors or walls - OR - the Host Elements that are referenced by this PartMaker are floors or walls - transformation has already been applied on those Host Elements
 Implements: IDisposable
 
@@ -8403,33 +9592,43 @@ Implements: IDisposable
       @intersectingReference: Id of the new intersecting reference.
       @offset: The Offste for the new intersecting reference.
       Returns: True if the PartMaker did not already use this intersecting reference and it was added, false if the PartMaker already used this intersecting reference and this call only updated its offset.
+      Throws ArgumentException: The element id was not permitted as intersecting references. Intersecting references should be levels, grids, or reference planes.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool AreElementsValidIntersectingReferences(Document document, ICollection<ElementId> elementIds)
       Description: Identifies if provided members are valid.
       @document: The document.
       @elementIds: Element ids to be tested for validity for intersecting references.
       Returns: True if all references are valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     bool AreElementsValidIntersectingReferences(ICollection<ElementId> elementIds)
       Description: Identifies if provided members are valid.
       @elementIds: Element ids to be tested for validity for intersecting references.
       Returns: True if all references are valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     bool CanBeDivisionProfile(ElementId familyId)
       Description: Checks whether a family defines a profile which can be used by this method.
       @familyId: Element id of the family.
       Returns: True if the family defines a profile which can be used by a part maker, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool CanBeDivisionProfile(ElementId familyId, Document familyDocument)
       Description: Checks whether a family defines a profile which can be used by this method.
       @familyId: Element id of the family.
       @familyDocument: The document containing the family to be tested.
       Returns: True if the family defines a profile which can be used by a part maker, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
     double GetOffsetForIntersectingReference(ElementId intersectingReference)
       Description: Gets offset for the intersecting reference.
       @intersectingReference: The intersecting reference to obtain offset value from.
       Returns: The offset for the intersecting reference
+      Throws ArgumentException: PartMaker does not use the specified intersecting reference.
+      Throws ArgumentNullException: A non-optional argument was null
     Plane GetPlaneOfSketch()
       Description: Gets the plane of the sketch.
       Returns: The plane of the sketch.
     void GetSketchCurves(out IList<Curve> curveArray)
+      Description: Populates the array with copies of curves in the sketch.
+      @curveArray: Curves in the sketch. Tags of the curves are consistent with the curve tags used in part keys.
     IDictionary<ElementId, double> GetSplitRefsOffsets()
       Description: Returns offsets for plane-defining splitters.
     static bool IsElementValidIntersectingReference(Document document, ElementId elementId)
@@ -8437,37 +9636,42 @@ Implements: IDisposable
       @document: The document.
       @elementId: Element ids to be tested for validity for intersecting references.
       Returns: True if the reference is valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsElementValidIntersectingReference(ElementId elementId)
       Description: Identifies if the provided member is valid.
       @elementId: Element ids to be tested for validity for intersecting references.
       Returns: True if the reference is valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsValidSketchPlane(Document document, ElementId sketchPlaneId)
       Description: Identifies if provided sketch plane is valid.
       @document: The document.
       @sketchPlaneId: SketchPlane ids to be tested for validity for PartMaker.
       Returns: True if SketchPlane valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     bool RemoveIntersectingReference(ElementId intersectingReference)
       Description: Removed intersecting reference.
       @intersectingReference: Id of the intersecting reference to remove.
       Returns: True if the PartMaker used this intersecting reference and this call removed it, false if the PartMaker did not use this intersecting reference.
+      Throws ArgumentException: The element id was not permitted as intersecting references. Intersecting references should be levels, grids, or reference planes.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetOffsetForIntersectingReference(ElementId intersectingReference, double offset)
       Description: Sets offset for the intersecting reference.
       @intersectingReference: The intersecting reference that will be offset.
       @offset: The new offset.
+      Throws ArgumentException: PartMaker does not use the specified intersecting reference.
+      Throws ArgumentNullException: A non-optional argument was null
     bool UsesReference(ElementId intersectingReference)
       Description: Identifies if the PartMaker uses the intersecting reference.
       @intersectingReference: Intersecting reference to be tested.
       Returns: True if the intersecting reference is used by the PartMaker.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PartsVisibility
 Full Name: Autodesk.Revit.DB.PartsVisibility
-
 Description: Indicates the visibility of parts for the view.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ShowPartsOnly = 0
@@ -8475,13 +9679,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ShowPartsAndOriginal = 2
     - Unset = -1
 
+--------------------------------------------------------------------------------
 
 [ENUM] PartType
 Full Name: Autodesk.Revit.DB.PartType
-
 Description: An enumerated type listing all MEP family part types. A part type typically provides one unique set of type parameters that defines this part.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Normal = 0
@@ -8546,10 +9749,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - PipeMechanicalCoupling = 60
     - Undefined = -1
 
+--------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] PartUtils
 Full Name: Autodesk.Revit.DB.PartUtils
-
 Description: General Part utility methods
 
   METHODS:
@@ -8558,29 +9761,47 @@ Description: General Part utility methods
       @document: The document.
       @elementIds: Element ids to be tested for validity for creating parts.
       Returns: True if all member ids are valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ArePartsValidForDivide(Document document, ICollection<ElementId> elementIdsToDivide)
       Description: Identifies if provided members are valid for dividing parts.
       @document: The document.
       @elementIdsToDivide: Element ids to be tested for validity for dividing parts.
       Returns: True if all member ids are valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ArePartsValidForMerge(Document document, ICollection<ElementId> partIds)
       Description: Identifies whether Part elements may be merged.
       @document: The document.
       @partIds: Element ids of Parts.
       Returns: True if all element ids correspond to Part elements, none of the parts already has associated parts, the parts have contiguous geometry, all report the same materials, and all have the same creation and demolition phases.
+      Throws ArgumentNullException: A non-optional argument was null
     static PartMaker CreateMergedPart(Document document, ICollection<ElementId> partIds)
       Description: Create a single merged part which represents the Parts specified by partsToMerge.
       @document: The document.
       @partIds: The elements that the merged part will be created from.
       Returns: The newly created PartMaker. if no parts are merged.
+      Throws ArgumentException: One or more element ids was not suitable for merging with the others. Specified elements should all be Parts, report the same material, creation and demolition phases, and have contiguous geometry.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     static void CreateParts(Document document, ICollection<ElementId> elementIds)
       Description: Creates a new set of parts out of the original elements.
       @document: The document containing the elements.
       @elementIds: The elements that parts will be created from.
+      Throws ArgumentException: One or more element ids was not permitted for creating parts. Elements should be of a valid category and the ids should be valid and should not already be divided into parts.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     static void CreateParts(Document document, ICollection<LinkElementId> hostOrLinkElementIds)
       Description: Creates a new set of parts out of the original elements.
       @document: The document containing the elements.
       @hostOrLinkElementIds: The elements that parts will be created from.
+      Throws ArgumentException: One or more element ids was not permitted for creating parts. HostOrLinkElements should be of a valid category and the ids should be valid and should not already be divided into parts.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     static PartMaker DivideParts(Document document, ICollection<ElementId> elementIdsToDivide, ICollection<ElementId> intersectingReferenceIds, IList<Curve> curveArray, ElementId sketchPlaneId)
       Description: Creates divided parts out of parts.
       @document: The document containing the parts.
@@ -8589,21 +9810,29 @@ Description: General Part utility methods
       @curveArray: Array of curves that will divide the elements.
       @sketchPlaneId: SketchPlane id for the curves that divide the elements.
       Returns: The newly created PartMaker. if no parts are divided.
+      Throws ArgumentException: One or more element ids was not permitted for dividing parts. Elements should be parts that are not yet divided and maximum distance from an original has not yet been reached. -or- One or more element ids was not permitted as intersecting references. Intersecting references should be levels, grids, or reference planes. -or- The element id should refer to a valid SketchPlane. -or- The input curveArray contains at least one helical curve and is not supported for this operation. -or- The input curveArray contains at least one NULL pointer and is not supported for this operation.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     static IList<ICollection<ElementId>> FindMergeableClusters(Document doc, ICollection<ElementId> partIds)
       Description: Segregates a set of elements into subsets which are valid for merge.
       @doc: The document.
       @partIds: A set of element ids.
       Returns: An array of clusters such that all the elements in a single cluster are valid for merge. Each cluster will be maximal in that appending any of the other Parts specified as input will result in a collection that is not valid for merge.
+      Throws ArgumentNullException: A non-optional argument was null
     static PartMaker GetAssociatedPartMaker(Document hostDocument, ElementId elementId)
       Description: Gets associated PartMaker for an element.
       @hostDocument: The document
       @elementId: The id for the element to be checked for associated Parts
       Returns: The PartMaker element that is making Parts for this element. if there is no associated PartMaker.
+      Throws ArgumentNullException: A non-optional argument was null
     static PartMaker GetAssociatedPartMaker(Document hostDocument, LinkElementId hostOrLinkElementId)
       Description: Gets associated PartMaker for an element.
       @hostDocument: The document
       @hostOrLinkElementId: The id for the element to be checked for associated Parts
       Returns: The PartMaker element that is making Parts for this element. if there is no associated PartMaker.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> GetAssociatedParts(Document hostDocument, ElementId elementId, bool includePartsWithAssociatedParts, bool includeAllChildren)
       Description: Returns all Parts that are associated with the given element.
       @hostDocument: The document of the element.
@@ -8611,6 +9840,7 @@ Description: General Part utility methods
       @includePartsWithAssociatedParts: If true, include parts that have associated parts.
       @includeAllChildren: If true, return all associated Parts recursively for all children. If false, only return immediate children.
       Returns: Parts that are associated to the element.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> GetAssociatedParts(Document hostDocument, LinkElementId hostOrLinkElementId, bool includePartsWithAssociatedParts, bool includeAllChildren)
       Description: Returns all Parts that are associated with the given element
       @hostDocument: The document of the element
@@ -8618,60 +9848,75 @@ Description: General Part utility methods
       @includePartsWithAssociatedParts: If true, include parts that have associated parts
       @includeAllChildren: If true, return all associated Parts recursively for all children If false, only return immediate children
       Returns: Parts that are associated to the element
+      Throws ArgumentNullException: A non-optional argument was null
     static int GetChainLengthToOriginal(Part part)
       Description: Calculates the length of the longest chain of divisions/merges to reach to an original non-Part element that is the source of the tested part.
       @part: The part to be tested
       Returns: The length of the longest chain.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> GetMergedParts(Part part)
       Description: Retrieves the element ids of the source elements of a merged part.
       @part: A merged part.
       Returns: The element ids of the parts that were merged to create the specified merged part.
+      Throws ArgumentException: The specified Part is not a merged part.
+      Throws ArgumentNullException: A non-optional argument was null
     static PartMakerMethodToDivideVolumes GetPartMakerMethodToDivideVolumeFW(PartMaker partMaker)
       Description: Obtains the object allowing access to the divided volume properties of the PartMaker.
       @partMaker: The PartMaker.
       Returns: The object handle. Returns if the PartMaker does not represent divided volumes.
+      Throws ArgumentNullException: A non-optional argument was null
     static IList<Curve> GetSplittingCurves(Document document, ElementId partId, out Plane sketchPlane)
+      Description: Identifies the curves that were used to create the part and the plane in which they reside.
+      @document: The source document of the part.
+      @partId: The part id.
+      @sketchPlane: The plane in which the division curves were sketched.
+      Returns: The curves that created the part. Empty if partId is not a part or Part is not divided.
+      Throws ArgumentNullException: A non-optional argument was null
     static IList<Curve> GetSplittingCurves(Document document, ElementId partId)
       Description: Identifies the curves that were used to create the part.
       @document: The source document of the part.
       @partId: The part id.
       Returns: The curves that created the part. Empty if partId is not a Part or Part is not divided.
+      Throws ArgumentNullException: A non-optional argument was null
     static ISet<ElementId> GetSplittingElements(Document document, ElementId partId)
       Description: Identifies the elements ( reference planes, levels, grids ) that were used to create the part.
       @document: The source document of the part.
       @partId: The part id.
       Returns: The elements that created the part. Empty if partId is not a Part or Part is not divided.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool HasAssociatedParts(Document hostDocument, ElementId elementId)
       Description: Checks if an element has associated parts.
       @hostDocument: The document.
       @elementId: The element to be checked for associated Parts
       Returns: True if the element has associated Parts.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool HasAssociatedParts(Document hostDocument, LinkElementId hostOrLinkElementId)
       Description: Checks if an element has associated parts.
       @hostDocument: The document.
       @hostOrLinkElementId: The element to be checked for associated Parts.
       Returns: True if the element has associated Parts.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsMergedPart(Part part)
       Description: Is the Part the result of a merge.
       Returns: True if the Part is the result of a merge operation.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsPartDerivedFromLink(Part dPart)
       Description: Is the Part derived from link geometry.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsValidForCreateParts(Document document, LinkElementId hostOrLinkElementId)
       Description: Identifies if the given element can be used to create parts.
       @document: The document.
       @hostOrLinkElementId: Id to be tested for validity for creating part.
       Returns: True if this id is valid, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Path3d
 Full Name: Autodesk.Revit.DB.Path3d
-
 Description: Provides access to the Generic 3D path object in Autodesk Revit.
 Remarks: This object represents a 3D path sketch of Sweep.
 Inherits: SketchBase
-Implements: IDisposable
 
   PROPERTIES:
     CurveArrArray AllCurveLoops { get; }
@@ -8682,13 +9927,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PathType
 Full Name: Autodesk.Revit.DB.PathType
-
 Description: Enum determining what kind of path a given external file reference path is. Paths are valid for all types of external file references unless otherwise specified.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Relative = 0
@@ -8696,15 +9938,16 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Server = 2
     - Content = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] PDFExportOptions
 Full Name: Autodesk.Revit.DB.PDFExportOptions
-
 Description: Options for PDF export
 Implements: IDisposable
 
   CONSTRUCTORS:
     new PDFExportOptions()
+      Description: Creates a default options object.
 
   PROPERTIES:
     bool AlwaysUseRaster { get; set; }
@@ -8716,7 +9959,7 @@ Implements: IDisposable
     PDFExportQualityType ExportQuality { get; set; }
       Description: The preferred export quality (DPI).
     string FileName { get; set; }
-      Description: File name of the PDF when is .
+      Description: File name of the PDF when Combine is .
     bool HideCropBoundaries { get; set; }
       Description: Whether to hide crop boundaries.
     bool HideReferencePlane { get; set; }
@@ -8763,22 +10006,22 @@ Implements: IDisposable
       Description: Whether naming rule is valid or not.
       @namingRule: The naming rule to be validated.
       Returns: Whether or not the name is valid.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetExportInBackground(bool exportInBackground)
       Description: Execute PDF export as a background process.
       @exportInBackground: Execute PDF export as a background process.
     void SetNamingRule(IList<TableCellCombinedParameterData> namingRule)
       Description: Sets the naming rule.
       @namingRule: The naming rule.
+      Throws ArgumentException: The namingRule is empty or contains illegal characters.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PDFExportQualityType
 Full Name: Autodesk.Revit.DB.PDFExportQualityType
-
 Description: An enumerated type listing the options for PDF export quality.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - DPI72 = 72
@@ -8790,10 +10033,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - DPI3600 = 3600
     - DPI4000 = 4000
 
+--------------------------------------------------------------------------------
 
 [CLASS] PerformanceAdviser
 Full Name: Autodesk.Revit.DB.PerformanceAdviser
-
 Description: The tool to report performance problems in a given document.
 Remarks: Class is an application-wide singleton that performs a dual role: it is a repository of rules to run in order to detect potential performance problems as well as an access point to execute checks.
 Implements: IDisposable
@@ -8807,24 +10050,29 @@ Implements: IDisposable
       Description: Adds a performance adviser rule to the list of rules.
       @id: An id of the rule to be added to the list of rules.
       @rule: The rule to be added
+      Throws ArgumentNullException: A non-optional argument was null
     void DeleteRule(PerformanceAdviserRuleId id)
       Description: Deletes a performance adviser rule from the list of rules.
       @id: An id of the rule to be deleted from the list of rules.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
     IList<FailureMessage> ExecuteAllRules(Document document)
       Description: Executes all rules in the list on a given document.
       @document: Document on which the rules will be executed.
       Returns: Failure messages explaining performance problems detected in the document.
+      Throws ArgumentNullException: A non-optional argument was null
     IList<FailureMessage> ExecuteRules(Document document, IList<int> rules)
       Description: Executes selected rules on a given document.
       @document: Document on which the rules will be executed.
       @rules: Indices of rules to be executed.
       Returns: Failure messages explaining performance problems detected in the document.
+      Throws ArgumentNullException: A non-optional argument was null
     IList<FailureMessage> ExecuteRules(Document document, IList<PerformanceAdviserRuleId> rules)
       Description: Executes selected rules on a given document.
       @document: Document on which the rules will be executed.
       @rules: Ids of rules to be executed.
       Returns: Failure messages explaining performance problems detected in the document.
+      Throws ArgumentNullException: A non-optional argument was null
     IList<PerformanceAdviserRuleId> GetAllRuleIds()
       Description: Retrieves an enumeration of rule Ids.
       Returns: A collection of rule Ids
@@ -8833,11 +10081,13 @@ Implements: IDisposable
       @index: The rule index to get information for.
       @document: Document for which performance problems are being checked.
       Returns: The filter to restrict elements to be checked.
+      Throws ArgumentNullException: A non-optional argument was null
     ElementFilter GetElementFilterFromRule(PerformanceAdviserRuleId id, Document document)
       Description: Retrieves a filter to restrict elements to be checked.
       @id: The rule id to get information for.
       @document: Document for which performance problems are being checked.
       Returns: The filter to restrict elements to be checked.
+      Throws ArgumentNullException: A non-optional argument was null
     int GetNumberOfRules()
       Description: Retrieves number of performance adviser rules in the list.
       Returns: Number of performance adviser rules in the list.
@@ -8852,10 +10102,12 @@ Implements: IDisposable
       Description: Retrieves the description of the rule.
       @id: The rule id to get information for.
       Returns: The description of the rule.
+      Throws ArgumentNullException: A non-optional argument was null
     PerformanceAdviserRuleId GetRuleId(int index)
       Description: Retrieves an id of a rule for a given index in the list.
       @index: The index to retrieve the rule id for.
       Returns: The rule id.
+      Throws ArgumentException: The index is outside of acceptable range.
     string GetRuleName(int index)
       Description: Retrieves the name of the rule.
       @index: The rule index to get information for.
@@ -8864,25 +10116,35 @@ Implements: IDisposable
       Description: Retrieves the name of the rule.
       @id: The rule id to get information for.
       Returns: The name of the rule.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsRuleEnabled(PerformanceAdviserRuleId id)
       Description: Retrieves an enabled/disabled status for the given rule.
       @id: The rule id to retrieve enabled/disabled status for.
       Returns: True if rule is disabled, false otherwise.
+      Throws ArgumentException: The id does not correspond to any registered rule.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsRuleEnabled(int index)
       Description: Retrieves an enabled/disabled status for the given rule.
       @index: The rule index to retrieve enabled/disabled status for.
       Returns: True if rule is disabled, false otherwise.
+      Throws ArgumentException: The index is outside of acceptable range.
     void PostWarning(FailureMessage message)
       Description: Reports a problem detected during execution of a rule.
       @message: Warning describing the problem detected by a rule.
+      Throws ArgumentException: The message must have severity "warning".
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Performance advisor is not executing rules.
     void SetRuleEnabled(PerformanceAdviserRuleId id, bool enabled)
       Description: Retrieves an enabled/disabled status for the given rule.
       @id: The rule id to set enabled/disabled status for.
       @enabled: True enables the rule, false disables.
+      Throws ArgumentException: The id does not correspond to any registered rule.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetRuleEnabled(int index, bool enabled)
       Description: Retrieves an enabled/disabled status for the given rule.
       @index: The rule index to set enabled/disabled status for.
       @enabled: True enables the rule, false disables.
+      Throws ArgumentException: The index is outside of acceptable range.
     bool WillRuleCheckElements(int index)
       Description: Reports if rule needs to be executed on individual elements.
       @index: The rule index to get information for.
@@ -8891,48 +10153,42 @@ Implements: IDisposable
       Description: Reports if rule needs to be executed on individual elements.
       @id: The rule id to get information for.
       Returns: True if rule needs to be executed on individual elements.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PerformanceAdviserRuleId
 Full Name: Autodesk.Revit.DB.PerformanceAdviserRuleId
-
 Description: The unique identifier of a PerformanceAdviserRule
 Remarks: Each performance adviser rule registered in application must be given a unique id that can be used to identify and unregister rule later.
 Inherits: GuidEnum
 
   CONSTRUCTORS:
     new PerformanceAdviserRuleId(Guid guid)
+      Description: Creates a new PerformanceAdviserRuleId instance.
+      @guid: The identifier for the PerformanceAdviserRuleId.
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PerformanceAdviserRules
 Full Name: Autodesk.Revit.DB.PerformanceAdviserRules
-
 Description: Provides a container of all Revit built-in PerformanceAdviserRuleId instances.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Phase
 Full Name: Autodesk.Revit.DB.Phase
-
 Description: Represents a phase in the life of a building.
 Remarks: The lifetime of an element within a building can be controlled by using phases. Each element will have a construction phase but only those elements that have a finite lifetime will have a destruction phase. All the phases within a project can be retrieved from the Document object.
 Inherits: Element
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PhaseArray
 Full Name: Autodesk.Revit.DB.PhaseArray
-
 Description: An array that contains phase objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PhaseArray()
@@ -8960,23 +10216,21 @@ Implements: IDisposable, IEnumerable
       Description: Insert the specified phase into the array.
       @item: The phase to be inserted into the array.
       @index: The phase will be inserted before this index.
-      Returns: Returns whether the phase was inserted into the array.
     PhaseArrayIterator ReverseIterator()
       Description: Retrieve a backward moving iterator to the array.
       Returns: Returns a backward moving iterator to the array.
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PhaseArrayIterator
 Full Name: Autodesk.Revit.DB.PhaseArrayIterator
-
 Description: An iterator to a phase array.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PhaseArrayIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -8991,13 +10245,10 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PhaseFilter
 Full Name: Autodesk.Revit.DB.PhaseFilter
-
 Description: Represents an phase filter within Autodesk Revit.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     bool IsDefault { get; }
@@ -9009,38 +10260,40 @@ Implements: IDisposable
       @document: The document.
       @name: The name.
       Returns: The newly created phase filter.
+      Throws ArgumentException: name is already in use.
+      Throws ArgumentNullException: A non-optional argument was null
     PhaseStatusPresentation GetPhaseStatusPresentation(ElementOnPhaseStatus status)
       Description: Gets the phase status presentation.
       @status: The element phase status.
       Returns: The phase status presentation.
+      Throws ArgumentException: status is invalid for presentation query.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     void SetPhaseStatusPresentation(ElementOnPhaseStatus status, PhaseStatusPresentation presentation)
       Description: Sets the phase status presentation.
       @status: The element phase status.
       @presentation: The phase status presentation.
+      Throws ArgumentException: status is invalid for presentation query.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PhaseStatusPresentation
 Full Name: Autodesk.Revit.DB.PhaseStatusPresentation
-
 Description: An enumerated type listing the options for element display in a phase filter.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - DontShow = 0
     - ShowByCategory = 1
     - ShowOverriden = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] PlanarFace
 Full Name: Autodesk.Revit.DB.PlanarFace
-
 Description: A bounded face of a 3d solid or open shell.
 Remarks: Planar faces are defined by planes bounded by edge loops. The planes provide natural UV parameterization to the faces. S(u, v) = Origin + u*Vector[0] + v*Vector[1]
 Inherits: Face
-Implements: IDisposable
 
   PROPERTIES:
     XYZ FaceNormal { get; }
@@ -9054,14 +10307,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PlanCircuit
 Full Name: Autodesk.Revit.DB.PlanCircuit
-
 Description: An object that represents an enclosed area in a plan view within the Autodesk Revit project.
 Remarks: Plan circuits are enclosed regions as seen on a plan view. They are used to determine the boundary extents of rooms based on the placement of walls. In the Autodesk Revit API, you can use plan circuits to create new rooms.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     double Area { get; }
@@ -9074,16 +10324,15 @@ Implements: IDisposable
   METHODS:
     UV GetPointInside()
       Description: Returns a point inside the circuit.
+      Throws InvalidOperationException: Thrown when a valid UV point couldn't be obtained.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PlanCircuitSet
 Full Name: Autodesk.Revit.DB.PlanCircuitSet
-
 Description: A set that can contain any number of plan circuit objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PlanCircuitSet()
@@ -9121,16 +10370,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PlanCircuitSetIterator
 Full Name: Autodesk.Revit.DB.PlanCircuitSetIterator
-
 Description: An iterator to a set of plan circuit objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PlanCircuitSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -9145,14 +10393,11 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Plane
 Full Name: Autodesk.Revit.DB.Plane
-
 Description: A Planar surface.
 Remarks: The parametric equation of the plane is S(u, v) = origin + u*xVec + v*yVec.
 Inherits: Surface
-Implements: IDisposable
 
   PROPERTIES:
     XYZ Normal { get; }
@@ -9167,32 +10412,41 @@ Implements: IDisposable
   METHODS:
     static Plane Create(Frame frameOfReference)
       Description: Creates a Plane object defined by a local frame of reference.
-      @frameOfReference: frameOfReference is an orthonormal frame that defines a local coordinate system for the plane being constructed. Frame.Origin is a point on plane. Frame.BasisZ defines the plane's normal, while Frame.BasisX and Frame.BasisY are orthogonal to the normal. The frame may be either left-handed or right-handed (see Frame.IsRightHanded).
+      @frameOfReference: frameOfReference is an orthonormal frame that defines a local coordinate system for the plane being constructed. Frame.Origin is a point on plane.Frame.BasisZ defines the plane's normal, while Frame.BasisX and Frame.BasisY are orthogonal to the normal.The frame may be either left-handed or right-handed (see Frame.IsRightHanded).
+      Throws ArgumentException: This Frame object may not be used as a local frame of reference.
+      Throws ArgumentNullException: A non-optional argument was null
     static Plane CreateByNormalAndOrigin(XYZ normal, XYZ origin)
       Description: Constructs a Plane object from a normal and an origin represented as XYZ objects. Follows the standard conventions for a planar surface. The constructed Plane object will pass through origin and be perpendicular to normal. The X and Y axes of the plane will be defined arbitrarily.
       @normal: Plane normal. Expected to be a valid non-zero length vector. Doesn't need to be a unit vector.
-      @origin: Plane origin. Expected to lie within the Revit design limits .
+      @origin: Plane origin. Expected to lie within the Revit design limits XYZ).
+      Throws ArgumentException: The input point lies outside of Revit design limits.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: normal has zero length.
     static Plane CreateByOriginAndBasis(XYZ origin, XYZ basisX, XYZ basisY)
       Description: Creates a Plane object defined by the two orthogonal unit vectors and passing through the origin point supplied as arguments.
-      @origin: Plane origin. Expected to lie within the Revit design limits .
+      @origin: Plane origin. Expected to lie within the Revit design limits XYZ).
       @basisX: First of the two unit vectors that define the plane. Must be orthogonal to the second one.
       @basisY: Second of the two unit vectors that define the plane. Must be orthogonal to the first one.
+      Throws ArgumentException: The input point lies outside of Revit design limits.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: basisX is not length 1.0. -or- basisY is not length 1.0.
+      Throws ArgumentsInconsistentException: The vectors basisX and basisY are not perpendicular.
     static Plane CreateByThreePoints(XYZ point1, XYZ point2, XYZ point3)
       Description: Creates a Plane object passing through three points supplied as arguments.
       @point1: First of the three points that define a unique plane. The created Plane object will pass through these points.
       @point2: Second of the three points that define a unique plane.
       @point3: Third of the three points that define a unique plane.
+      Throws ArgumentException: The input point lies outside of Revit design limits.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentsInconsistentException: Throws if the input points do not define a unique plane. This is typically caused by points being too close to each other, or all three points being on or close to a straight line.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PlanTopology
 Full Name: Autodesk.Revit.DB.PlanTopology
-
 Description: An object that represents a Plan Topology within the Autodesk Revit project.
 Remarks: This object derived from the APIObject base object. It can be used access the properties of a Plan Topology.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     PlanCircuitSet Circuits { get; }
@@ -9209,13 +10463,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PlanTopologySet
 Full Name: Autodesk.Revit.DB.PlanTopologySet
-
 Description: A set that can contain any number of plan topology objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new PlanTopologySet()
@@ -9253,16 +10505,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PlanTopologySetIterator
 Full Name: Autodesk.Revit.DB.PlanTopologySetIterator
-
 Description: An iterator to a set of plan topology objects.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new PlanTopologySetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -9277,26 +10528,22 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PlanViewDirection
 Full Name: Autodesk.Revit.DB.PlanViewDirection
-
 Description: This enumerated type represents the possible directions for a plan view.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Down = 0
     - Up = 1
     - Undefined = -1
 
+--------------------------------------------------------------------------------
 
 [ENUM] PlanViewPlane
 Full Name: Autodesk.Revit.DB.PlanViewPlane
-
 Description: Locations where view range offsets can be specified.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - CutPlane = 0
@@ -9305,10 +10552,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ViewDepthPlane = 3
     - UnderlayBottom = 4
 
+--------------------------------------------------------------------------------
 
 [CLASS] PlanViewRange
 Full Name: Autodesk.Revit.DB.PlanViewRange
-
 Description: This class represents the view range of a plan view or a plan region. It records the element ids of the levels which a plane is relative to and the offset of each plane from that level.
 Implements: IDisposable
 
@@ -9330,28 +10577,30 @@ Implements: IDisposable
       Description: Get the element id of the level for a View Depth plane
       @planViewPlane: The plane whose level will be returned
       Returns: Id of the level
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     double GetOffset(PlanViewPlane planViewPlane)
       Description: Get the offset value associated with a View Depth plane
       @planViewPlane: View Depth plane
       Returns: Offset value
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     void SetLevelId(PlanViewPlane planViewPlane, ElementId id)
       Description: Set the level for a View Depth plane
       @planViewPlane: The View Depth plane
       @id: Id of the level
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     void SetOffset(PlanViewPlane planViewPlane, double offset)
       Description: Set the offset value associated with a View Depth plane
       @planViewPlane: View Depth plane
       @offset: Offset value
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PlanViewRangeError
 Full Name: Autodesk.Revit.DB.PlanViewRangeError
-
 Description: Describes errors in the location of planes in a PlanViewRange object.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - TopClipBelowCutPlane = 0
@@ -9359,13 +10608,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ViewDepthAboveBottomClip = 2
     - ViewDepthBelowTopClip = 3
 
+--------------------------------------------------------------------------------
 
 [ENUM] PlanViewRangeLevel
 Full Name: Autodesk.Revit.DB.PlanViewRangeLevel
-
 Description: An enumerated type representing the options for setting the range for a plan view.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Unused = -5
@@ -9374,14 +10622,13 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Above = -2
     - Unlimited = -1
 
+--------------------------------------------------------------------------------
 
 [CLASS] Point
 Full Name: Autodesk.Revit.DB.Point
-
 Description: A 3D point.
 Remarks: The point lies at a given XYZ coordinate location.
 Inherits: GeometryObject
-Implements: IDisposable
 
   PROPERTIES:
     XYZ Coord { get; }
@@ -9402,13 +10649,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PointCloudColorMode
 Full Name: Autodesk.Revit.DB.PointCloudColorMode
-
 Description: Color mode of a point cloud or part of a point cloud
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NoOverride = 0
@@ -9417,13 +10661,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Intensity = 3
     - Normals = 4
 
+--------------------------------------------------------------------------------
 
 [ENUM] PointCloudFoundStatus
 Full Name: Autodesk.Revit.DB.PointCloudFoundStatus
-
 Description: Enumerated type representing the possible states related to searching for a point cloud file.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Unknown = 0
@@ -9431,13 +10674,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - FoundOK = 2
     - Invalid = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] PointCloudInstance
 Full Name: Autodesk.Revit.DB.PointCloudInstance
-
 Description: Represents a single instance of a point cloud in the Revit document.
 Inherits: Instance
-Implements: IDisposable
 
   PROPERTIES:
     SelectionFilterAction FilterAction { get; set; }
@@ -9449,18 +10691,26 @@ Implements: IDisposable
     bool ContainsScan(string scanName)
       Description: Identifies whether the instance contains a scan.
       @scanName: Name of the scan.
+      Throws ArgumentNullException: A non-optional argument was null
     static PointCloudInstance Create(Document document, ElementId typeId, Transform transform)
       Description: Creates a new instance of a point cloud based on an input point cloud type and transformation.
       @document: The document in which the new instance is created
       @typeId: The element id of the PointCloudType.
       @transform: The transform that defines the placement of the instance in the Revit document coordinate system.
       Returns: The newly created point cloud instance.
+      Throws ArgumentException: The ElementId typeId is not a valid PointCloudType. -or- document is not a project document.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     PointCollection GetPoints(PointCloudFilter filter, double averageDistance, int numPoints)
       Description: Extracts a collection of points based on a filter.
       @filter: The filter to control which points are extracted. The filter should be passed in the coordinates of the Revit model.
       @averageDistance: Desired average distance between "adjacent" cloud points (Revit units of length). The smaller the averageDistance the larger number of points will be returned up to the numPoints limit. Specifying this parameter makes actual number of points returned for a given filter independent of the density of coverage produced by the scanner.
       @numPoints: The maximum number of points requested.
       Returns: A collection object containing points that pass the filter, but no more than the maximum number requested.
+      Throws ArgumentException: The number of points read must range from 1 to 1000000.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The given value for averageDistance must be no more than 30000 feet in absolute value.
     IList<string> GetRegions()
       Description: Returns array of region names.
       Returns: Resulting array of region names.
@@ -9468,6 +10718,8 @@ Implements: IDisposable
       Description: Returns the origin point of a scan in model coordinates.
       @scanName: Name of the scan.
       Returns: Resulting origin point of the scan.
+      Throws ArgumentException: PointCloudInstance does not contain scan scanName.
+      Throws ArgumentNullException: A non-optional argument was null
     IList<string> GetScans()
       Description: Returns array of scan names.
       Returns: Resulting array of scan names.
@@ -9483,13 +10735,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointCloudType
 Full Name: Autodesk.Revit.DB.PointCloudType
-
 Description: Represents a type of point cloud loaded into a Revit document. Each PointCloudType maps to a single file or identifier (depending upon the type of Point Cloud Engine which governs it).
 Inherits: ElementType
-Implements: IDisposable
 
   PROPERTIES:
     PointCloudColorEncoding ColorEncoding { get; }
@@ -9510,32 +10759,38 @@ Implements: IDisposable
       @engineIdentifier: The string identifying the engine to be invoked. It should be the file extension or engine identifier registered by the third party.
       @typeIdentifier: The file name or the identification string for a non-file based engine.
       Returns: The newly created PointCloudType object to be used to create instances of this point cloud.
+      Throws ArgumentException: The engine identifier was not found in the Revit session. -or- document is not a project document.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws FileNotFoundException: The external file could not be found or loaded.
+      Throws InvalidOperationException: Unable to create a point cloud from the third party engine.
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     ModelPath GetPath()
       Description: Gets the path of the link source from which the points are loaded.
       Returns: Returns the file path for a file based point cloud or null for the non-file based point cloud.
     RCProject GetReCapProject()
       Description: This method provides a direct entry point to get access to an object from the ReCap SDK (ReCapWrapper.RCProject) from Revit. This object represents the point cloud from the RC file path stored in PointCloudType. The ReCap assembly AdskRcManaged.dll will need to be included into code using this method.
+      Throws FileAccessException: The file or PointCloudEngine is not ReCap based.
+      Throws InvalidOperationException: Exception happens when ReCap loading the project.
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] PointElementReference
 Full Name: Autodesk.Revit.DB.PointElementReference
-
 Description: Base class for objects defining a way to constrain a ReferencePoint to one or more other objects in a document.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointLocationOnCurve
 Full Name: Autodesk.Revit.DB.PointLocationOnCurve
-
 Description: Defines the measurement parameters necessary to create a point at a specific location on a curve.
-Remarks: The class will store the following and provides functions to deal with them: The user visible Measurement Type (driving parameter type). The corresponding measurement value (driving parameter). MeasureFrom that tells from where the (driving parameter) measurement is calculated.
+Remarks: The class will store the following and provides functions to deal with them: The user visible Measurement Type (driving parameter type).The corresponding measurement value (driving parameter).MeasureFrom that tells from where the (driving parameter) measurement is calculated.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new PointLocationOnCurve(PointOnCurveMeasurementType measType, double measValue, PointOnCurveMeasureFrom measFrom)
+      Description: Constructs a new instance of a class, with given or default values, to place a point on a curve.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -9552,14 +10807,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointNode
 Full Name: Autodesk.Revit.DB.PointNode
-
 Description: An output node that represents a 3D point.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IModelExportContext::OnPoint.
 Inherits: ModelCurveNode
-Implements: IDisposable
 
   METHODS:
     Point GetPoint()
@@ -9568,25 +10820,21 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PointOnCurveMeasureFrom
 Full Name: Autodesk.Revit.DB.PointOnCurveMeasureFrom
-
 Description: Point on curve MeasureFrom - It tells from which end of the host curve the point location is measured.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Beginning = 1
     - End = 2
 
+--------------------------------------------------------------------------------
 
 [ENUM] PointOnCurveMeasurementType
 Full Name: Autodesk.Revit.DB.PointOnCurveMeasurementType
-
 Description: Point on curve measurement type Defines the types of measurements that may be used when placing a point at a designated distance along a curve.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NonNormalizedCurveParameter = 1
@@ -9596,10 +10844,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ChordLength = 5
     - Angle = 6
 
+--------------------------------------------------------------------------------
 
 [CLASS] PointOnEdge
 Full Name: Autodesk.Revit.DB.PointOnEdge
-
 Description: Define a ReferencePoint relative to a referenceable edge or curve on another element.
 Remarks: The ReferencePoint's X basis vector is constrained to the tangent vector to the curve. The Y and Z vectors are free to rotate around the curve.
 Inherits: PointElementReference
@@ -9616,10 +10864,8 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointOnEdgeEdgeIntersection
 Full Name: Autodesk.Revit.DB.PointOnEdgeEdgeIntersection
-
 Description: Define a ReferencePoint at the intersection of two referenceable lines.
 Remarks: The ReferencePoint is actually placed on the first line (Edge1) at the closest point to the second line (Edge2). Its X basis vector is constrained to be parallel to the first line.
 Inherits: PointElementReference
@@ -9636,10 +10882,8 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointOnEdgeFaceIntersection
 Full Name: Autodesk.Revit.DB.PointOnEdgeFaceIntersection
-
 Description: Define a ReferencePoint at the intersection of a referenceable edge or curve and a referenceable face.
 Remarks: The ReferencePoint's orientation is partially constrained either to the edge (in the manner of PointOnEdge) or to the face (in the manner of PointOnFace).
 Inherits: PointElementReference
@@ -9660,10 +10904,8 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointOnFace
 Full Name: Autodesk.Revit.DB.PointOnFace
-
 Description: Define a ReferencePoint relative to a Face.
 Remarks: A ReferencePoint on a Face has its X and Y basis vectors parallel to the Face, but is free to rotate around its Z basis vector. It must lie on the face (unlike PointOnPlane).
 Inherits: PointElementReference
@@ -9680,10 +10922,8 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointOnPlane
 Full Name: Autodesk.Revit.DB.PointOnPlane
-
 Description: Define a ReferencePoint relative to a planar reference.
 Remarks: A ReferencePoint on a plane has its X and Y basis vectors parallel to the plane, but is free to rotate around its Z basis vector. It can lie on the plane or have an offset.
 Inherits: PointElementReference
@@ -9714,10 +10954,8 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PointRelativeToPoint
 Full Name: Autodesk.Revit.DB.PointRelativeToPoint
-
 Description: Represents a point placed relative to another point.
 Remarks: For this release, the only workflow supported is that the point is placed coincident with the referenced host (a relative transformation of Transform.Identity).
 Inherits: PointElementReference
@@ -9730,14 +10968,11 @@ Inherits: PointElementReference
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PolyLine
 Full Name: Autodesk.Revit.DB.PolyLine
-
 Description: A polyline.
 Remarks: A polyline in space is defined by a set of coordinate points.
 Inherits: GeometryObject
-Implements: IDisposable
 
   PROPERTIES:
     int NumberOfCoordinates { get; }
@@ -9748,29 +10983,30 @@ Implements: IDisposable
       Description: Returns a copy of this polyline.
     static PolyLine Create(IList<XYZ> coordinates)
       Description: Creates a polyline with coordinate points provided.
+      Throws ArgumentException: Thrown when the count of coordinates is less than 2.
     XYZ Evaluate(double param)
       Description: Evaluates a parameter on the polyline.
       @param: The parameter to be evaluated. It is expected to be in [0,1] interval mapped to the bounds of the whole polyline.
+      Throws ArgumentOutOfRangeException: Thrown when the param value is not between 0.0 and 1.0.
     XYZ GetCoordinate(int index)
       Description: Gets the coordinate point of the specified index.
       @index: The index of the coordinates.
+      Throws ArgumentOutOfRangeException: Thrown when the index value is out of range.
     IList<XYZ> GetCoordinates()
       Description: Gets the coordinate points of the polyline.
     Outline GetOutline()
       Description: Gets the outline of the polyline.
     PolyLine GetTransformed(Transform transform)
       Description: Gets the copy of the polyline which is applied the specified transformation.
+      Throws ArgumentNullException: Thrown when the transform is .
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PolylineNode
 Full Name: Autodesk.Revit.DB.PolylineNode
-
 Description: An output node that represents a 3D polyline.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IModelExportContext::OnPolyline.
 Inherits: ModelCurveNode
-Implements: IDisposable
 
   METHODS:
     PolyLine GetPolyline()
@@ -9779,12 +11015,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PolylineSegments
 Full Name: Autodesk.Revit.DB.PolylineSegments
-
 Description: An output node that represents a tessellated polyline segments.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IModelExportContext::OnPolylineSegments.
 Implements: IDisposable
 
   PROPERTIES:
@@ -9811,15 +11045,17 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PolymeshFacet
 Full Name: Autodesk.Revit.DB.PolymeshFacet
-
 Description: A class representing one triangular piece - a facet - in a polymesh topology.
 Remarks: It can also be used to create TopographySurface. Each facet is defined by indices of three vertices of the polymesh.
 
   CONSTRUCTORS:
     new PolymeshFacet(int v1, int v2, int v3)
+      Description: Creates a PolymeshFacet with the supplied vertices.
+      @v1: The first vertex.
+      @v2: The second vertex.
+      @v3: The third vertex.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -9839,10 +11075,8 @@ Remarks: It can also be used to create TopographySurface. Each facet is defined 
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PolymeshTopology
 Full Name: Autodesk.Revit.DB.PolymeshTopology
-
 Description: A class representing topology of a polymesh.
 Remarks: Topology of a polymesh consists of a number of points and triangular facets formed by the points. Each facet is determined by three indices to the array of points. A polymesh may have UV coordinates assigned, and always has at least one normal associated. There may be more than one normal available for a non-planar polymesh; there may be as many normals as there are either facets or points in the polymesh. The DistributionOfNormals property indicates how normals are distributed along the polymesh.
 Implements: IDisposable
@@ -9867,6 +11101,7 @@ Implements: IDisposable
       Description: Returns a definition of one facet
       @idx: A zero-based index of the facet
       Returns: An instance of PolymeshFacet that represents one facet defined by 3 vertices of the polymesh.
+      Throws ArgumentException: The given value is not a valid index of a facet of the polymesh. A valid value is not negative and is smaller than the number of facets in the polymesh.
     IList<PolymeshFacet> GetFacets()
       Description: Returns a definitions of all facets of the polymesh
       Returns: An array of PolymeshFacet instances, each of which represents one facet defined by 3 vertices of the polymesh.
@@ -9874,6 +11109,7 @@ Implements: IDisposable
       Description: Returns a normal vector at the given index
       @idx: A zero-based index
       Returns: XYZ value representing a normal vector
+      Throws ArgumentException: The given value is not a valid index of a normal of the polymesh. A valid valure is not negative and is smaller than the number of normals in the polymesh.
     IList<XYZ> GetNormals()
       Description: Returns all normals assigned to the polymesh
       Returns: An array of XYZ values, each representing a normal vector
@@ -9881,6 +11117,7 @@ Implements: IDisposable
       Description: Returns one point at the given index.
       @idx: A zero-based index of a polymesh point
       Returns: XYZ coordinates of the point
+      Throws ArgumentException: The given value is not a valid index of a point of the polymesh. A valid valure is not negative and is smaller than the number of points in the polymesh.
     IList<XYZ> GetPoints()
       Description: Returns all points of the polymesh.
       Returns: An array of XYZ coordinates
@@ -9888,63 +11125,60 @@ Implements: IDisposable
       Description: Returns one UV coordinate at the given index.
       @idx: A zero-based index of a UV coordinate
       Returns: UV coordinates at the given index
+      Throws ArgumentException: The given value is not a valid index of a UV coordinate of the polymesh. A valid valure is not negative and is smaller than the number of UV coordinates in the polymesh.
     IList<UV> GetUVs()
       Description: Returns all UV coordinates assigned to the polymesh
       Returns: An array of UV coordinates
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PreferredJunctionType
 Full Name: Autodesk.Revit.DB.PreferredJunctionType
-
 Description: Enumerated type representing the possible options for the preferred junction for a routine preference rule.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Tee = 0
     - Tap = 1
 
+--------------------------------------------------------------------------------
 
 [ENUM] PreviewFamilyVisibilityMode
 Full Name: Autodesk.Revit.DB.PreviewFamilyVisibilityMode
-
 Description: Modes that control visibility of family elements depending on the currently applied Element Visibility Settings of a view.
-Remarks: Values of this mode can be set or obtained for any view that supports it by accessing the property.
+Remarks: Values of this mode can be set or obtained for any view that supports it by accessing the Autodesk::Revit::DB::TemporaryViewModes::PreviewFamilyVisibility property.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Off = 0
     - On = 1
     - Uncut = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] PrimaryDesignOptionMemberFilter
 Full Name: Autodesk.Revit.DB.PrimaryDesignOptionMemberFilter
-
 Description: A filter used to find elements contained in any primary design option of any design option set.
 Remarks: This filter will only pass elements in a primary design option. It will not pass elements in the main model not associated to any design option. This filter is a slow filter. Slow filters require that the Element be obtained and expanded in memory first. Thus it is preferable to couple this filter with at least one ElementQuickFilter, which should minimize the number of Elements that are expanded.
 Inherits: ElementSlowFilter
-Implements: IDisposable
 
   CONSTRUCTORS:
     new PrimaryDesignOptionMemberFilter(bool inverted)
+      Description: Constructs a new instance of a filter to match elements contained in any primary design option of any design option set, with the option to invert the filter and find elements not contained in any primary design option of any design option set.
+      @inverted: True if the filter should match all elements which are not contained within a particular design option.
     new PrimaryDesignOptionMemberFilter()
+      Description: Constructs a new instance of a filter to match elements contained in any primary design option of any design option set.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PrimarySizeCriterion
 Full Name: Autodesk.Revit.DB.PrimarySizeCriterion
-
 Description: This class contains a size criterion for a RoutingPreferenceRule.
 Inherits: RoutingCriterionBase
-Implements: IDisposable
 
   CONSTRUCTORS:
     new PrimarySizeCriterion(double minimumSize, double maximumSize)
+      Description: Constructs a PrimarySizeCriterion with a minimum and maximum size.
 
   PROPERTIES:
     double MaximumSize { get; set; }
@@ -9962,14 +11196,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PrinterResolution
 Full Name: Autodesk.Revit.DB.PrinterResolution
-
 Description: Controls the resolution level in rendering settings.
 Remarks: It is applicable only when using printer resolution. The suitable resolution value for each resolution level is decided by default in Revit.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Low = 0
@@ -9977,14 +11208,13 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - High = 2
     - VeryHigh = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] PrintManager
 Full Name: Autodesk.Revit.DB.PrintManager
-
 Description: The PrintManager object is used to configure the global print settings.
 Remarks: Global print settings include PrintToFile, CombinedFile, PrintToFileName, PrintRange, CopyNumber, PrintOrderReverse, Collate. Once PrintManager is acquired from a document, changes of its global print setting properties are not automatically applied toward the global print setting. Should the local setting be used, the user needs to call the Apply method. If the user calls SubmitPrint methods, not only that printing will use the current state of properties of the (local) print manager, but the setting will also be applied to the global settings.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     bool Collate { get; set; }
@@ -10017,26 +11247,28 @@ Implements: IDisposable
   METHODS:
     void Apply()
       Description: Apply the local print settings to global for all documents.
+      Throws InvalidOperationException: Thrown when this operation is not allowed in the current application mode, or the print resource is occupied by others.
     void SelectNewPrintDriver(string strPrinterName)
       Description: Select a new printer.
       @strPrinterName: The name string of new printer.
+      Throws ArgumentNullException: Thrown when the input argument-strPrinterName-is .
+      Throws InvalidOperationException: Thrown when the assigned new printer is invalid, or the print resource is occupied by others.
     bool SubmitPrint(View view)
       Description: Print a view with the current PrintManager settings.
       @view: The User-assigned view.
       Returns: True if successful, otherwise False.
+      Throws InvalidOperationException: Thrown when this operation is not allowed in the current application mode, or the print resource is occupied by others.
     bool SubmitPrint()
       Description: Print the views and sheets defined in the current local PrintManager settings.
       Returns: True if successful, otherwise False.
+      Throws InvalidOperationException: Thrown when this operation is not allowed in the current application mode, or the print resource is occupied by others.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PrintParameters
 Full Name: Autodesk.Revit.DB.PrintParameters
-
 Description: An object that contains settings used for printing the document.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     ColorDepthType ColorDepth { get; set; }
@@ -10084,26 +11316,23 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PrintRange
 Full Name: Autodesk.Revit.DB.PrintRange
-
 Description: An enumerated type listing all Print Range types of Print.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Current = 0
     - Visible = 1
     - Select = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] PrintSetting
 Full Name: Autodesk.Revit.DB.PrintSetting
-
 Description: Represents the Print Setup (Application Menu->Print->Print Setup) within Autodesk Revit.
 Inherits: Element
-Implements: IDisposable, IPrintSetting
+Implements: IPrintSetting
 
   PROPERTIES:
     string Name { get; set; }
@@ -10113,14 +11342,11 @@ Implements: IDisposable, IPrintSetting
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PrintSetup
 Full Name: Autodesk.Revit.DB.PrintSetup
-
 Description: Represents the Print Setup (Application Menu->Print->Print Setup) within Autodesk Revit.
 Remarks: The Print Setup object can only get from PrintManager object.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     IPrintSetting CurrentPrintSetting { get; set; }
@@ -10132,30 +11358,32 @@ Implements: IDisposable
     bool Delete()
       Description: Delete the current print setting, and make the In-Session setting as the current one.
       Returns: False if Delete operation fails, otherwise true.
+      Throws InvalidOperationException: Thrown when the current print setting is In-Session.
     bool Rename(string newName)
       Description: Rename the current print setting with the specified name.
       @newName: print setting name to be renamed as.
       Returns: False if Rename operation fails, otherwise true.
+      Throws InvalidOperationException: Thrown when the input newName already exists in current print setting list.
     void Revert()
       Description: Revert the current print setting.
+      Throws InvalidOperationException: Thrown when the current print setting is In-Session.
     bool Save()
       Description: Save the changes for the current print setting.
       Returns: False if save operation fails, otherwise True.
+      Throws InvalidOperationException: Thrown when the current print setting is In-Session or the current print setting has not changed.
     bool SaveAs(string newName)
       Description: Save the current print setting to another print setting with the specified name.
       @newName: print setting name to be saved as.
       Returns: False if Save As operation fails, otherwise true.
+      Throws InvalidOperationException: Thrown when the input newName already exists in current print setting list.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Profile
 Full Name: Autodesk.Revit.DB.Profile
-
 Description: A geometric profile consisting of a loop of curves.
 Remarks: The profile may be filled.
 Inherits: GeometryObject
-Implements: IDisposable
 
   PROPERTIES:
     CurveArray Curves { get; }
@@ -10170,13 +11398,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] ProfileFamilyUsage
 Full Name: Autodesk.Revit.DB.ProfileFamilyUsage
-
 Description: An enumerated type listing all types of profile families.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Any = 0
@@ -10194,28 +11419,26 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - StairRiser = 12
     - StairSupport = 13
 
+--------------------------------------------------------------------------------
 
 [ENUM] ProfilePlaneLocation
 Full Name: Autodesk.Revit.DB.ProfilePlaneLocation
-
 Description: Indicates the location of Sweep profile plane on the path curve.
 Remarks: Use this enum in the NewSweep() method to create generic forms.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Start = 0
     - MidPoint = 1
     - End = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] ProjectInfo
 Full Name: Autodesk.Revit.DB.ProjectInfo
-
 Description: An object that represents a Project Information within the Autodesk Revit project.
 Remarks: This object derived from the Element base object and such supports all the methods of that object such as the ability to retrieve the parameters of that object.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     string Address { get; set; }
@@ -10241,14 +11464,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ProjectLocation
 Full Name: Autodesk.Revit.DB.ProjectLocation
-
 Description: A representation of a specific instance and location of the current project.
-Remarks: When using shared coordinates, ProjectLocations can be used to specify specific locations for instances of a linked model. A ProjectLocation keeps track of the position of an instance in relationship to the project's SiteLocation.By default, each Revit project contains at least one named location, called Internal. Existing ProjectLocation objects can be found by using the ProjectLocations property on the Document object. New project locations can be created by duplicating an existing project location using the Duplicate method, and modifying the location's project position. See also
+Remarks: When using shared coordinates, ProjectLocations can be used to specify specific locations for instances of a linked model. A ProjectLocation keeps track of the position of an instance in relationship to the project's SiteLocation.By default, each Revit project contains at least one named location, called Internal. Existing ProjectLocation objects can be found by using the ProjectLocations property on the Document object. New project locations can be created by duplicating an existing project location using the Duplicate method, and modifying the location's project position. See also SiteLocation
 Inherits: Instance
-Implements: IDisposable
 
   METHODS:
     static ProjectLocation Create(Document document, ElementId siteLocationId, string name)
@@ -10257,11 +11477,18 @@ Implements: IDisposable
       @siteLocationId: The ElementId of the SiteLocation to which the new ProjectLocation would be created.
       @name: The name of the instance of ProjectLocation to be created.
       Returns: The newly created instance of ProjectLocation.
+      Throws ArgumentException: document is not a project document. -or- The element siteLocationId does not exist in the document -or- name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~". -or- There is already a ProjectLocation with this name in the given SiteLocation.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     ProjectLocation Duplicate(string name)
       Description: Generate a copy of this project location with the specified name.
       Returns: A new ProjectLocation which is a duplicate of this location, with the input name.
+      Throws ArgumentNullException: A non-optional argument was null
     ProjectPosition GetProjectPosition(XYZ point)
       Description: Gets the coordinates of a point in the ProjectLocation's coordinate system.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Unable to use the project position's transform to calculate the point.
     SiteLocation GetSiteLocation()
       Description: Gets the site location to which this project location refers.
     static bool IsProjectLocationNameUnique(Document document, string name, ElementId siteLocationId)
@@ -10270,18 +11497,19 @@ Implements: IDisposable
       @name: The name to check.
       @siteLocationId: The ElementId of the SiteLocation which the ProjectLocation belongs to.
       Returns: True if the name is unused (among ProjectLocations). False otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetProjectPosition(XYZ point, ProjectPosition position)
       Description: Sets the coordinates of a point in the ProjectLocation's coordinate system.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Unable to use the project position's transform to calculate the point.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ProjectLocationSet
 Full Name: Autodesk.Revit.DB.ProjectLocationSet
-
 Description: An set that contains project locations.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new ProjectLocationSet()
@@ -10319,16 +11547,15 @@ Implements: IDisposable, IEnumerable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] ProjectLocationSetIterator
 Full Name: Autodesk.Revit.DB.ProjectLocationSetIterator
-
 Description: An iterator to a project location set.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new ProjectLocationSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -10343,16 +11570,21 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] ProjectPosition
 Full Name: Autodesk.Revit.DB.ProjectPosition
-
 Description: ProjectPosition is a class used to represent a geographical offset and rotation. It can be used to represent the position of a project.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new ProjectPosition(double ew, double ns, double elevation, double angle)
+      Description: Construct a new ProjectPosition with the specified East/West offset, North/South offset, elevation offset, and angle of rotation.
+      @ew: East/West offset
+      @ns: North/South offset
+      @elevation: Elevation offset
+      @angle: Rotation from true north, in radians
     new ProjectPosition(ProjectPosition other)
+      Description: Creates a copy of the ProjectPosition.
+      Throws ArgumentNullException: A non-optional argument was null
 
   PROPERTIES:
     double Angle { get; set; }
@@ -10371,23 +11603,17 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PropertyLine
 Full Name: Autodesk.Revit.DB.PropertyLine
-
 Description: Represents kinds of PropertyLines.
 Inherits: Element
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] PropertySetElement
 Full Name: Autodesk.Revit.DB.PropertySetElement
-
 Description: An element that groups together a set of related parameters.
 Inherits: Element
-Implements: IDisposable
 
   METHODS:
     static PropertySetElement Create(Document document, ThermalAsset thermalAsset)
@@ -10395,37 +11621,46 @@ Implements: IDisposable
       @document: The document in which to create the PropertySetElement.
       @thermalAsset: The thermal asset containing the values that will be present in the PropertySetElement.
       Returns: The new PropertySetElement.
+      Throws ArgumentException: Thrown when the name of the asset is empty, contains prohibited characters, or is not unique
+      Throws ArgumentNullException: A non-optional argument was null
     static PropertySetElement Create(Document document, StructuralAsset structuralAsset)
       Description: Creates a new PropertySetElement to contain the given asset.
       @document: The document in which to create the PropertySetElement.
       @structuralAsset: The structural asset containing the values that will be present in the PropertySetElement.
       Returns: The new PropertySetElement.
+      Throws ArgumentException: Thrown when the name of the asset is empty, contains prohibited characters, or is not unique
+      Throws ArgumentNullException: A non-optional argument was null
     PropertySetElement Duplicate(Document document, string name)
       Description: Creates a duplicate of this PropertySetElement.
       @document: The document in which to create the PropertySetElement.
       @name: The name to use for the new PropertySetElement.
       Returns: The new PropertySetElement.
+      Throws ArgumentException: The given value for name is already in use as a property set name. -or- name is an empty string. -or- name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~".
+      Throws ArgumentNullException: A non-optional argument was null
     StructuralAsset GetStructuralAsset()
       Description: Gets a copy of the StructuralAsset.
     ThermalAsset GetThermalAsset()
       Description: Gets a copy of the ThermalAsset.
     void SetStructuralAsset(StructuralAsset structuralAsset)
       Description: Sets a copy of the given StucturalAsset to be used in the PropertySetElement.
+      Throws ArgumentException: Thrown when the name of the asset is empty, contains prohibited characters, or is not unique
+      Throws ArgumentNullException: A non-optional argument was null
     void SetThermalAsset(ThermalAsset thermalAsset)
       Description: Sets a copy of the given ThermalAsset to be used in the PropertySetElement.
+      Throws ArgumentException: Thrown when the name of the asset is empty, contains prohibited characters, or is not unique
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] PropOverrideMode
 Full Name: Autodesk.Revit.DB.PropOverrideMode
-
 Description: An enumerated type listing ways how overridden object styles get exported.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ByEntity = 0
     - ByLayer = 1
     - NewLayer = 2
+
+--------------------------------------------------------------------------------
 

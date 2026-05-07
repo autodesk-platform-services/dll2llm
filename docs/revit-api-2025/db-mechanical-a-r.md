@@ -1,50 +1,47 @@
 ﻿# Autodesk.Revit.DB.Mechanical
 
-
 NAMESPACE: Autodesk.Revit.DB.Mechanical
 --------------------------------------------------------------------------------
 
 [ENUM] AirCoolingCoilType
 Full Name: Autodesk.Revit.DB.Mechanical.AirCoolingCoilType
-
 Description: The type of air cooling coil.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - None = 0
     - ChilledWater = 1
     - DirectExpansion = 2
 
+--------------------------------------------------------------------------------
+
 [ENUM] AirFanType
 Full Name: Autodesk.Revit.DB.Mechanical.AirFanType
-
 Description: The type of air fan.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ConstantVolume = 0
     - VariableVolume = 1
 
+--------------------------------------------------------------------------------
+
 [ENUM] AirHeatExchangerType
 Full Name: Autodesk.Revit.DB.Mechanical.AirHeatExchangerType
-
 Description: The type of air loop.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - None = 0
     - Enthalpy = 1
     - Sensible = 2
 
+--------------------------------------------------------------------------------
+
 [ENUM] AirHeatingCoilType
 Full Name: Autodesk.Revit.DB.Mechanical.AirHeatingCoilType
-
 Description: The type of air heating coil.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - None = 0
@@ -52,9 +49,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Furnace = 2
     - HotWater = 3
 
+--------------------------------------------------------------------------------
+
 [CLASS] AirSystemData
 Full Name: Autodesk.Revit.DB.Mechanical.AirSystemData
-
 Description: Represents the data and parameter of analytical air system.
 Implements: IDisposable
 
@@ -85,22 +83,20 @@ Implements: IDisposable
 
 [ENUM] AnalyticalSystemDomain
 Full Name: Autodesk.Revit.DB.Mechanical.AnalyticalSystemDomain
-
 Description: The domain type of analytical system.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - WaterLoop = 0
     - AirSystem = 1
     - ElectricalSystem = 2
 
+--------------------------------------------------------------------------------
+
 [ENUM] ComponentClassification
 Full Name: Autodesk.Revit.DB.Mechanical.ComponentClassification
-
 Description: An enumerated type lists all MEP component classification. This attribute describes the general purpose of the MEP part component, that is used for scheduling, tagging, filter, ODBC, and etc. One component classification may include more than one part type.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Undefined = 0
@@ -123,12 +119,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Hanger = 113
     - Sleeve = 114
 
+--------------------------------------------------------------------------------
+
 [ENUM] ConditionType
 Full Name: Autodesk.Revit.DB.Mechanical.ConditionType
-
 Description: An enumerated type listing all the possible condition types for a space object.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Heated = 0
@@ -139,13 +135,13 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - NaturallyVentedOnly = 5
     - NoOfConditionTypes = 6
 
+--------------------------------------------------------------------------------
+
 [CLASS] Duct
 Full Name: Autodesk.Revit.DB.Mechanical.Duct
-
 Description: A duct in the Autodesk Revit MEP product.
 Remarks: The duct is only available in the Autodesk Revit MEP product.
 Inherits: MEPCurve
-Implements: IDisposable
 
   PROPERTIES:
     DuctType DuctType { get; set; }
@@ -162,6 +158,9 @@ Implements: IDisposable
       @startConnector: The first connector where the new duct starts.
       @endConnector: The second point of the new duct.
       Returns: The created duct.
+      Throws ArgumentException: The duct type ductTypeId is not valid duct type. -or- The ElementId levelId is not a Level. -or- The connector's domain is not Domain.â€‹DomainHvac. -or- The points of startConnector and endConnector are too close: for MEPCurve, the minimum length is 1/10 inch.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Thrown when the new duct fails to connect with the connector.
     static Duct Create(Document document, ElementId ductTypeId, ElementId levelId, Connector startConnector, XYZ endPoint)
       Description: Creates a new duct that connects to the connector.
       @document: The document.
@@ -170,6 +169,9 @@ Implements: IDisposable
       @startConnector: The first connector where the new duct starts.
       @endPoint: The second point of the new duct.
       Returns: The created duct.
+      Throws ArgumentException: The duct type ductTypeId is not valid duct type. -or- The ElementId levelId is not a Level. -or- The connector's domain is not Domain.â€‹DomainHvac. -or- The points of startConnector and endPoint are too close: for MEPCurve, the minimum length is 1/10 inch.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Thrown when the new duct fails to connect with the connector.
     static Duct Create(Document document, ElementId systemTypeId, ElementId ductTypeId, ElementId levelId, XYZ startPoint, XYZ endPoint)
       Description: Creates a new duct from two points.
       @document: The document.
@@ -179,6 +181,8 @@ Implements: IDisposable
       @startPoint: The start point of the duct.
       @endPoint: The end point of the duct.
       Returns: The created duct.
+      Throws ArgumentException: The systemTypeId is not valid HVAC system type. -or- The duct type ductTypeId is not valid duct type. -or- The ElementId levelId is not a Level. -or- The points of startPoint and endPoint are too close: for MEPCurve, the minimum length is 1/10 inch.
+      Throws ArgumentNullException: A non-optional argument was null
     static Duct CreatePlaceholder(Document document, ElementId systemTypeId, ElementId ductTypeId, ElementId levelId, XYZ startPoint, XYZ endPoint)
       Description: Creates a new placeholder duct.
       @document: The document.
@@ -188,25 +192,30 @@ Implements: IDisposable
       @startPoint: The first point of the placeholder line.
       @endPoint: The second point of the placeholder line.
       Returns: The created placeholder duct.
+      Throws ArgumentException: The systemTypeId is not valid HVAC system type. -or- The duct type ductTypeId is not valid duct type. -or- The ElementId levelId is not a Level. -or- The points of startPoint and endPoint are too close: for MEPCurve, the minimum length is 1/10 inch.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsDuctTypeId(Document document, ElementId ductTypeId)
       Description: Checks if given type is valid duct type.
       @document: The document.
       @ductTypeId: ElementId of the duct type to check.
       Returns: True if duct type can used for this duct, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsHvacSystemTypeId(Document document, ElementId systemTypeId)
       Description: Checks if given type is valid HVAC system type.
       @document: The document.
       @systemTypeId: ElementId of the HVAC system type to check.
       Returns: True if the given systemTypeId is the HVAC system type, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetSystemType(ElementId systemTypeId)
       Description: Updates the associated system type for the duct.
       @systemTypeId: The ElementId of the hvac system type.
+      Throws ArgumentException: The systemTypeId is not valid HVAC system type.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] DuctFittingAndAccessoryConnectorData
 Full Name: Autodesk.Revit.DB.Mechanical.DuctFittingAndAccessoryConnectorData
-
 Description: The input data used by external servers for calculation of the duct fitting and duct accessory coefficient.
 Remarks: width, height, diameter, flow, velocity pressure and connector index are input data for the calculation,
 Implements: IDisposable
@@ -217,7 +226,7 @@ Implements: IDisposable
     double Diameter { get; }
       Description: The connector diameter, Units:(ft).
     double Flow { get; }
-      Description: The connector flow, Units:(ftÃ‚Â³/s)
+      Description: The connector flow, Units:(ftÂ³/s)
     FlowDirectionType FlowDirection { get; }
       Description: the flow direction of this connector, In or Out.
     double Height { get; }
@@ -231,7 +240,7 @@ Implements: IDisposable
     ConnectorProfileType Profile { get; }
       Description: The connector profile.
     double VelocityPressure { get; }
-      Description: The connector velocity pressure. Units: (kg/(ftÃ‚Â·sÃ‚Â²)).
+      Description: The connector velocity pressure. Units: (kg/(ftÂ·sÂ²)).
     double Width { get; }
       Description: The connector width, Units:(ft).
 
@@ -245,7 +254,6 @@ Implements: IDisposable
 
 [CLASS] DuctFittingAndAccessoryData
 Full Name: Autodesk.Revit.DB.Mechanical.DuctFittingAndAccessoryData
-
 Description: The input data used by external servers for calculation of the duct fitting and duct accessory coefficient.
 Remarks: A FamilyInstance is the input data for the calculation,
 Implements: IDisposable
@@ -280,7 +288,6 @@ Implements: IDisposable
 
 [CLASS] DuctFittingAndAccessoryPressureDropData
 Full Name: Autodesk.Revit.DB.Mechanical.DuctFittingAndAccessoryPressureDropData
-
 Description: The input and output data used by external servers for calculation of the duct fitting and duct accessory pressure drop.
 Implements: IDisposable
 
@@ -301,12 +308,13 @@ Implements: IDisposable
     void SetDefaultEntity(Entity defaultEntity)
       Description: Stores the default entity in the data.
       @defaultEntity: The Entity to be stored.
+      Throws ArgumentException: Writing of Entities of this Schema is not allowed to the current add-in.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] DuctFittingAndAccessoryPressureDropItem
 Full Name: Autodesk.Revit.DB.Mechanical.DuctFittingAndAccessoryPressureDropItem
-
 Description: A flow path of the duct/pipe fitting and accessory. It is defined by the begin connector and end connector.
 Implements: IDisposable
 
@@ -314,13 +322,13 @@ Implements: IDisposable
     int BeginConnectorIndex { get; }
       Description: The index of the begin connector of the flow path.
     double Coefficient { get; set; }
-      Description: The coefficient between the begin connector and end connector, Units: (kg/(ftÃ‚Â·sÃ‚Â²)).
+      Description: The coefficient between the begin connector and end connector, Units: (kg/(ftÂ·sÂ²)).
     int EndConnectorIndex { get; }
       Description: The index of the end conector of the flow path.
     bool IsValidObject { get; }
       Description: Specifies whether the .NET object represents a valid Revit entity.
     double VelocityPressure { get; }
-      Description: The velocity pressure, for converting between coefficient and pressure drop on this flow path. Units: (kg/(ftÃ‚Â·sÃ‚Â²)).
+      Description: The velocity pressure, for converting between coefficient and pressure drop on this flow path. Units: (kg/(ftÂ·sÂ²)).
 
   METHODS:
     void Dispose()
@@ -329,22 +337,20 @@ Implements: IDisposable
 
 [ENUM] DuctFlowConfigurationType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctFlowConfigurationType
-
 Description: An enumerated type listing all duct flow configuration types for a connector.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Calculated = 0
     - Preset = 1
     - System = 2
 
+--------------------------------------------------------------------------------
+
 [CLASS] DuctInsulation
 Full Name: Autodesk.Revit.DB.Mechanical.DuctInsulation
-
 Description: Represents insulation applied to the outside of a given duct , fitting or accessory.
 Inherits: InsulationLiningBase
-Implements: IDisposable
 
   METHODS:
     static DuctInsulation Create(Document document, ElementId ductOrContentElementId, ElementId ductInsulationTypeId, double Thickness)
@@ -354,24 +360,25 @@ Implements: IDisposable
       @ductInsulationTypeId: The duct insulation type. If the input duct insulation type is InvalidElementId, the default insulation type from the document will be used.
       @Thickness: The thickness of the insulation.
       Returns: The newly created duct insulation.
+      Throws ArgumentException: This id does not represent a duct, fitting, or accessory element. -or- This duct insulation type is invalid. -or- Thickness is not valid for assignment to insulation or lining elements.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
 
 --------------------------------------------------------------------------------
 
 [CLASS] DuctInsulationType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctInsulationType
-
 Description: This class represents a duct insulation type in Autodesk Revit.
 Inherits: ElementType
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DuctLining
 Full Name: Autodesk.Revit.DB.Mechanical.DuctLining
-
 Description: Represents Lining applied to the inside of a given duct, fitting or accessory.
 Inherits: InsulationLiningBase
-Implements: IDisposable
 
   METHODS:
     static DuctLining Create(Document document, ElementId ductOrContentElementId, ElementId ductLiningTypeId, double Thickness)
@@ -381,15 +388,18 @@ Implements: IDisposable
       @ductLiningTypeId: The duct lining type. If the input duct lining type is InvalidElementId, the default lining type from the document will be used.
       @Thickness: The thickness of the lining.
       Returns: The newly created duct lining.
+      Throws ArgumentException: This id does not represent a duct, fitting, or accessory element. -or- This duct Lining type is invalid. -or- Thickness is not valid for assignment to insulation or lining elements.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
 
 --------------------------------------------------------------------------------
 
 [CLASS] DuctLiningType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctLiningType
-
 Description: This class represents a duct lining type in Autodesk Revit.
 Inherits: ElementType
-Implements: IDisposable
 
   PROPERTIES:
     double Roughness { get; set; }
@@ -405,19 +415,18 @@ Implements: IDisposable
 
 [ENUM] DuctLossMethodType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctLossMethodType
-
 Description: An enumerated type listing all duct loss calculation methods for a connector.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NotDefined = 0
     - SpecificLoss = 4
     - Coefficient = 6
 
+--------------------------------------------------------------------------------
+
 [CLASS] DuctPressureDropData
 Full Name: Autodesk.Revit.DB.Mechanical.DuctPressureDropData
-
 Description: The input and output data used by external servers for calculation of the duct pressure drop.
 Remarks: Profile type, Height, Diameter for round profile or width for other profiles, Length, Density, Viscosity, Roughness and Flow are input field values for the calculation. HydraulicDiameter, ReynoldsNumber, Velocity, VelocityPressure, Friction, PressureDrop, and Coefficient are output field values for the calculation
 Implements: IDisposable
@@ -428,13 +437,13 @@ Implements: IDisposable
     double Coefficient { get; set; }
       Description: The coefficient of the duct.
     double Density { get; }
-      Description: The density of the duct. Units: (kg/ftÃ‚Â³).
+      Description: The density of the duct. Units: (kg/ftÂ³).
     double DynamicViscosity { get; }
       Description: The dynamic viscosity of the air in the duct. Units: (kg/(ft*s)).
     double Flow { get; }
-      Description: The flow of the duct. Units: (ftÃ‚Â³/s).
+      Description: The flow of the duct. Units: (ftÂ³/s).
     double Friction { get; set; }
-      Description: The friction of the duct. Units: (kg/(ftÃ‚Â²Ã‚Â·sÃ‚Â²)).
+      Description: The friction of the duct. Units: (kg/(ftÂ²Â·sÂ²)).
     double Height { get; }
       Description: The height of the duct. If the duct is round, it will be equal to the diameter of the duct. Units: (ft).
     double HydraulicDiameter { get; set; }
@@ -446,7 +455,7 @@ Implements: IDisposable
     SystemCalculationLevel Level { get; }
       Description: The calculation level of the system.
     double PressureDrop { get; set; }
-      Description: The pressure drop of the duct. Units: (kg/(ftÃ‚Â·sÃ‚Â²)).
+      Description: The pressure drop of the duct. Units: (kg/(ftÂ·sÂ²)).
     double ReynoldsNumber { get; set; }
       Description: The reynolds number of the duct.
     double Roughness { get; }
@@ -456,7 +465,7 @@ Implements: IDisposable
     double Velocity { get; set; }
       Description: The velocity of the duct. Units: (ft/s).
     double VelocityPressure { get; set; }
-      Description: The velocity pressure of the duct. Units: (kg/(ftÃ‚Â·sÃ‚Â²)).
+      Description: The velocity pressure of the duct. Units: (kg/(ftÂ·sÂ²)).
     double Viscosity { get; }
       Description: The kinematic viscosity of the air in the duct. Units: (ft^2/s).
     double WidthOrDiameter { get; }
@@ -469,10 +478,8 @@ Implements: IDisposable
 
 [CLASS] DuctSettings
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSettings
-
 Description: The duct setting class.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     double AirDensity { get; set; }
@@ -525,6 +532,7 @@ Implements: IDisposable
       Description: Get the duct settings of the project.
       @document: The document.
       Returns: The duct settings of the project.
+      Throws ArgumentNullException: A non-optional argument was null
     MEPCalculationServerInfo GetPressLossCalculationServerInfo()
       Description: Get the MEPServerInfo of the current pipe pressure loss calculation server.
       Returns: The MEPServerInfo of the current pipe pressure loss calculation server
@@ -534,40 +542,44 @@ Implements: IDisposable
     bool GetSpecificFittingAngleStatus(double angle)
       Description: Gets the status of given specific angle.
       @angle: The specific fitting angle (in degree) that must be one of 90, 60, 45, 30, 22.5 or 11.25 degrees.
+      Throws ArgumentOutOfRangeException: The given value for angle must be 90, 60, 45, 30, 22.5 or 11.25 degrees.
     static bool IsNetworkBasedCalculationsEnabled(Document document)
       Description: Indicates whether network based calculations for duct networks is enabled in the specified document.
       @document: The document.
       Returns: Returns true if network based calculations for duct networks is enabled, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsValidSpecificFittingAngle(double angle)
       Description: Checks that the given value is a valid specific fitting angle. The specific fitting angles are angles of 90, 60, 45, 30, 22.5 or 11.25 degrees.
       @angle: The angle value (in degree).
       Returns: True if the given value is a valid specific fitting angle.
     void SetPressLossCalculationServerInfo(MEPCalculationServerInfo serverInfo)
       Description: Set the MEPServerInfo of the current pipe pressure loss calculation server.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetSpecificFittingAngleStatus(double angle, bool useInLayout)
       Description: Sets the status of given specific angle.
       @angle: The specific angle (in degree) that must be one of 60, 45, 30, 22.5 or 11.25 degrees.
       @useInLayout: Status, true - using the given angle during the duct layout.
+      Throws ArgumentOutOfRangeException: The given value for angle must be 90, 60, 45, 30, 22.5 or 11.25 degrees.
+      Throws InvalidOperationException: Can not set an angle status for an invalid angle.
 
 --------------------------------------------------------------------------------
 
 [ENUM] DuctShape
 Full Name: Autodesk.Revit.DB.Mechanical.DuctShape
-
 Description: Enumerated type listing possible shapes for ducts.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Round = 0
     - Rectangular = 1
     - Oval = 2
 
+--------------------------------------------------------------------------------
+
 [CLASS] DuctSizeIterator
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSizeIterator
-
 Description: An iterator to a set of MEP duct sizes from DuctSizes.
-Implements: IEnumerator`1, IDisposable, IEnumerator
+Implements: IEnumerator<MEPSize>, IDisposable, IEnumerator
 
   PROPERTIES:
     MEPSize Current { get; }
@@ -580,6 +592,7 @@ Implements: IEnumerator`1, IDisposable, IEnumerator
     MEPSize GetCurrent()
       Description: Returns the current MEPSize.
       Returns: The current MEPSize.
+      Throws InvalidOperationException: There is no current item in the iterator.
     bool HasCurrent()
       Description: Identifies if the iterator has a current item.
       Returns: True if there is a current item.
@@ -596,9 +609,8 @@ Implements: IEnumerator`1, IDisposable, IEnumerator
 
 [CLASS] DuctSizes
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSizes
-
 Description: Class RbsDuctSizes being used to store the duct sizes
-Implements: IEnumerable`1, IEnumerable, IDisposable
+Implements: IEnumerable<MEPSize>, IEnumerable, IDisposable
 
   PROPERTIES:
     int Count { get; }
@@ -623,9 +635,8 @@ Implements: IEnumerable`1, IEnumerable, IDisposable
 
 [CLASS] DuctSizeSettingIterator
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSizeSettingIterator
-
 Description: An iterator to a set of items from DuctSizeSettings. Each item is a KeyValuePair(DuctShape::Enum, DuctSizes).
-Implements: IEnumerator`1, IDisposable, IEnumerator
+Implements: IEnumerator<KeyValuePair<DuctShape, DuctSizes>>, IDisposable, IEnumerator
 
   PROPERTIES:
     KeyValuePair<DuctShape, DuctSizes> Current { get; }
@@ -651,10 +662,9 @@ Implements: IEnumerator`1, IDisposable, IEnumerator
 
 [CLASS] DuctSizeSettings
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSizeSettings
-
 Description: Duct sizes settings
 Inherits: Element
-Implements: IDisposable, IEnumerable`1, IEnumerable
+Implements: IEnumerable<KeyValuePair<DuctShape, DuctSizes>>, IEnumerable
 
   PROPERTIES:
     DuctSizes Item { get; }
@@ -664,6 +674,10 @@ Implements: IDisposable, IEnumerable`1, IEnumerable
       Description: Inserts a new MEPSize in to the duct size settings. The duct shape determines the location of the new size in the size table.
       @shape: The shape of duct.
       @sizeInfo: The new MEPSize to be added.
+      Throws ArgumentException: Throws if there is no size set determined by the duct shape or there is already the same size in the size set determined by the duct shape.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Throws if the function is called during iterating the size set.
     DuctSizeSettingIterator GetDuctSizeSettingIterator()
       Description: Returns a DuctSizeSettingIterator object that iterates through the collection.
       Returns: A DuctSizeSettingIterator object that can be used to iterate through key-value pairs in the collection.
@@ -671,25 +685,27 @@ Implements: IDisposable, IEnumerable`1, IEnumerable
       Description: Get the duct size settings of the project.
       @aDoc: The document.
       Returns: The duct size settings of the project.
+      Throws ArgumentNullException: A non-optional argument was null
     IEnumerator<KeyValuePair<DuctShape, DuctSizes>> GetEnumerator()
       Description: Returns an enumerator that iterates through a collection.
       Returns: An IEnumerator object that can be used to iterate through the collection.
     int GetSizeCount(DuctShape shape)
       Description: Get the size count of the duct size table. The duct shape determines the location of the size in the size table.
       @shape: The shape of duct.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     void RemoveSize(DuctShape shape, double nominalDiameter)
       Description: Erase the existing MEPSize with this nominal diameter. The duct shape determines the location of the size in the size table.
       @shape: The shape of duct.
       @nominalDiameter: Nominal diameter.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Throws if the function is called during iterating the size set.
 
 --------------------------------------------------------------------------------
 
 [ENUM] DuctSystemType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctSystemType
-
 Description: An enumerated type listing all the possible duct system types for a connector object.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - UndefinedSystemType = 0
@@ -700,32 +716,30 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Fitting = 28
     - Global = 29
 
+--------------------------------------------------------------------------------
+
 [CLASS] DuctType
 Full Name: Autodesk.Revit.DB.Mechanical.DuctType
-
 Description: A duct type element.
 Inherits: MEPCurveType
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [ENUM] EquipmentClassification
 Full Name: Autodesk.Revit.DB.Mechanical.EquipmentClassification
-
 Description: This enumeration is used to classify the mechanical equipment.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - None = 0
     - Pump = 5
 
+--------------------------------------------------------------------------------
+
 [CLASS] FlexDuct
 Full Name: Autodesk.Revit.DB.Mechanical.FlexDuct
-
 Description: A flex duct in the Autodesk Revit MEP product.
 Inherits: MEPCurve
-Implements: IDisposable
 
   PROPERTIES:
     XYZ EndTangent { get; set; }
@@ -748,6 +762,8 @@ Implements: IDisposable
       @endTangent: The tangent vector at the end of the curve. The invalid or zero vector is ignored.
       @points: The point array indicating the path of the flexible duct, including the end point.
       Returns: If creation was successful then a new flexible duct is returned, otherwise an exception with failure information will be thrown.
+      Throws ArgumentException: The systemTypeId is not valid HVAC system type. -or- The type ductTypeId is not valid flexible duct type. -or- The ElementId levelId is not a Level. -or- The valid number of points is less than two. In order to create a flex curve, at least two points are required. Note the duplicate points don't take into account.
+      Throws ArgumentNullException: A non-optional argument was null
     static FlexDuct Create(Document document, ElementId systemTypeId, ElementId ductTypeId, ElementId levelId, IList<XYZ> points)
       Description: Creates a new flexible duct into the document, using a point array and flexible duct type.
       @document: The document.
@@ -756,34 +772,35 @@ Implements: IDisposable
       @levelId: The level id for the flexible duct.
       @points: The point array indicating the path of the flexible duct, including the end point.
       Returns: If creation was successful then a new flexible duct is returned, otherwise an exception with failure information will be thrown.
+      Throws ArgumentException: The systemTypeId is not valid HVAC system type. -or- The type ductTypeId is not valid flexible duct type. -or- The ElementId levelId is not a Level. -or- The valid number of points is less than two. In order to create a flex curve, at least two points are required. Note the duplicate points don't take into account.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsFlexDuctTypeId(Document document, ElementId ductTypeId)
       Description: Checks if given type is valid flexible duct type.
       @document: The document.
       @ductTypeId: ElementId of the flexible duct type to check.
       Returns: True if flexible duct type can used for this duct, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsHVACSystemTypeId(Document document, ElementId systemTypeId)
       Description: Checks if given type is valid HVAC system type.
       @document: The document.
       @systemTypeId: ElementId of the HVAC system type to check.
       Returns: True if the given systemTypeId is the HVAC system type, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] FlexDuctType
 Full Name: Autodesk.Revit.DB.Mechanical.FlexDuctType
-
 Description: A flex duct type in the Autodesk Revit MEP product.
 Remarks: The flex duct type is only available in the Autodesk Revit MEP product.
 Inherits: MEPCurveType
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [INTERFACE] IDuctFittingAndAccessoryPressureDropServer
 Full Name: Autodesk.Revit.DB.Mechanical.IDuctFittingAndAccessoryPressureDropServer
-
 Description: Interface class for external servers implementing duct fitting and duct accessory coefficient calculation.
-Remarks: A typical way to use the external server can be: Implement a server class that derives from this interface Create a new server object and register it with the service, see ExternalServiceRegistry.Assign server to duct fitting instance.
+Remarks: A typical way to use the external server can be: Implement a server class that derives from this interfaceCreate a new server object and register it with the service, see ExternalServiceRegistry.Assign server to duct fitting instance.
 Implements: IExternalServer
 
   METHODS:
@@ -802,9 +819,8 @@ Implements: IExternalServer
 
 [INTERFACE] IDuctPressureDropServer
 Full Name: Autodesk.Revit.DB.Mechanical.IDuctPressureDropServer
-
 Description: Interface for external servers implementing duct pressure drop calculation.
-Remarks: A typical way to use the external server can be: Implement a server class that derives from this interface Create a new server object and register it with the service, see ExternalServiceRegistry.Assign server for the duct pressure drop calculation in DuctSettings.
+Remarks: A typical way to use the external server can be: Implement a server class that derives from this interfaceCreate a new server object and register it with the service, see ExternalServiceRegistry.Assign server for the duct pressure drop calculation in DuctSettings.
 Implements: IExternalServer
 
   METHODS:
@@ -822,20 +838,16 @@ Implements: IExternalServer
 
 [CLASS] MechanicalEquipment
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalEquipment
-
 Description: Provides access to the Mechanical Equipment in Autodesk Revit MEP.
 Remarks: The Mechanical Equipment object can only be queried in Autodesk Revit MEP.
 Inherits: MEPModel
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] MechanicalEquipmentSet
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalEquipmentSet
-
 Description: A set of interrelated mechanical equipment in a MEP system that works together.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     EquipmentClassification Classification { get; }
@@ -849,35 +861,44 @@ Implements: IDisposable
     void Add(ISet<ElementId> elemIds)
       Description: Adds member element ids to the mechanical equipment set.
       @elemIds: Element ids to be added to the mechanical equipment set.
+      Throws ArgumentException: The valid members must have the same classification and system. They cannot be a member of existing set. -or- These elements are serially connected with each other, or with one of the set members.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool AreElementsNotConnectedInSeries(Document document, ISet<ElementId> elemIds)
       Description: Checks if the elements are not serially connected.
       @document: The document of these elements.
       @elemIds: The element ids to be tested.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool AreValidMembers(Document document, ISet<ElementId> memberIds)
       Description: Checks if these are valid members for mechanical equipment set.
       @document: The document of the member elements.
       @memberIds: The member element ids.
+      Throws ArgumentNullException: A non-optional argument was null
     static MechanicalEquipmentSet Create(Document document, ElementId typeId, ISet<ElementId> memberIds)
       Description: Creates a new instance of a mechanical equipment set and adds it to the document.
       @document: The document where the element will be created and added.
       @typeId: The type of new mechanical equipment set.
       @memberIds: The member elements of this mechanical equipment set.
       Returns: The newly created mechanical equipment set.
+      Throws ArgumentException: Invalid mechanical equipment set type. -or- This mechanical equipment set needs at least two members. -or- The valid members must have the same classification and system. A valid member cannot be a member of any other existing set. -or- These elements are serially connected.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     ISet<ElementId> GetMembers()
       Description: Gets member element ids for the mechanical equipment set.
       Returns: Element ids for the members in the mechanical equipment set.
     void Remove(ISet<ElementId> elemIds)
       Description: Removes member element ids from the mechanical equipment set.
       @elemIds: Element ids to be removed from the mechanical equipment set.
+      Throws ArgumentException: One or more element ids was not permitted to be removed from the mechanical equipment set. All elements should be a member of the mechanical equipment set.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] MechanicalEquipmentSetType
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalEquipmentSetType
-
 Description: Represents a type for a set of interrelated mechanical equipment in a MEP system that works together.
 Inherits: ElementType
-Implements: IDisposable
 
   METHODS:
     static MechanicalEquipmentSetType Create(Document document, string name)
@@ -885,16 +906,19 @@ Implements: IDisposable
       @document: The document where the new type is created.
       @name: The name of new type.
       Returns: The newly created mechanical equipment set type.
+      Throws ArgumentException: name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~". -or- name is an empty string. -or- The given name is not unique
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
 
 --------------------------------------------------------------------------------
 
 [CLASS] MechanicalFitting
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalFitting
-
 Description: A mechanical fitting in the Autodesk Revit MEP product.
 Remarks: The mechanical fitting is only available in the Autodesk Revit MEP product.
 Inherits: MEPModel
-Implements: IDisposable
 
   PROPERTIES:
     PartType PartType { get; }
@@ -904,10 +928,8 @@ Implements: IDisposable
 
 [CLASS] MechanicalSystem
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalSystem
-
 Description: A mechanical system element.
 Inherits: MEPSystem
-Implements: IDisposable
 
   PROPERTIES:
     Connector BaseEquipmentConnector { get; set; }
@@ -926,15 +948,21 @@ Implements: IDisposable
       @typeId: The identifier of this mechanical system element's type.
       @name: The name of the mechanical system to be created.
       Returns: The newly created mechanical system element.
+      Throws ArgumentException: The typeId is not an element id for a valid mechanical system type.
+      Throws ArgumentNullException: A non-optional argument was null
     static MechanicalSystem Create(Document ADocument, ElementId typeId)
       Description: Creates a new instance of a mechanical system and adds it to the document.
       @ADocument: The document where the element will be created and added.
       @typeId: The identifier of this mechanical system element's type.
       Returns: The newly created mechanical system element.
+      Throws ArgumentException: The typeId is not an element id for a valid mechanical system type.
+      Throws ArgumentNullException: A non-optional argument was null
     double GetFlow()
       Description: Gets the flow of this mechanical system.
+      Throws InvalidOperationException: The flow can not be calculated for this system.
     double GetStaticPressure()
       Description: Gets the static pressure of this mechanical system.
+      Throws InvalidOperationException: The static pressure can not be calculated for this system.
     bool IsPressureDropServerMissing()
       Description: Indicates if any pressure drop server which was used in the mechanical system is not available.
       Returns: True if there is any pressure drop server not available, false otherwise.
@@ -943,10 +971,8 @@ Implements: IDisposable
 
 [CLASS] MechanicalSystemType
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalSystemType
-
 Description: Base class for duct system types
 Inherits: MEPSystemType
-Implements: IDisposable
 
   PROPERTIES:
     RiseDropSymbol RiseDropSettings { get; set; }
@@ -959,16 +985,19 @@ Implements: IDisposable
       @systemClassification: The classification for the mechanical system type to be created
       @name: The name of the mechanical system type to be created.
       Returns: The newly created mechanical system type element.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws ArgumentsInconsistentException: The system classification is not valid for the domain of this system type.
     bool ValidateRiseDropSymbolType(RiseDropSymbol risedropType)
       Description: Confirms if the parameter is a valid HVAC rise/drop symbol type.
       @risedropType: The type.
       Returns: True if the input is a valid HVAC rise/drop symbol type, false otherwise.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] MechanicalUtils
 Full Name: Autodesk.Revit.DB.Mechanical.MechanicalUtils
-
 Description: General utility methods in the Autodesk Revit MEP product.
 
   METHODS:
@@ -978,12 +1007,16 @@ Description: General utility methods in the Autodesk Revit MEP product.
       @ductId: The element id of the duct curve to break.
       @ptBreak: The break point on the duct curve.
       Returns: The new duct curve element id if successful otherwise if a failure occurred an invalidElementId is returned.
+      Throws ArgumentException: "The element is neither a duct nor a duct placeholder." -or- "The given point is not on the duct curve."
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectAirTerminalOnDuct(Document document, ElementId airTerminalId, ElementId ductCurveId)
       Description: Connects an air terminal to a duct directly (without the need for a tee or takeoff).
       @document: The document.
       @airTerminalId: The air terminal id.
       @ductCurveId: The duct curve id.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The familyinstance is not air terminal. -or- The element is not duct curve. -or- The air terminal already has physical connection. -or- The air terminal connector origin doesn't project within the center line of the duct.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtCross(Document document, Connector connector1, Connector connector2, Connector connector3, Connector connector4)
       Description: Connects a group of placeholders that can intersect in a Cross connection.
       @document: The document.
@@ -992,6 +1025,8 @@ Description: General utility methods in the Autodesk Revit MEP product.
       @connector3: The end connector of the third placeholder.
       @connector4: The end connector of the fourth placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The owner of connector is not duct placeholder. -or- The owners of connectors belong to different types of system. -or- The curves of connector1 and connector2 are not collinear or either the connecto1 or connector2 is not connector of curve end. -or- The curves of connector3 and connector4 are not collinear or either the connecto1 or connector2 is not connector of curve end.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtCross(Document document, ElementId placeholder1Id, ElementId placeholder2Id, ElementId placeholder3Id)
       Description: Connects a trio of placeholders that can intersect in a Cross connection.
       @document: The document.
@@ -999,24 +1034,32 @@ Description: General utility methods in the Autodesk Revit MEP product.
       @placeholder2Id: The element id of the second duct placeholder.
       @placeholder3Id: The element id of third duct placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The element id placeholder1Id is not duct placeholder. -or- The element id placeholder2Id is not duct placeholder. -or- The element id placeholder3Id is not duct placeholder. -or- The elements belong to different types of system. -or- The curve placeholder2Id does not connect on the curve placeholder1Id or vice versa. -or- The curve placeholder3Id does not connect on the curve placeholder1Id or vice versa. -or- The curve placeholder2Id and placeholder3Id are not collinear.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtCross(Document document, ElementId placeholder1Id, ElementId placeholder2Id)
       Description: Connects a pair of placeholders that can intersect in a Cross connection.
       @document: The document.
       @placeholder1Id: The element id of the first duct placeholder.
       @placeholder2Id: The element id of the second duct placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The element id placeholder1Id is not duct placeholder. -or- The element id placeholder2Id is not duct placeholder. -or- The elements belong to different types of system.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtElbow(Document document, Connector connector1, Connector connector2)
       Description: Connects a pair of placeholders that can intersect in an Elbow connection.
       @document: The document.
       @connector1: The end connector of the first placeholder.
       @connector2: The end connector of the second placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The owner of connector is not duct placeholder. -or- The owners of connectors belong to different types of system.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtElbow(Document document, ElementId placeholder1Id, ElementId placeholder2Id)
       Description: Connects a pair of placeholders that can intersect in an Elbow connection.
       @document: The document.
       @placeholder1Id: The element id of the first duct placeholder.
       @placeholder2Id: The element id of the second duct placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The element id placeholder1Id is not duct placeholder. -or- The element id placeholder2Id is not duct placeholder. -or- The elements belong to different types of system. -or- The curve placeholder1Id and placeholder2Id are not physically connected.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtTee(Document document, Connector connector1, Connector connector2, Connector connector3)
       Description: Connects a trio of placeholders that can intersect in a Tee connection.
       @document: The document.
@@ -1024,26 +1067,30 @@ Description: General utility methods in the Autodesk Revit MEP product.
       @connector2: The end connector of second placeholder.
       @connector3: The end connector of the third placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The owner of connector is not duct placeholder. -or- The owners of connectors belong to different types of system. -or- The curves of connector1 and connector2 are not collinear or either the connecto1 or connector2 is not connector of curve end.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool ConnectDuctPlaceholdersAtTee(Document document, ElementId placeholder1Id, ElementId placeholder2Id)
       Description: Connects a pair of placeholders that can intersect in a Tee connection.
       @document: The document.
       @placeholder1Id: The element Id of the first duct placeholder.
       @placeholder2Id: The element Id of the second duct placeholder.
       Returns: True if connection succeeds, false otherwise.
+      Throws ArgumentException: The element id placeholder1Id is not duct placeholder. -or- The element id placeholder2Id is not duct placeholder. -or- The elements belong to different types of system. -or- The curve placeholder2Id does not connect on the curve placeholder1Id or vice versa.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> ConvertDuctPlaceholders(Document document, ICollection<ElementId> placeholderIds)
       Description: Converts a collection of duct placeholder elements into duct elements.
       @document: The document.
       @placeholderIds: A collection of element IDs of duct placeholders.
       Returns: A collection of element IDs of ducts and fittings.
+      Throws ArgumentException: The given element id set is empty. -or- The given element IDs (placeholderIds) are not duct placeholders. -or- The elements belong to different types of system.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] MEPAnalyticalSystem
 Full Name: Autodesk.Revit.DB.Mechanical.MEPAnalyticalSystem
-
 Description: Represents an analytical system where the air or water is circulated to satisfy building energy requirements.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     AnalyticalSystemDomain AnalyticalSystemDomain { get; }
@@ -1056,6 +1103,12 @@ Implements: IDisposable
       @domain: The domain of analytical system to be created.
       @name: The name of new analytical system. The actual name may be post-fixed if already exists.
       Returns: The newly created analytical system.
+      Throws ArgumentException: name cannot include prohibited characters, such as "{, }, [, ], |, ;, less-than sign, greater-than sign, ?, `, ~". -or- name is an empty string.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements).
+      Throws ModificationForbiddenException: The document is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document has no open transaction.
     AirSystemData GetAirSystemData()
       Description: Returns the air system data, null if not available.
     WaterLoopData GetWaterLoopData()
@@ -1065,11 +1118,9 @@ Implements: IDisposable
 
 [CLASS] MEPBuildingConstruction
 Full Name: Autodesk.Revit.DB.Mechanical.MEPBuildingConstruction
-
 Description: Construction definition for Project Information.
 Remarks: This is used to define the information in Constructions.xml.
 Inherits: ElementType
-Implements: IDisposable
 
   METHODS:
     Construction GetBuildingConstruction(ConstructionType constructionType)
@@ -1080,6 +1131,7 @@ Implements: IDisposable
       Description: Gets the Building Construction override for a ConstructionType.
       @constructionType: The ConstructionType override value to get.
       Returns: True if analytical construction properties specified in Constructions.xml are used for the given ConstructionType, false otherwise.
+      Throws ArgumentOutOfRangeException: The ConstructionType is invalid.
     ICollection<Construction> GetConstructions(ConstructionType constructionType)
       Description: Gets all the Building Constructions corresponding to the specific Construction type.
       @constructionType: The Construction Type of Building Construction.
@@ -1088,19 +1140,21 @@ Implements: IDisposable
       Description: Sets the Building Construction of the Project Information.
       @constructionType: The Construction Type of Building Construction.
       @buildingConstruction: The Building Construction to be set.
+      Throws ArgumentNullException: buildingConstruction is NULL.
+      Throws InvalidOperationException: Sets construction type to an invalid value. - or - Can not set construction type.
     void SetBuildingConstructionOverride(ConstructionType constructionType, bool override)
       Description: Sets the Building Construction override for a ConstructionType.
       @constructionType: The ConstructionType to override.
       @override: True to use analytical construction properties specified in Constructions.xml in the given ConstructionType, false otherwise.
+      Throws ArgumentOutOfRangeException: The ConstructionType is invalid.
 
 --------------------------------------------------------------------------------
 
 [CLASS] MEPBuildingConstructionSet
 Full Name: Autodesk.Revit.DB.Mechanical.MEPBuildingConstructionSet
-
 Description: A set that contains MEPBuildingConstructions.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new MEPBuildingConstructionSet()
@@ -1140,13 +1194,13 @@ Implements: IDisposable, IEnumerable
 
 [ABSTRACT CLASS] MEPBuildingConstructionSetIterator
 Full Name: Autodesk.Revit.DB.Mechanical.MEPBuildingConstructionSetIterator
-
 Description: An iterator to a MEPBuildingConstruction set.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new MEPBuildingConstructionSetIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -1163,10 +1217,8 @@ Implements: IDisposable, IEnumerator
 
 [CLASS] MEPHiddenLineSettings
 Full Name: Autodesk.Revit.DB.Mechanical.MEPHiddenLineSettings
-
 Description: Represents the settings contained in the document associated to the MEP hidden line display.
 Inherits: Element
-Implements: IDisposable
 
   PROPERTIES:
     bool DrawHiddenLine { get; set; }
@@ -1185,12 +1237,12 @@ Implements: IDisposable
       Description: Gets the MEP hidden line settings in the document.
       @doc: The document where the settings element is found.
       Returns: The element which stores the MEP hidden line settings for the document.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] MEPSection
 Full Name: Autodesk.Revit.DB.Mechanical.MEPSection
-
 Description: A section in the Autodesk Revit MEP product.
 Remarks: This is the base class for duct and pipe section. This class is mainly for pressure loss calculation. It is a series of connected elements (segments - ducts or pipes, fittings, terminals and accessories). All section members should have same flow analysis properties: Flow, Size, Velocity, Friction and Roughness. One section member element which contains more than one connector can belongs to multiple section. e.g.: One Tee which has 3 connectors, usually, it belongs 3 sections. One segment which connect to a tap will be divided into 2 sections.
 Implements: IDisposable
@@ -1228,24 +1280,31 @@ Implements: IDisposable
     double GetCoefficient(ElementId elemId)
       Description: Gets the loss coefficient for the specified element id in this section.
       @elemId: The element id which can be duct segment, duct fitting , pipe segment and pipe fitting.
+      Throws ArgumentException: The ElementId elemId does not correspond to a valid section member.
+      Throws ArgumentNullException: A non-optional argument was null
     IList<ElementId> GetElementIds()
       Description: Gets all element ids that are contained in the section.
     double GetPressureDrop(ElementId elemId)
       Description: Gets the pressure drop for the specified element id in this section.
       @elemId: The element id which can be duct segment, duct fitting , pipe segment and pipe fitting.
+      Throws ArgumentException: The ElementId elemId does not correspond to a valid section member.
+      Throws ArgumentNullException: A non-optional argument was null
     double GetSegmentLength(ElementId segmentId)
       Description: Get the length for the specified segment id in this section.
       @segmentId: The element id which can be duct segment and pipe segment.
+      Throws ArgumentException: The ElementId segmentId does not correspond to a valid section segment member.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsMain(ElementId fittingId)
       Description: Check whether the type of fitting in this section is main.
       @fittingId: The element id which can be duct fitting and pipe fitting.
       Returns: True if the type of fitting in this section is main False if the type of fitting in this section is branch
+      Throws ArgumentException: The ElementId fittingId does not correspond to a valid section fitting member.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] MEPSpaceConstruction
 Full Name: Autodesk.Revit.DB.Mechanical.MEPSpaceConstruction
-
 Description: Construction definition for Space.
 Remarks: This is used to define the information in Constructions.xml.
 
@@ -1271,22 +1330,20 @@ Remarks: This is used to define the information in Constructions.xml.
 
 [ENUM] OccupancyUnit
 Full Name: Autodesk.Revit.DB.Mechanical.OccupancyUnit
-
 Description: An enumerated type listing the occupancy unit of measure for a space object.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NumberOfPeople = 0
     - AreaPerPerson = 1
     - BySpaceType = -1
 
+--------------------------------------------------------------------------------
+
 [ENUM] ReturnAirflowType
 Full Name: Autodesk.Revit.DB.Mechanical.ReturnAirflowType
-
 Description: An enumerated type listing all the possible return airflow types for a space object.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Specified = 0
@@ -1294,12 +1351,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - CalculatedSupplyAirflow = 2
     - ActualSupplyAirflow = 3
 
+--------------------------------------------------------------------------------
+
 [ENUM] RiseDropSymbol
 Full Name: Autodesk.Revit.DB.Mechanical.RiseDropSymbol
-
 Description: This enumeration corresponds to the rise/drop symbol used in mechanical systems
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NoSymbol = 0
@@ -1324,643 +1381,5 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ReverseWyeFilled = 19
     - CustomSymbol = -1
 
-[CLASS] Space
-Full Name: Autodesk.Revit.DB.Mechanical.Space
-
-Description: Provides access to the space topology in Autodesk Revit.
-Remarks: The space object can be queried for its boundary for use in space planning tools.
-Inherits: SpatialElement
-Implements: IDisposable
-
-  PROPERTIES:
-    double ActualExhaustAirflow { get; }
-      Description: Get the Actual Exhaust Airflow of the Space.
-    double ActualHVACLoad { get; }
-      Description: Get the Actual HVAC Load of the Space.
-    double ActualLightingLoad { get; }
-      Description: Get the Actual Lighting Load of the Space.
-    double ActualOtherLoad { get; }
-      Description: Get the Actual Other Load of the Space.
-    double ActualPowerLoad { get; }
-      Description: Get the Actual Power Load of the Space.
-    double ActualReturnAirflow { get; }
-      Description: Get the Actual Return Airflow of the Space.
-    double ActualSupplyAirflow { get; }
-      Description: Get the Actual Supply Airflow of the Space.
-    double AirChangesPerHour { get; }
-      Description: Get the Specified AirChangesPerHour of the Space.
-    double AreaperPerson { get; set; }
-      Description: Get or set the Area per Person of the Space.
-    double AverageEstimatedIllumination { get; }
-      Description: Get the Average Estimated Illumination of the Space.
-    BaseLoadOn BaseHeatLoadOn { get; set; }
-      Description: The heat load-on.
-    double BaseOffset { get; set; }
-      Description: Get or set the Base Offset of the Space.
-    double CalculatedCoolingLoad { get; }
-      Description: Get the Calculated Cooling Load of the Space.
-    double CalculatedHeatingLoad { get; }
-      Description: Get the Calculated Heating Load of the Space.
-    double CalculatedSupplyAirflow { get; }
-      Description: Get the Calculated Supply Airflow of the Space.
-    double CeilingReflectance { get; set; }
-      Description: Get or set the Ceiling Reflectance of the Space.
-    GeometryElement ClosedShell { get; }
-      Description: Return the closedShell of the space.
-    ConditionType ConditionType { get; set; }
-      Description: Get or set the Condition type of the Space.
-    double DesignCoolingLoad { get; set; }
-      Description: Get or set the Design Cooling Load of the Space.
-    double DesignExhaustAirflow { get; set; }
-      Description: Get or set the Specified Exhaust Airflow of the Space.
-    double DesignHeatingLoad { get; set; }
-      Description: Get or set the Design Heating Load of the Space.
-    double DesignHVACLoadperArea { get; set; }
-      Description: Get or set the Design HVAC Load per Area of the Space.
-    double DesignLightingLoad { get; set; }
-      Description: Get or set the Design Lighting Load of the Space.
-    double DesignOtherLoadperArea { get; set; }
-      Description: Get or set the Design Other Load per Area of the Space.
-    double DesignPowerLoad { get; set; }
-      Description: Get or set the Design Power Load of the Space.
-    double DesignReturnAirflow { get; set; }
-      Description: Get or set the Specified Return Airflow of the Space.
-    double DesignSupplyAirflow { get; set; }
-      Description: Get or set the Specified Supply Airflow of the Space.
-    double FloorReflectance { get; set; }
-      Description: Get or set the Floor Reflectance of the Space.
-    double LatentHeatGainperPerson { get; set; }
-      Description: Get or set the Latent Heat Gain per Person of the Space.
-    double LightingCalculationWorkplane { get; set; }
-      Description: Get or set the Lighting Calculation Workplane of the Space.
-    BaseLoadOn LightingLoadUnit { get; set; }
-      Description: Get or set the Lighting Load Unit of the Space.
-    double LimitOffset { get; set; }
-      Description: Get or set the Limit Offset of the Space.
-    double NumberofPeople { get; set; }
-      Description: Get or set the Number of People of the Space.
-    OccupancyUnit OccupancyUnit { get; set; }
-      Description: Get or set the Occupancy Unit of the Space.
-    bool Occupiable { get; }
-      Description: Reports whether this zone is Occupiable or not.
-    double OutdoorAirflow { get; }
-      Description: Get the Outdoor Airflow of the Space.
-    OutdoorAirFlowStandard OutdoorAirFlowStandard { get; }
-      Description: Get the OutdoorAirFlowStandard of the Space.
-    double OutdoorAirPerArea { get; }
-      Description: Get the Specified OutdoorAirPerArea of the Space.
-    double OutdoorAirPerPerson { get; }
-      Description: Get the Specified OutdoorAirPerPerson of the Space.
-    bool Plenum { get; }
-      Description: Reports whether this zone is Plenum or not.
-    BaseLoadOn PowerLoadUnit { get; set; }
-      Description: Get or set the Power Load Unit of the Space.
-    ReturnAirflowType ReturnAirflow { get; set; }
-      Description: Get or set the Return type of Supply Airflow of the Space.
-    Room Room { get; }
-      Description: Return the Room of the space.
-    double SensibleHeatGainperPerson { get; set; }
-      Description: Get or set the Sensible Heat Gain per Person of the Space.
-    double SpaceCavityRatio { get; }
-      Description: Get the Space Cavity Ratio of the Space.
-    MEPSpaceConstruction SpaceConstruction { get; }
-      Description: Get the Space Construction of the Space.
-    SpaceType SpaceType { get; set; }
-      Description: Get or set the Space type of the Space.
-    ElementId SpaceTypeId { get; set; }
-      Description: Get or set the Space type element of the Space.
-    double UnboundedHeight { get; }
-      Description: Get the Unbounded Height of the Space.
-    Level UpperLimit { get; set; }
-      Description: Get or set the Upper Limit of the Space.
-    double Volume { get; }
-      Description: Get the Volume of the Space.
-    double WallReflectance { get; set; }
-      Description: Get or set the Wall Reflectance of the Space.
-    Zone Zone { get; }
-      Description: Reports this space belong to which Zone.
-
-  METHODS:
-    bool IsPointInSpace(XYZ point)
-      Description: Determines if a point lies within the volume of the Space.
-      @point: Point to be checked.
-
 --------------------------------------------------------------------------------
-
-[CLASS] SpaceFilter
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceFilter
-
-Description: A filter used to match spaces.
-Remarks: This filter is a slow filter, but it uses a quick filter to eliminate non-candidate elements before the elements are obtained and expanded. Therefore this filter does not have to be paired with another quick filter to minimize the number of Elements that are expanded.
-Inherits: ElementSlowFilter
-Implements: IDisposable
-
-  CONSTRUCTORS:
-    new SpaceFilter()
-
---------------------------------------------------------------------------------
-
-[CLASS] SpaceSet
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceSet
-
-Description: A set that can contain any type of object.
-Inherits: APIObject
-Implements: IDisposable, IEnumerable
-
-  CONSTRUCTORS:
-    new SpaceSet()
-
-  PROPERTIES:
-    bool IsEmpty { get; }
-      Description: Test to see if the set is empty.
-    int Size { get; }
-      Description: Returns the number of objects that are in the set.
-
-  METHODS:
-    void Clear()
-      Description: Removes every item from the set, rendering it empty.
-    bool Contains(Space item)
-    int Erase(Space item)
-    SpaceSetIterator ForwardIterator()
-      Description: Retrieve a forward moving iterator to the set.
-      Returns: Returns a forward moving iterator to the set.
-    IEnumerator GetEnumerator()
-      Description: Retrieve a forward moving iterator to the set.
-      Returns: Returns a forward moving iterator to the set.
-    bool Insert(Space item)
-    SpaceSetIterator ReverseIterator()
-      Description: Retrieve a backward moving iterator to the set.
-      Returns: Returns a backward moving iterator to the set.
-
---------------------------------------------------------------------------------
-
-[ABSTRACT CLASS] SpaceSetIterator
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceSetIterator
-
-Description: An iterator to a set.
-Inherits: APIObject
-Implements: IDisposable, IEnumerator
-
-  CONSTRUCTORS:
-    new SpaceSetIterator()
-
-  PROPERTIES:
-    object Current { get; }
-      Description: Retrieves the item that is the current focus of the iterator.
-
-  METHODS:
-    bool MoveNext()
-      Description: Move the iterator one item forward.
-      Returns: Returns True if the iterator was successfully moved forward one item and the Current property will return a valid item. False will be returned it the iterator has reached the end of the set.
-    void Reset()
-      Description: Bring the iterator back to the start of the set.
-
---------------------------------------------------------------------------------
-
-[CLASS] SpaceTag
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceTag
-
-Description: Provides access to the space tag in Autodesk Revit.
-Remarks: The space Tag object can be queried for space information.
-Inherits: SpatialElementTag
-Implements: IDisposable
-
-  PROPERTIES:
-    Space Space { get; }
-      Description: The space that the tag is associated with.
-    SpaceTagType SpaceTagType { get; set; }
-      Description: The tag type.
-
---------------------------------------------------------------------------------
-
-[CLASS] SpaceTagFilter
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceTagFilter
-
-Description: A filter used to match space tags.
-Remarks: This filter is a slow filter, but it uses a quick filter to eliminate non-candidate elements before the elements are obtained and expanded. Therefore this filter does not have to be paired with another quick filter to minimize the number of Elements that are expanded.
-Inherits: ElementSlowFilter
-Implements: IDisposable
-
-  CONSTRUCTORS:
-    new SpaceTagFilter()
-
---------------------------------------------------------------------------------
-
-[CLASS] SpaceTagType
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceTagType
-
-Description: An object that represents a Space Tag style.
-Inherits: FamilySymbol
-Implements: IDisposable
-
---------------------------------------------------------------------------------
-
-[ENUM] SpaceType
-Full Name: Autodesk.Revit.DB.Mechanical.SpaceType
-
-Description: An enumerated type listing all the possible space types for a space object.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - kActiveStorage = 0
-    - kActiveStorageHospitalOrHealthcare = 1
-    - kAirOrTrainOrBusBaggageArea = 2
-    - kAirportConcourse = 3
-    - kAtriumEachAdditionalFloor = 4
-    - kAtriumFirstThreeFloors = 5
-    - kAudienceOrSeatingAreaPenitentiary = 6
-    - kAudienceOrSeatingAreaExerciseCenter = 7
-    - kAudienceOrSeatingAreaGymnasium = 8
-    - kAudienceOrSeatingAreaSportsArena = 9
-    - kAudienceOrSeatingAreaConventionCenter = 10
-    - kAudienceOrSeatingAreaMotionPictureTheatre = 11
-    - kAudienceOrSeatingAreaPerformingArtsTheatre = 12
-    - kAudienceOrSeatingAreaReligious = 13
-    - kAudienceOrSeatingAreaPoliceOrFireStations = 14
-    - kAudienceOrSeatingAreaCourtHouse = 15
-    - kAudienceOrSeatingAreaAuditorium = 16
-    - kBankCustomerArea = 17
-    - kBankingActivityAreaOffice = 18
-    - kBarberAndBeautyParlor = 19
-    - kCardFileAndCataloguingLibrary = 20
-    - kClassroomOrLectureOrTrainingPenitentiary = 21
-    - kClassroomOrLectureOrTraining = 22
-    - kConfinementCellsPenitentiary = 23
-    - kConfinementCellsCourtHouse = 24
-    - kConferenceMeetingOrMultipurpose = 25
-    - kCorridorOrTransition = 26
-    - kCorridorOrTransitionManufacturingFacility = 27
-    - kCorridorsWithPatientWaitingExamHospitalOrHealthcare = 28
-    - kCourtSportsAreaSportsArena = 29
-    - kCourtroomCourtHouse = 30
-    - kDepartmentStoreSalesAreaRetail = 31
-    - kDetailedManufacturingFacility = 32
-    - kDiningArea = 33
-    - kDiningAreaHotel = 34
-    - kDiningAreaFamilyDining = 35
-    - kDiningAreaLoungeOrLeisureDining = 36
-    - kDiningAreaMotel = 37
-    - kDiningAreaTransportation = 38
-    - kDiningAreaPenitentiary = 39
-    - kDiningAreaCivilServices = 40
-    - kDormitoryBedroom = 41
-    - kDormitoryStudyHall = 42
-    - kDressingOrLockerOrFittingRoomGymnasium = 43
-    - kDressingOrLockerOrFittingRoomCourtHouse = 44
-    - kDressingOrLockerOrFittingRoomPerformingArtsTheatre = 45
-    - kDressingOrLockerOrFittingRoomAuditorium = 46
-    - kDressingOrLockerOrFittingRoomExerciseCenter = 47
-    - kElectricalOrMechanical = 48
-    - kElevatorLobbies = 49
-    - kEmergencyHospitalOrHealthcare = 50
-    - kEquipmentRoomManufacturingFacility = 51
-    - kExamOrTreatmentHospitalOrHealthcare = 52
-    - kExerciseAreaExerciseCenter = 53
-    - kExerciseAreaGymnasium = 54
-    - kExhibitSpaceConventionCenter = 55
-    - kFellowshipHallReligiousBuildings = 56
-    - kFineMaterialWarehouse = 57
-    - kFineMerchandiseSalesAreaRetail = 58
-    - kFireStationEngineRoomPoliceOrFireStation = 59
-    - kFoodPreparation = 60
-    - kGarageServiceOrRepairAutomotiveFacility = 61
-    - kGeneralHighBayManufacturingFacility = 62
-    - kGeneralLowBayManufacturingFacility = 63
-    - kGeneralExhibitionMuseum = 64
-    - kHospitalNurseryHospitalOrHealthcare = 65
-    - kHospitalOrMedicalSuppliesHospitalOrHealthcare = 66
-    - kHospitalOrRadiologyHospitalOrHealthcare = 67
-    - kHotelOrConferenceCenterConferenceOrMeeting = 68
-    - kInactiveStorage = 69
-    - kJudgesChambersCourtHouse = 70
-    - kLaboratoryOffice = 71
-    - kLaundryIroningAndSorting = 72
-    - kLaundryWashingHospitalOrHealthcare = 73
-    - kLibraryAudioVisualLibraryAudioVisual = 74
-    - kLivingQuartersDormitory = 75
-    - kLivingQuartersMotel = 76
-    - kLivingQuartersHotel = 77
-    - kLobby = 78
-    - kLobbyReligiousBuildings = 79
-    - kLobbyMotionPictureTheatre = 80
-    - kLobbyAuditorium = 81
-    - kLobbyPerformingArtsTheatre = 82
-    - kLobbyPostOffice = 83
-    - kLobbyHotel = 84
-    - kLoungeOrRecreation = 85
-    - kMallConcourseSalesAreaRetail = 86
-    - kMassMerchandisingSalesAreaRetail = 87
-    - kMediumOrBulkyMaterialWarehouse = 88
-    - kMerchandisingSalesAreaRetail = 89
-    - kMuseumAndGalleryStorage = 90
-    - kNurseStationHospitalOrHealthcare = 91
-    - kOfficeEnclosed = 92
-    - kOfficeOpenPlan = 93
-    - kOfficeCommonActivityAreasInactiveStorage = 94
-    - kOperatingRoomHospitalOrHealthcare = 95
-    - kOtherTelevisedPlayingAreaSportsArena = 96
-    - kParkingAreaAttendantOnlyParkingGarage = 97
-    - kParkingAreaPedestrianParkingGarage = 98
-    - kPatientRoomHospitalOrHealthcare = 99
-    - kPersonalServicesSalesAreaRetail = 100
-    - kPharmacyHospitalOrHealthcare = 101
-    - kPhysicalTherapyHospitalOrHealthcare = 102
-    - kPlayingAreaGymnasium = 103
-    - kPlenum = 104
-    - kPoliceStationLaboratoryPoliceOrFireStations = 105
-    - kPublicAndStaffLoungeHospitalOrHealthcare = 106
-    - kReadingAreaLibrary = 107
-    - kReceptionOrWaitingTransportation = 108
-    - kReceptionOrWaitingMotel = 109
-    - kReceptionOrWaitingHotel = 110
-    - kRecoveryHospitalOrHealthcare = 111
-    - kRestorationMuseum = 112
-    - kRestrooms = 113
-    - kRingSportsAreaSportsArena = 114
-    - kSleepingQuartersPoliceOrFireStation = 115
-    - kSortingAreaPostOffice = 116
-    - kSpecialtyStoreSalesAreaRetail = 117
-    - kStacksLibrary = 118
-    - kStairsInactive = 119
-    - kStairway = 120
-    - kSupermarketSalesAreaRetail = 121
-    - kTerminalTicketCounterTransportation = 122
-    - kWorkshopWorkshop = 123
-    - kWorshipPulpitChoirReligious = 124
-    - kNoOfSpaceTypes = 125
-    - NoSpaceType = -1
-
-[ENUM] SystemCalculationLevel
-Full Name: Autodesk.Revit.DB.Mechanical.SystemCalculationLevel
-
-Description: Enumerated type listing flags that can toggle on or off certain calculations related to MEP systems.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - None = 0
-    - Flow = 1
-    - Volume = 2
-    - Performance = 4
-    - All = -1
-
-[CLASS] SystemZoneData
-Full Name: Autodesk.Revit.DB.Mechanical.SystemZoneData
-
-Description: Represents the specific domain requirements for a system-zone used in MEP design.
-Remarks: A system-zone is used to specify what parts of a building are served by specific equipment, air systems and water loops without having to physically model them. A system-zone is represented as a GenericZone element with a domain data of type SystemZoneData, which contains specific domain requirements for the purpose of analysis.
-Inherits: GenericZoneDomainData
-Implements: IDisposable
-
-  PROPERTIES:
-    ElementId ZoneEquipmentId { get; set; }
-      Description: The id of the zone equipment related to the zone.
-
-  METHODS:
-    static SystemZoneData Create()
-      Description: Creates a new instance of a system-zone data domain class.
-      Returns: The newly created data domain instance.
-
---------------------------------------------------------------------------------
-
-[ENUM] WaterChillerType
-Full Name: Autodesk.Revit.DB.Mechanical.WaterChillerType
-
-Description: The type of water chiller.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - AirCooled = 0
-    - WaterCooled = 1
-
-[CLASS] WaterLoopData
-Full Name: Autodesk.Revit.DB.Mechanical.WaterLoopData
-
-Description: Represents the data and parameters of analytical water loop.
-Implements: IDisposable
-
-  PROPERTIES:
-    WaterChillerType ChillerType { get; set; }
-      Description: The type of water chiller. Note this property change would reset the condenser water loop.
-    ElementId CondenserWaterLoopId { get; set; }
-      Description: The water loop element id for the water cooled chiller.
-    bool IsValidObject { get; }
-      Description: Specifies whether the .NET object represents a valid Revit entity.
-    WaterLoopType WaterLoopType { get; set; }
-      Description: The type of water loop. Note this property change would reset other properties.
-
-  METHODS:
-    void Dispose()
-
---------------------------------------------------------------------------------
-
-[ENUM] WaterLoopType
-Full Name: Autodesk.Revit.DB.Mechanical.WaterLoopType
-
-Description: The type of water loop.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - Undefined = 0
-    - ChilledWater = 1
-    - CondenserWater = 2
-    - HotWater = 3
-    - VRF = 4
-
-[CLASS] Zone
-Full Name: Autodesk.Revit.DB.Mechanical.Zone
-
-Description: A zone is a collection of one or more spaces.
-Remarks: The concept of zones is central to the way in which engineers design HVAC systems. When you are designing HVAC systems, you relate to zones as spaces that are under the same thermostatic control. Conceptually, zones are an arbitrary set of areas or volumes within a building that is controlled by one thermostat. An area based load is a collection of one or more electrical load areas. When it has the AreaBasedLoadData, it is an area based load, otherwise, it is a zone.
-Inherits: Element
-Implements: IDisposable
-
-  PROPERTIES:
-    double Area { get; }
-      Description: Get the Area of the Zone.
-    CurveArray Boundary { get; }
-      Description: Returns the boundary of the Zone.
-    double CalculatedCoolingLoad { get; }
-      Description: Get the Calculated Cooling Load of the Zone.
-    double CalculatedHeatingLoad { get; }
-      Description: Get the Calculated Heating Load of the Zone.
-    double CalculatedSupplyAirflow { get; }
-      Description: Get the Calculated Supply Airflow of the Zone.
-    double CoolingAirTemperature { get; set; }
-      Description: Get or set the Cooling Air Temperature of the Zone.
-    double CoolingSetPoint { get; set; }
-      Description: Get or set the Cooling Set Point of the Zone.
-    double DehumidificationSetPoint { get; set; }
-      Description: Get or set the DeHumidification Set Point of the Zone.
-    double GrossArea { get; }
-      Description: Get the Gross Area of the Zone.
-    double GrossVolume { get; }
-      Description: Get the Gross Volume of the Zone.
-    double HeatingAirTemperature { get; set; }
-      Description: Get or set the Heating Air Temperature of the Zone.
-    double HeatingSetPoint { get; set; }
-      Description: Get or set the Heating Set Point of the Zone.
-    double HumidificationSetPoint { get; set; }
-      Description: Get or set the Humidification Set Point of the Zone.
-    bool IsDefaultZone { get; set; }
-      Description: Reports whether this zone is default or not.
-    string Name { set; }
-      Description: Get or Set the Name of the Zone.
-    double Perimeter { get; }
-      Description: Get the Perimeter of the Zone.
-    Phase Phase { get; }
-      Description: Get the Phase of the Zone.
-    ServiceType ServiceType { get; set; }
-      Description: Get or set the Service Type of the Zone.
-    SpaceSet Spaces { get; }
-      Description: Get the Spaces of the Zone.
-    double Volume { get; }
-      Description: Get the Volume of the Zone.
-
-  METHODS:
-    bool AddSpaces(SpaceSet spaces)
-      Description: Add a set of existing spaces to Zone element.
-      @spaces: The spaces which want to add to zone element.
-      Returns: If successful the current zone element will add a set of input spaces, otherwise .
-    static Zone CreateAreaBasedLoad(Document doc, string name, ElementId levelId, ElementId phaseId)
-      Description: Creates a new instance of an area based load and adds it to the document.
-      @doc: The document where the element will be created and added.
-      @name: The name of the area based load to be created.
-      @levelId: The base level on which the area based load will be created.
-      @phaseId: The associative phase on which the area based load is to exist.
-      Returns: The newly created area based load.
-    ZoneElementDomainData GetDomainData()
-      Description: Gets the domain data for the zone.
-      Returns: Returns a pointer to the base class for specific domain requirements for the zone.
-    bool RemoveSpaces(SpaceSet spaces)
-      Description: Remove a set of existing spaces to the current Zone element.
-      @spaces: The spaces which want to delete from the current zone element.
-      Returns: If successful the current zone element will remove a set of input spaces, otherwise .
-
---------------------------------------------------------------------------------
-
-[CLASS] ZoneElementDomainData
-Full Name: Autodesk.Revit.DB.Mechanical.ZoneElementDomainData
-
-Description: A base class for specific domain requirements for a zone.
-Implements: IDisposable
-
-  PROPERTIES:
-    bool IsValidObject { get; }
-      Description: Specifies whether the .NET object represents a valid Revit entity.
-
-  METHODS:
-    void Dispose()
-
---------------------------------------------------------------------------------
-
-[CLASS] ZoneEquipment
-Full Name: Autodesk.Revit.DB.Mechanical.ZoneEquipment
-
-Description: Represents an early-stage equipment placeholder that provides heating or cooling to part of air system or water loop.
-Remarks: A zone equipment is different from physical equipment. Depending on its behavior type, it may be mapped to multiple physical equipment later.
-Inherits: Element
-Implements: IDisposable
-
-  METHODS:
-    static ZoneEquipment Create(Document document, string name)
-      Description: Creates a new zone equipment
-      @document: The document where the new element will be created.
-      @name: The name of new zone equipment. The actual name may be post-fixed if already exists.
-      Returns: The newly created zone equipment.
-    static ISet<ElementId> GetAssociatedZoneEquipment(Document document, ISet<ElementId> spaces)
-      Description: Gets the associated zone equipment of all specified analytical spaces.
-      @document: The document where the analytical spaces and zone equipment exist.
-      @spaces: The specified analytical spaces.
-      Returns: All associated zone equipment, either explicitly assigned or implicitly assigned via system-zone.
-    static ISet<ElementId> GetAssociatedZoneEquipment(Document document, ElementId spaceElementId)
-      Description: Gets the associated zone equipment of the specified analytical space.
-      @document: The document where the analytical spaces and zone equipment exist.
-      @spaceElementId: The specified analytical spaces.
-      Returns: All associated zone equipment, either explicitly assigned or implicitly assigned via system-zone.
-    ZoneEquipmentData GetZoneEquipmentData()
-      Description: Gets the zone equipment data.
-    static void MoveSpaceToEquipment(Document document, ISet<ElementId> analyticalSpaceSet, ElementId originalZoneEquipmentId, ElementId targetZoneEquipmentId)
-      Description: Moves the selected analytical spaces from the identified zone equipment to another target zone equipment.
-      @document: The document where the zone equipment and the analytical spaces exist.
-      @analyticalSpaceSet: The specified analytical spaces to move.
-      @originalZoneEquipmentId: The original equipment where the analytical spaces will be removed. If passing invalidElementId, the existing zone equipment is not removed.
-      @targetZoneEquipmentId: The target zone equipment where the analytical spaces will be associated. If passing invalidElementId, the analytical spaces will not be assigned to any new zone equipment.
-
---------------------------------------------------------------------------------
-
-[ENUM] ZoneEquipmentBehavior
-Full Name: Autodesk.Revit.DB.Mechanical.ZoneEquipmentBehavior
-
-Description: The behavior of zone equipment associated with spaces.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - OnePerSpace = 0
-    - GroupSpaces = 1
-
-[CLASS] ZoneEquipmentData
-Full Name: Autodesk.Revit.DB.Mechanical.ZoneEquipmentData
-
-Description: Represents the data and parameters of analytical zone equipment.
-Implements: IDisposable
-
-  PROPERTIES:
-    ElementId AirSystemId { get; set; }
-      Description: The air system used for this zone equipment, if applicable.
-    ElementId ChilledWaterLoopId { get; set; }
-      Description: The chilled water loop used for the chilled water option of cooling coil.
-    ElementId CondenserWaterLoopId { get; set; }
-      Description: The condenser water loop used for the direction expansion water cooled option of cooling coil.
-    AirCoolingCoilType CoolingCoilType { get; set; }
-      Description: The type of cooling coil. Note this property change would reset the chilled water loop.
-    ZoneEquipmentBehavior EquipmentBehavior { get; set; }
-      Description: The behavior of how zone equipment is allocated with assigned spaces.
-    ZoneEquipmentHvacType EquipmentType { get; set; }
-      Description: The type of zone equipment. Note this property would reset other properties.
-    AirHeatingCoilType HeatingCoilType { get; set; }
-      Description: The type of heating coil. Note this property change would reset the hot water loop.
-    ElementId HotWaterLoopId { get; set; }
-      Description: The water loop element id for the hot-water heating coil.
-    bool IsValidObject { get; }
-      Description: Specifies whether the .NET object represents a valid Revit entity.
-    ElementId VRFLoopId { get; set; }
-      Description: The Varible Refrigerant Flow loop for the VRF fan coil equipment type.
-
-  METHODS:
-    void Dispose()
-    bool IsDataCompleted()
-      Description: Is the required data completed for this zone equipment?
-
---------------------------------------------------------------------------------
-
-[ENUM] ZoneEquipmentHvacType
-Full Name: Autodesk.Revit.DB.Mechanical.ZoneEquipmentHvacType
-
-Description: The type of zone equipment.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - Undefined = 0
-    - ChilledBeamActive = 1
-    - FourPipeFanCoil = 2
-    - PackagedTerminalAirConditioner = 3
-    - PackagedTerminalHeatPump = 4
-    - ParallelFanPoweredBox = 5
-    - VAVBox = 6
-    - CAVBox = 9
-    - RadiantPanel = 10
-    - SeriesFanPoweredBox = 11
-    - UnitHeater = 12
-    - UnitVentilator = 13
-    - WaterSourceHeatPump = 14
-    - ChilledBeamPassive = 15
-    - Unconditioned = 16
-    - VRFFanCoil = 17
-
 

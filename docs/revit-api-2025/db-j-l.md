@@ -1,8 +1,10 @@
-﻿# Autodesk.Revit.DB (Types: J, K, L)
+﻿# Autodesk.Revit.DB
+
+NAMESPACE: Autodesk.Revit.DB
+--------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] JoinGeometryUtils
 Full Name: Autodesk.Revit.DB.JoinGeometryUtils
-
 Description: Utilities for joining and unjoining elements, and for managing the order in which elements are joined.
 
   METHODS:
@@ -12,42 +14,54 @@ Description: Utilities for joining and unjoining elements, and for managing the 
       @firstElement: The first element.
       @secondElement: The second element.
       Returns: True if the two elements are joined.
+      Throws ArgumentException: document is not a project document. -or- The element firstElement was not found in the given document. -or- The element secondElement was not found in the given document.
+      Throws ArgumentNullException: A non-optional argument was null
     static ICollection<ElementId> GetJoinedElements(Document document, Element element)
       Description: Returns all elements joined to given element.
       @document: The document containing the element.
       @element: The element.
       Returns: The set of elements that are joined to the given element.
+      Throws ArgumentException: document is not a project document. -or- The element element was not found in the given document.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsCuttingElementInJoin(Document document, Element firstElement, Element secondElement)
       Description: Determines whether the first of two joined elements is cutting the second element.
       @document: The document containing the two elements.
       @firstElement: The first element.
       @secondElement: The second element.
       Returns: True if the secondElement is cut by the firstElement, false if the secondElement is cut by the firstElement.
+      Throws ArgumentException: document is not a project document. -or- The element firstElement was not found in the given document. -or- The element secondElement was not found in the given document. -or- The elements are not joined.
+      Throws ArgumentNullException: A non-optional argument was null
     static void JoinGeometry(Document document, Element firstElement, Element secondElement)
       Description: Creates clean joins between two elements that share a common face.
       @document: The document containing the two elements.
       @firstElement: The first element to be joined.
       @secondElement: The second element to be joined. This element must not be joined to the first element.
+      Throws ArgumentException: document is not a project document. -or- The element firstElement was not found in the given document. -or- The element secondElement was not found in the given document. -or- The elements are already joined. -or- The elements cannot be joined.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Please remove or add segments on curtain grids instead of joining or unjoining geometry of the panels.
     static void SwitchJoinOrder(Document document, Element firstElement, Element secondElement)
       Description: Reverses the order in which two elements are joined.
       @document: The document containing the two elements.
       @firstElement: The first element.
       @secondElement: The second element. This element must be joined to the first element.
+      Throws ArgumentException: document is not a project document. -or- The element firstElement was not found in the given document. -or- The element secondElement was not found in the given document. -or- The elements are not joined. -or- The elements cannot be joined.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Unable to switch the join order of these elements.
     static void UnjoinGeometry(Document document, Element firstElement, Element secondElement)
       Description: Removes a join between two elements.
       @document: The document containing the two elements.
       @firstElement: The first element to be unjoined.
       @secondElement: The second element to be unjoined. This element must be joined to the fist element.
+      Throws ArgumentException: document is not a project document. -or- The element firstElement was not found in the given document. -or- The element secondElement was not found in the given document. -or- The elements are not joined. -or- The elements cannot be unjoined.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: Please remove or add segments on curtain grids instead of joining or unjoining geometry of the panels.
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] JoinType
 Full Name: Autodesk.Revit.DB.JoinType
-
 Description: The type of join at the end of an element. The join type affects only the graphic treatment, i.e. cleaning of the end, not the physical join behavior.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Abut = 0
@@ -56,24 +70,23 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Extension = 3
     - None = -1
 
+--------------------------------------------------------------------------------
 
 [ENUM] JunctionType
 Full Name: Autodesk.Revit.DB.JunctionType
-
 Description: An enumerated type listing all the junction types for MEP curve types.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Tap = 0
     - Tee = 1
 
+--------------------------------------------------------------------------------
 
 [CLASS] KeyBasedTreeEntries
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntries
-
 Description: A collection of KeyBasedTreeEntry objects that make up the key-based tree.
-Implements: IEnumerable`1, IEnumerable, IDisposable
+Implements: IEnumerable<KeyBasedTreeEntry>, IEnumerable, IDisposable
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -85,6 +98,8 @@ Implements: IEnumerable`1, IEnumerable, IDisposable
       Description: Finds the KeyBasedTreeEntry associated with the given key value.
       @key: The specified key value.
       Returns: The KeyBasedTreeEntry corresponds to the given key value.
+      Throws ArgumentException: key is an empty string.
+      Throws ArgumentNullException: A non-optional argument was null
     IEnumerator<KeyBasedTreeEntry> GetEnumerator()
       Description: Returns an enumerator that iterates through a collection.
       Returns: An IEnumerator object that can be used to iterate through the collection.
@@ -94,12 +109,10 @@ Implements: IEnumerable`1, IEnumerable, IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeyBasedTreeEntriesIterator
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntriesIterator
-
 Description: An iterator to a set of KeyBasedTreeEntry objects.
-Implements: IEnumerator`1, IDisposable, IEnumerator
+Implements: IEnumerator<KeyBasedTreeEntry>, IDisposable, IEnumerator
 
   PROPERTIES:
     KeyBasedTreeEntry Current { get; }
@@ -120,29 +133,32 @@ Implements: IEnumerator`1, IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeyBasedTreeEntriesLoadContent
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntriesLoadContent
-
 Description: This class is used by IExternalResourceServers to return KeyBasedTreeEntries data to Revit when their LoadResource method is invoked.
-Remarks: The class contains a KeyBasedTreeEntries object which should hold the KeyBasedTreeEntries data generated by the IExternalResourceServer.An ExternalResourceServer can create the KeyBasedTreeEntries from an arbitrary data source by using AddEntry to add individual KeyBasedTreeEntries. Once all the desired entries have been added, BuildEntries can be called to construct the KeyBasedTreeEntries object from the individual entries that were added. KeyBasedTreeEntriesLoadContent must have a built KeyBasedTreeEntries before its LoadStatus property can be set to ExternalResourceLoadStatus.Success.
+Remarks: The class contains a KeyBasedTreeEntries object which should hold the KeyBasedTreeEntries data generated by the IExternalResourceServer.An ExternalResourceServer can create the KeyBasedTreeEntries from an arbitrary data source by using AddEntry to add individual KeyBasedTreeEntries. Once all the desired entries have been added, BuildEntries can be called to construct the KeyBasedTreeEntries object from the individual entries that were added.KeyBasedTreeEntriesLoadContent must have a built KeyBasedTreeEntries before its LoadStatus property can be set to ExternalResourceLoadStatus.Success.
 Inherits: ExternalResourceLoadContent
-Implements: IDisposable
 
   METHODS:
     bool AddEntry(KeyBasedTreeEntry entry)
       Description: Adds one KeyBasedTreeEntry to this KeyBasedTreeEntriesLoadContent, which is used to build a KeyBasedTreeEntries object by BuildEntries function.
       @entry: The entry to be added.
       Returns: Returns true if an entry is added into the entry data set successfully, returns false if an entry fails to be added because this entry is invalid or a duplicate of one in the entry data set.
+      Throws ArgumentException: The KeyBasedTreeEntry object is not appropriate to be added in this KeyBasedTreeEntriesLoadContent.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: The KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object is built already. Adding more KeyBasedTreeEntries as well as repeated building, is not supported.
     void BuildEntries()
       Description: Builds a KeyBasedTreeEntries object.
+      Throws InvalidOperationException: The KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object is built already. Adding more KeyBasedTreeEntries as well as repeated building, is not supported.
     bool CanAddEntry(KeyBasedTreeEntry entry)
       Description: Verifies if the KeyBasedTreeEntry could be added in this KeyBasedTreeEntriesLoadContent.
       @entry: The KeyBasedTreeEntry object to be checked.
       Returns: True if the KeyBasedTreeEntry could be added in, otherwise false.
+      Throws ArgumentNullException: A non-optional argument was null
     KeyBasedTreeEntries GetEntries()
       Description: Gets a copy of KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object.
       Returns: A copy of KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object.
+      Throws InvalidOperationException: The KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object is not built yet. The information about this KeyBasedTreeEntries object is not available.
     KeyBasedTreeEntriesLoadResults GetLoadResults()
       Description: Returns a copy of the KeyBasedTreeEntriesLoadResults owned by this KeyBasedTreeEntriesLoadContent object.
       Returns: A copy of a KeyBasedTreeEntriesLoadResults owned by this KeyBasedTreeEntriesLoadContent object.
@@ -150,21 +166,21 @@ Implements: IDisposable
       Description: Verifies that the KeyBasedTreeEntries object owned by a KeyBasedTreeEntriesLoadContent object is built.
       @content: The KeyBasedTreeEntriesLoadContent object to be checked.
       Returns: True if the KeyBasedTreeEntries object is built already, otherwise false.
+      Throws ArgumentNullException: A non-optional argument was null
     void Reset()
       Description: Clears KeyBasedTreeEntriesLoadContent object, including KeyBasedTreeEntries and KeyBasedTreeEntriesLoadResults, owned by this KeyBasedTreeEntriesLoadContent object.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeyBasedTreeEntriesLoadResults
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntriesLoadResults
-
 Description: This class contains the results and status information regarding an attempt to load the KeyBasedTreeEntries from an External Resource.
 Remarks: A KeyBasedTreeEntriesLoadResults object is returned by the KeynoteTable or AssemblyCodeTable API methods LoadFrom() and Reload() so that callers can determine whether the KeynoteTable or AssemblyCodeTable was updated successfully and what, if any, errors occurred.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new KeyBasedTreeEntriesLoadResults()
+      Description: Creates an empty KeyBasedTreeEntriesLoadResults.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -185,16 +201,15 @@ Implements: IDisposable
       Description: Gets information about specific KeyBasedTreeEntry objects that could not be included in the KeyBasedTreeEntries object due to errors of a particular type.
       @type: The type of KeyBasedTreeEntryError to be returned.
       Returns: An array of copies of the KeyBasedTreeEntryErrors contained in this object matching the type specified.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     IList<KeyBasedTreeEntryError> GetKeyBasedTreeEntryErrors()
       Description: Gets information about KeyBasedTreeEntry objects that could not be included in the KeyBasedTreeEntries object due to errors.
       Returns: An array of copies of the KeyBasedTreeEntryErrors contained in this object.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeyBasedTreeEntry
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntry
-
 Description: A key-based tree entry, containing the key, parent key, and children keys (if applicable).
 Implements: IDisposable
 
@@ -214,10 +229,8 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeyBasedTreeEntryError
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntryError
-
 Description: This class contains information about a problem encountered while creating a KeyBasedTreeEntries object.
 Remarks: This problem might be a duplicate entry, or an error in the specified parent-child relationships, or something else. See BuiltInKeyBasedTreeEntryErrorType for details.
 Implements: IDisposable
@@ -236,13 +249,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] KeyBasedTreeEntryErrorType
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntryErrorType
-
 Description: An Enum indicating the type of error associated with a KeyBasedTreeEntry.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - DuplicateEntry = 0
@@ -252,13 +262,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - BadClassificationLevel = 4
     - BadClassificationCategoryId = 5
 
+--------------------------------------------------------------------------------
 
 [CLASS] KeyBasedTreeEntryTable
 Full Name: Autodesk.Revit.DB.KeyBasedTreeEntryTable
-
 Description: KeyBasedTreeEntryTable represents the collection of key-based tree entries for a document.
 Inherits: Element
-Implements: IDisposable
 
   METHODS:
     KeyBasedTreeEntries GetKeyBasedTreeEntries()
@@ -267,26 +276,30 @@ Implements: IDisposable
     ExternalResourceLoadStatus LoadFrom(ExternalResourceReference desiredResourceReference, KeyBasedTreeEntriesLoadResults loadResults)
       Description: Loads KeyBasedTreeEntries from the specified external resource into this KeyBasedTreeEntryTable.
       @desiredResourceReference: An external resource reference describing the source of the desired KeyBasedTreeEntry data.
-      @loadResults: If provided, Revit will use this object to store any errors or warnings that were encountered. This argument may be .
+      @loadResults: If provided, Revit will use this object to store any errors or warnings that were encountered.This argument may be .
       Returns: Returns whether the operation succeeded or failed.
+      Throws ArgumentException: The server referenced by the ExternalResourceReference does not exist or does not implement IExternalResourceServer. -or- The server referenced by the ExternalResourceReference cannot support the ExternalResourceReferenceType of this KeyBasedTreeEntryTable. -or- The ExternalResourceReference (desiredResourceReference) is not in a format that is supported by its server.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ModificationForbiddenException: The document containing this KeyBasedTreeEntryTable is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document containing this KeyBasedTreeEntryTable is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document containing this KeyBasedTreeEntryTable has no open transaction.
     ExternalResourceLoadStatus Reload(KeyBasedTreeEntriesLoadResults loadResults)
       Description: Reloads KeyBasedTreeEntries from their currently-stored location into this KeyBasedTreeEntryTable.
-      @loadResults: If provided, Revit will use this object to store any errors or warnings that were encountered. Note that if the KeyBasedTreeEntries in the model are already up to date, no errors or warnings will be added to this object. This argument may be .
+      @loadResults: If provided, Revit will use this object to store any errors or warnings that were encountered. Note that if the KeyBasedTreeEntries in the model are already up to date, no errors or warnings will be added to this object.This argument may be .
       Returns: Returns the outcome of the reload operation.
+      Throws ModificationForbiddenException: The document containing this KeyBasedTreeEntryTable is in failure mode: an operation has failed, and Revit requires the user to either cancel the operation or fix the problem (usually by deleting certain elements). -or- The document containing this KeyBasedTreeEntryTable is being loaded, or is in the midst of another sensitive process.
+      Throws ModificationOutsideTransactionException: The document containing this KeyBasedTreeEntryTable has no open transaction.
     bool ServerSupports(ExternalResourceReference extRef)
       Description: Checks if the server referenced by the given ExternalResourceReference supports the ExternalResourceReferenceType of this KeyBasedTreeEntryTable.
       @extRef: The ExternalResourceReference to check.
       Returns: True if the ExternalResourceReference refers to a server that supports the ExternalResourceReferenceType of this KeyBasedTreeEntryTable. False otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeynoteEntries
 Full Name: Autodesk.Revit.DB.KeynoteEntries
-
 Description: A collection of KeynoteEntry objects that make up the keynote table.
 Inherits: KeyBasedTreeEntries
-Implements: IEnumerable`1, IEnumerable, IDisposable
 
   METHODS:
     static bool LoadKeynoteEntriesFromFile(string filePath, KeyBasedTreeEntriesLoadContent keynoteContent)
@@ -294,20 +307,31 @@ Implements: IEnumerable`1, IEnumerable, IDisposable
       @filePath: The full path of the existing keynotefile.
       @keynoteContent: The keynote entries read from the filePath will be added to this object. A KeyBasedTreeEntriesLoadContent object will also be updated to contain status information, including information about any errors that occurred while reading the keynote entries from the specified file.
       Returns: True if reading the keynote file succeeds; False if the keynote file cannot be read.
+      Throws ArgumentException: filePath is an empty string. -or- The KeyBasedTreeEntries object owned by this KeyBasedTreeEntriesLoadContent object is built already. Adding more KeyBasedTreeEntries as well as repeated building, is not supported.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidPathArgumentException: The destination file name includes one or more invalid characters.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeynoteEntry
 Full Name: Autodesk.Revit.DB.KeynoteEntry
-
 Description: Represents an entry in the keynote table, containing the key value, keynote text, and parent key (if applicable).
 Inherits: KeyBasedTreeEntry
-Implements: IDisposable
 
   CONSTRUCTORS:
     new KeynoteEntry(string key, string text)
+      Description: Constructs a new KeynoteEntry from the given key name and keynote text. KeynoteEntry objects created from this constructor will not have parents.
+      @key: The key of this KeynoteEntry
+      @text: The text associated with this KeynoteEntry
+      Throws ArgumentException: key is an empty string.
+      Throws ArgumentNullException: A non-optional argument was null
     new KeynoteEntry(string key, string parentKey, string text)
+      Description: Constructs a new KeynoteEntry from the given key name, parent key name, and keynote text.
+      @key: The key of this KeynoteEntry.
+      @parentKey: The parent key of this KeynoteEntry. Empty string means this KeynoteEntry does not have a parent.
+      @text: The text associated with this KeynoteEntry
+      Throws ArgumentException: key is an empty string.
+      Throws ArgumentNullException: A non-optional argument was null
 
   PROPERTIES:
     string KeynoteText { get; }
@@ -315,29 +339,24 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] KeynoteTable
 Full Name: Autodesk.Revit.DB.KeynoteTable
-
 Description: KeynoteTable represents the collection of keynotes (KeynoteEntries) for a document.
 Inherits: KeyBasedTreeEntryTable
-Implements: IDisposable
 
   METHODS:
     static KeynoteTable GetKeynoteTable(Document aDoc)
       Description: Gets the KeynoteTable from a Revit document.
       @aDoc: The Revit document.
       Returns: The KeynoteTable.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LabelType
 Full Name: Autodesk.Revit.DB.LabelType
-
 Description: The label type in dimension equality formats.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - NumberOfWitnessLines = 0
@@ -345,10 +364,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - LengthOfSegment = 2
     - TotalLength = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] LabelUtils
 Full Name: Autodesk.Revit.DB.LabelUtils
-
 Description: Used to obtain user-visible names for enums.
 Implements: IDisposable
 
@@ -362,65 +381,84 @@ Implements: IDisposable
       Description: Gets the user-visible name for a gbXMLBuildingType.
       @buildingType: The gbXMLBuildingType to get the user-visible name.
       @document: The document from which to get the gbXMLBuildingType.
+      Throws ArgumentException: The input gXMLBuildingType is not available in the document.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     static string GetLabelFor(PipeFlowState pipeFlowState, Document doc)
       Description: Gets the user-visible name for a PipeFlowState.
       @pipeFlowState: The PipeFlowState to get the user-visible name.
       @doc: The document from which to get the PipeFlowState.
+      Throws InvalidOperationException: Thrown when information for the input PipeFlowState cannot be found.
     static string GetLabelFor(PipeLossMethodType pipeLossMethodType, Document doc)
       Description: Gets the user-visible name for a PipeLossMethodType.
       @pipeLossMethodType: The PipeLossMethodType to get the user-visible name.
       @doc: The document from which to get the PipeLossMethodType.
+      Throws InvalidOperationException: Thrown when information for the input PipeLossMethodType cannot be found.
     static string GetLabelFor(DuctLossMethodType ductLossMethodType, Document doc)
       Description: Gets the user-visible name for a DuctLossMethodType.
       @ductLossMethodType: The DuctLossMethodType to get the user-visible name.
       @doc: The document from which to get the DuctLossMethodType.
+      Throws InvalidOperationException: Thrown when information for the input DuctLossMethodType cannot be found.
     static string GetLabelFor(BuiltInCategory builtInCategory)
       Description: Gets the user-visible name for a BuiltInCategory.
       @builtInCategory: The BuiltInCategory to get the user-visible name.
+      Throws InvalidOperationException: Thrown when the builtin category is not valid.
     static string GetLabelFor(BuiltInParameter builtInParam, LanguageType language)
       Description: Gets the user-visible name for a BuiltInParameter in a specific LanguageType.
       @builtInParam: The BuiltInParameter to get the user-visible name.
       @language: The desired LanguageType to get the user-visible name in.
       Returns: The BuiltInParameter name in the desired LanguageType.
+      Throws InvalidOperationException: Thrown when the BuiltInParameter cannot be found.
+      Throws InvalidOperationException: Thrown when the desired LanguageType cannot be found for the BuiltInParameter name.
     static string GetLabelFor(BuiltInParameter builtInParam)
       Description: Gets the user-visible name for a BuiltInParameter.
       @builtInParam: The BuiltInParameter to get the user-visible name.
+      Throws InvalidOperationException: Thrown when the BuiltInParameter cannot be found.
     static string GetLabelForBuiltInParameter(ForgeTypeId parameterTypeId, LanguageType language)
       Description: Gets the user-visible name for a built-in parameter in a specific LanguageType.
       @parameterTypeId: Identifier of the built-in parameter to get the user-visible name.
       @language: The desired LanguageType to get the user-visible name in.
       Returns: The built-in parameter name in the desired LanguageType.
+      Throws InvalidOperationException: Thrown when the built-in parameter cannot be found.
+      Throws InvalidOperationException: Thrown when the desired LanguageType cannot be found for the built-in parameter name.
     static string GetLabelForBuiltInParameter(ForgeTypeId parameterTypeId)
       Description: Gets the user-visible name for a built-in parameter.
       @parameterTypeId: Identifier of the built-in parameter to get the user-visible name.
+      Throws InvalidOperationException: Thrown when the built-in parameter cannot be found.
     static string GetLabelForDiscipline(ForgeTypeId disciplineTypeId)
       Description: Gets the user-visible name for a discipline.
       @disciplineTypeId: Identifier of the discipline.
+      Throws ArgumentException: Discipline must have a definition.
+      Throws ArgumentNullException: A non-optional argument was null
     static string GetLabelForGroup(ForgeTypeId groupTypeId)
       Description: Gets the user-visible name for a built-in parameter group. To get the name of parameter group "Other", pass an empty, default-constructed ForgeTypeId.
       @groupTypeId: The identifier of the parameter group to get the user-visible name, or an empty ForgeTypeId for group "Other".
     static string GetLabelForSpec(ForgeTypeId specTypeId)
       Description: Gets the user-visible name for a spec.
       @specTypeId: Identifier of the spec to get the user-visible name.
+      Throws ArgumentException: The given identifier is neither a spec nor a category.
+      Throws ArgumentNullException: A non-optional argument was null
     static string GetLabelForSymbol(ForgeTypeId symbolTypeId)
       Description: Gets the user-visible name for a symbol.
       @symbolTypeId: Identifier of the symbol to get the user-visible name.
+      Throws ArgumentException: Symbol must have a definition.
+      Throws ArgumentNullException: A non-optional argument was null
     static string GetLabelForUnit(ForgeTypeId unitTypeId)
       Description: Gets the user-visible name for a unit.
       @unitTypeId: Identifier of the unit to get the user-visible name.
+      Throws ArgumentException: Cannot find DisplayUnitTypeInfo for the given unit identifier.
+      Throws ArgumentNullException: A non-optional argument was null
     static string GetStructuralSectionShapeName(StructuralSectionShape shape)
       Description: Gets the user-visible name for a StructuralSectionShape.
       @shape: The StructuralSectionShape to get the user-visible name.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LayerCategoryType
 Full Name: Autodesk.Revit.DB.LayerCategoryType
-
 Description: An enumerated type listing category types supported in an ExportLayerTable.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Model = 0
@@ -430,17 +468,24 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Modifier = 4
     - Unsorted = -1
 
+--------------------------------------------------------------------------------
 
 [CLASS] LayerModifier
 Full Name: Autodesk.Revit.DB.LayerModifier
-
 Description: A modifier used to designate extra strings to appear in the exported layer name.
-Remarks: A modifier consists of a type (from and an optional separator. Apply a modifier to one or more objects to modify the layer name that will be assigned when a Revit object is exported.
+Remarks: A modifier consists of a type (from ModifierType and an optional separator. Apply a modifier to one or more ExportLayerInfo objects to modify the layer name that will be assigned when a Revit object is exported.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new LayerModifier(ModifierType modifierType, string separator)
+      Description: Constructs a new LayerModifier with modifierType and separator.
+      @modifierType: The modifier type.
+      @separator: The separator string that will follow this modifier in the export layer name.
+      Throws ArgumentException: The provided separator contains invalid characters (most special characters are invalid).
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     new LayerModifier()
+      Description: Constructs a new LayerModifier with default values.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -455,28 +500,25 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] LayoutRule
 Full Name: Autodesk.Revit.DB.LayoutRule
-
 Description: The LayoutRule object is a base object for all type of layout rules for Beam System within the Autodesk Revit API.
 Remarks: This class just used as the base class of those concrete LayoutRule classes.
 Inherits: APIObject
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LayoutRuleClearSpacing
 Full Name: Autodesk.Revit.DB.LayoutRuleClearSpacing
-
 Description: This class indicate the layout rule of a Beam System is Clear-Spacing.
 Remarks: To use this type of LayoutRule, the distance between the beams and the justify-type must be set.
 Inherits: LayoutRule
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LayoutRuleClearSpacing(double spacing, BeamSystemJustifyType justifyType)
+      Description: Constructor of LayoutRuleFixedDistance. Create LayoutRuleFixedDistance with the values passed in.
+      @spacing: The value of spacing must be in [0, 30000).
+      @justifyType: The type of the justification, it's corresponding to the items in the element properties dialog.
 
   PROPERTIES:
     BeamSystemJustifyType JustifyType { get; set; }
@@ -486,17 +528,17 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LayoutRuleFixedDistance
 Full Name: Autodesk.Revit.DB.LayoutRuleFixedDistance
-
 Description: This class indicate the layout rule of a Beam System is Fixed-Distance.
 Remarks: To use this type of LayoutRule, the distance between the beams and the justify-type must be set.
 Inherits: LayoutRule
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LayoutRuleFixedDistance(double spacing, BeamSystemJustifyType justifyType)
+      Description: Constructor of LayoutRuleFixedDistance. Create LayoutRuleFixedDistance with the values passed in.
+      @spacing: The value of spacing must be between 0 and 30000.
+      @justifyType: The type of the justification, it's corresponding to the items in the element properties dialog.
 
   PROPERTIES:
     BeamSystemJustifyType JustifyType { get; set; }
@@ -506,17 +548,16 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LayoutRuleFixedNumber
 Full Name: Autodesk.Revit.DB.LayoutRuleFixedNumber
-
 Description: This class indicate the layout rule of a Beam System is Fixed-Number.
 Remarks: To use this type of LayoutRule, only the number of the beams must be set.
 Inherits: LayoutRule
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LayoutRuleFixedNumber(int numberOfLines)
+      Description: Constructor of LayoutRuleFixedNumber.
+      @numberOfLines: The value of numberOfLines must be positive.
 
   PROPERTIES:
     int NumberOfLines { get; set; }
@@ -524,17 +565,16 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LayoutRuleMaximumSpacing
 Full Name: Autodesk.Revit.DB.LayoutRuleMaximumSpacing
-
 Description: This class indicate the layout rule of a Beam System is Max-Spacing.
 Remarks: To use this type of LayoutRule, only the maximum spacing must be set and it must be in (0, 30000).
 Inherits: LayoutRule
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LayoutRuleMaximumSpacing(double spacing)
+      Description: Constructor of LayoutRuleMaximumSpacing.
+      @spacing: The value of spacing must be in (0, 30000).
 
   PROPERTIES:
     double Spacing { get; set; }
@@ -542,14 +582,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Leader
 Full Name: Autodesk.Revit.DB.Leader
-
 Description: A leader object that can be attached to annotation elements such as text notes.
-Remarks: For information on how to attach or get leaders to/from a text annotation refer to corresponding methods of class.
+Remarks: For information on how to attach or get leaders to/from a text annotation refer to corresponding methods of Autodesk::Revit::DB::TextNote class.
 Inherits: APIObject
-Implements: IDisposable
 
   PROPERTIES:
     XYZ Anchor { get; }
@@ -565,13 +602,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LeaderArray
 Full Name: Autodesk.Revit.DB.LeaderArray
-
 Description: An array that can contain any number of leaders.
 Inherits: APIObject
-Implements: IDisposable, IEnumerable
+Implements: IEnumerable
 
   CONSTRUCTORS:
     new LeaderArray()
@@ -599,23 +634,21 @@ Implements: IDisposable, IEnumerable
       Description: Insert the specified item into the array.
       @item: The item to be inserted into the array.
       @index: The item will be inserted before this index.
-      Returns: Returns whether the item was inserted into the array.
     LeaderArrayIterator ReverseIterator()
       Description: Retrieve a backward moving iterator to the array.
       Returns: Returns a backward moving iterator to the array.
 
 --------------------------------------------------------------------------------
 
-
 [ABSTRACT CLASS] LeaderArrayIterator
 Full Name: Autodesk.Revit.DB.LeaderArrayIterator
-
 Description: An iterator to an array of leaders.
 Inherits: APIObject
-Implements: IDisposable, IEnumerator
+Implements: IEnumerator
 
   CONSTRUCTORS:
     new LeaderArrayIterator()
+      Description: For Internal Use Only.
 
   PROPERTIES:
     object Current { get; }
@@ -630,52 +663,46 @@ Implements: IDisposable, IEnumerator
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LeaderAtachement
 Full Name: Autodesk.Revit.DB.LeaderAtachement
-
 Description: Supported types of vertical attachments of a leader to a text note.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - TopLine = 0
     - Midpoint = 1
     - BottomLine = 2
 
+--------------------------------------------------------------------------------
 
 [ENUM] LeaderEndCondition
 Full Name: Autodesk.Revit.DB.LeaderEndCondition
-
 Description: An enumerated type listing Leader end conditions that are supported for IndependentTags.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Attached = 0
     - Free = 1
 
+--------------------------------------------------------------------------------
 
 [ENUM] LeaderShape
 Full Name: Autodesk.Revit.DB.LeaderShape
-
 Description: Supported geometric shapes of annotation leaders.
-Remarks: Although the class supports all available shapes, not all types of leaders may have the option to change its shape. For example, leaders of text annotations can be of any shape, while leaders of level lines are never curved.
+Remarks: Although the Leader class supports all available shapes, not all types of leaders may have the option to change its shape. For example, leaders of text annotations can be of any shape, while leaders of level lines are never curved.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Straight = 0
     - Kinked = 1
     - Arc = 2
 
+--------------------------------------------------------------------------------
 
 [ENUM] LeadersPresentationMode
 Full Name: Autodesk.Revit.DB.LeadersPresentationMode
-
 Description: Leaders Presentation Mode.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ShowAll = 0
@@ -683,14 +710,13 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - ShowOnlyOne = 2
     - ShowSpecificLeaders = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] Level
 Full Name: Autodesk.Revit.DB.Level
-
 Description: Represents a Level within Autodesk Revit.
 Remarks: A Level is conceptually a horizontal rectangle of finite extents. It appears as a straight line in views that intersect the rectangle. The straight line represents the projection of the rectangle onto the view. The Name property can be used to retrieve the user visible name of the level that appears in the level bubble.
 Inherits: DatumPlane
-Implements: IDisposable
 
   PROPERTIES:
     double Elevation { get; set; }
@@ -704,22 +730,27 @@ Implements: IDisposable
       @document: The document in which the new instance is created
       @elevation: The elevation of the level to be created.
       Returns: The newly created level instance.
+      Throws ArgumentNullException: A non-optional argument was null
     ElementId FindAssociatedPlanViewId()
       Description: Finds the id of the first available associated floor or structural plan view associated with this level.
     static ElementId GetNearestLevelId(Document document, double elevation)
       Description: Returns id of the Level which is closest to the specified elevation.
       @document: The document.
       @elevation: Target Elevation.
+      Throws ArgumentNullException: A non-optional argument was null
     static ElementId GetNearestLevelId(Document document, double elevation, out double offset)
+      Description: Returns id of the Level which is closest to the specified elevation.
+      @document: The document.
+      @elevation: Target Elevation.
+      @offset: Vertical offset from the level to the target elevation.
+      Throws ArgumentNullException: A non-optional argument was null
     Reference GetPlaneReference()
       Description: Returns a reference to this element as a plane.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LevelAssociationData
 Full Name: Autodesk.Revit.DB.LevelAssociationData
-
 Description: This class holds information related to Level.
 Implements: IDisposable
 
@@ -734,43 +765,39 @@ Implements: IDisposable
     static LevelAssociationData GetLevelAssociationData(Element element)
       Description: Returns LevelAssociationData associated with this element, if it exists.
       @element: The element from which we try to obtain LevelAssociationData.
+      Throws ArgumentNullException: A non-optional argument was null
     double GetLevelOffset()
       Description: Returns the offset from the Associated Level.
     void SetAssociatedLevel(ElementId levelId)
       Description: Sets the Associated Level.
       @levelId: The id of the Level.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws InvalidOperationException: this operation failed.
 
 --------------------------------------------------------------------------------
-
 
 [CLASS] LevelType
 Full Name: Autodesk.Revit.DB.LevelType
-
 Description: An object that represents a Level type.
 Inherits: LineAndTextAttrSymbol
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LightAndMaterialAccuracyMode
 Full Name: Autodesk.Revit.DB.LightAndMaterialAccuracyMode
-
 Description: An enumerated type containing possible Light and Material Accuracy modes for Raytracer render.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Simplified = 1
     - Advanced = 2
 
+--------------------------------------------------------------------------------
 
 [ENUM] LightingSource
 Full Name: Autodesk.Revit.DB.LightingSource
-
 Description: Indicates the lighting scheme type in rendering settings.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ExteriorSun = 21
@@ -780,24 +807,20 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - InteriorSunAndArtificial = 25
     - InteriorArtificial = 26
 
+--------------------------------------------------------------------------------
 
 [CLASS] LightNode
 Full Name: Autodesk.Revit.DB.LightNode
-
 Description: This class represents a Light element in a model-exporting process.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IExportContext::OnLight.
 Inherits: ContentNode
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] Line
 Full Name: Autodesk.Revit.DB.Line
-
 Description: A line in space.
 Inherits: Curve
-Implements: IDisposable
 
   PROPERTIES:
     XYZ Direction { get; }
@@ -811,31 +834,30 @@ Implements: IDisposable
       @endpoint1: The first line endpoint.
       @endpoint2: The second line endpoint.
       Returns: The new bound line.
+      Throws ArgumentNullException: A non-optional argument was NULL
+      Throws ArgumentsInconsistentException: Curve length is too small for Revit's tolerance (as identified by Application.ShortCurveTolerance).
     static Line CreateUnbound(XYZ origin, XYZ direction)
       Description: Creates a new instance of an unbound linear curve.
       @origin: The origin of the unbound line.
       @direction: The direction of the unbound line.
       Returns: The new unbound line.
+      Throws ArgumentNullException: A non-optional argument was NULL
+      Throws ArgumentOutOfRangeException: direction has zero length.
+      Throws ArgumentsInconsistentException: Vector and origin cannot form a proper unbound line.
 
 --------------------------------------------------------------------------------
-
 
 [CLASS] LineAndTextAttrSymbol
 Full Name: Autodesk.Revit.DB.LineAndTextAttrSymbol
-
 Description: An object that represents a dimension style.
 Inherits: ElementType
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinearArray
 Full Name: Autodesk.Revit.DB.LinearArray
-
 Description: An object that represents an Array created linearly within the Revit project.
 Inherits: BaseArray
-Implements: IDisposable
 
   PROPERTIES:
     int NumMembers { get; set; }
@@ -851,6 +873,10 @@ Implements: IDisposable
       @translationToAnchorMember: The translation vector for the array.
       @anchorMember: Indicates if the translation vector specifies the location of the second member of the array, or the last member of the array.
       Returns: The ids of the elements created during the operation.
+      Throws ArgumentException: The given element id set is empty. -or- One or more elements in ids do not exist in the document. -or- One or more elements in ids is owned by different views and thus cannot be arrayed together. -or- One or more elements in ids is not arrayable. -or- count must be between 2 and 200 in project documents and between 0 and 200 in family documents. -or- The view is invalid for specific view elements array. -or- The translation point vector is invalid to array the element.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Failed to create the linear array.
     static ICollection<ElementId> ArrayElementWithoutAssociation(Document aDoc, View dBView, ElementId id, int count, XYZ translationToAnchorMember, ArrayAnchorMember anchorMember)
       Description: Creates a new linear array from a single element.
       @aDoc: The document.
@@ -860,6 +886,10 @@ Implements: IDisposable
       @translationToAnchorMember: The translation vector for the array.
       @anchorMember: Indicates if the translation vector specifies the location of the second member of the array, or the last member of the array.
       Returns: The ids of the elements created during the operation.
+      Throws ArgumentException: The element id does not exist in the document -or- id is not arrayable. -or- count must be between 2 and 200 in project documents and between 0 and 200 in family documents. -or- The view is invalid for specific view elements array. -or- The translation point vector is invalid to array the element.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Failed to create the linear array.
     static LinearArray Create(Document aDoc, View dBView, ElementId id, int count, XYZ translationToAnchorMember, ArrayAnchorMember anchorMember)
       Description: Creates a new linear array element from a single element.
       @aDoc: The document.
@@ -869,6 +899,10 @@ Implements: IDisposable
       @translationToAnchorMember: The translation vector for the array.
       @anchorMember: Indicates if the translation vector specifies the location of the second member of the array, or the last member of the array.
       Returns: The new linear array element.
+      Throws ArgumentException: The element id does not exist in the document -or- id is not arrayable. -or- count must be between 2 and 200 in project documents and between 0 and 200 in family documents. -or- The view is invalid for specific view elements array. -or- The translation point vector is invalid to array the element.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Failed to create the linear array.
     static LinearArray Create(Document aDoc, View dBView, ICollection<ElementId> ids, int count, XYZ translationToAnchorMember, ArrayAnchorMember anchorMember)
       Description: Creates a new linear array element from a set of elements.
       @aDoc: The document.
@@ -878,6 +912,10 @@ Implements: IDisposable
       @translationToAnchorMember: The translation vector for the array.
       @anchorMember: Indicates if the translation vector specifies the location of the second member of the array, or the last member of the array.
       Returns: The new linear array element.
+      Throws ArgumentException: The given element id set is empty. -or- One or more elements in ids do not exist in the document. -or- One or more elements in ids is owned by different views and thus cannot be arrayed together. -or- One or more elements in ids is not arrayable. -or- count must be between 2 and 200 in project documents and between 0 and 200 in family documents. -or- The view is invalid for specific view elements array. -or- The translation point vector is invalid to array the element.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
+      Throws InvalidOperationException: Failed to create the linear array.
     ICollection<ElementId> GetCopiedMemberIds()
       Description: Retrieves the copied member ids from the array. The first item in an array contains the original elements from which the array was created. All other items in the array are copies.
       Returns: The copied member ids of the Array
@@ -885,6 +923,7 @@ Implements: IDisposable
       Description: Returns the minimum size for a linear array based on the document.
       @document: The document.
       Returns: The minimum size of an array.
+      Throws ArgumentNullException: A non-optional argument was null
     int GetNumberOfMembersIncludingPlaceholders()
       Description: Returns the number of items in an array, including placeholder items in families.
       Returns: The number of elements in an array, including placeholder items in families.
@@ -896,6 +935,7 @@ Implements: IDisposable
       @aDoc: The document.
       @id: The element id.
       Returns: True if the input element is arrayable, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool IsValidArraySize(int count)
       Description: This indicates whether the input count is valid in the project environment.
       @count: The count.
@@ -905,16 +945,14 @@ Implements: IDisposable
       @count: The count.
       @pADoc: The document.
       Returns: True if an array can be set to the specified count in the given document, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinearDimension
 Full Name: Autodesk.Revit.DB.LinearDimension
-
 Description: LinearDimString
 Inherits: Dimension
-Implements: IDisposable
 
   METHODS:
     static LinearDimension Create(Document document, View dbView, Line line, IList<Reference> references)
@@ -924,20 +962,23 @@ Implements: IDisposable
       @line: The line of the annotation
       @references: references that the Linear Dimension will witness.
       Returns: The newly created Linear Dimension instance, or if the operation fails.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinePattern
 Full Name: Autodesk.Revit.DB.LinePattern
-
 Description: Represents a line pattern definition.
 Remarks: A line pattern is a pattern of dashes and dots used to control the way the lines of an object are drawn in Revit. Line patterns are used in the definition of GraphicsStyle objects. A line pattern is defined by a repeating sequence segments. Each segment is a dash, a dot or a space. A line pattern definition must contain an even number of segments, starting with a visible segment (a dash or a dot) and alternating between visible segments and spaces.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new LinePattern(string name)
+      Description: Creates a line pattern with given name.
+      @name: The name.
+      Throws ArgumentNullException: A non-optional argument was null
     new LinePattern()
+      Description: Creates a simple line pattern.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -953,17 +994,15 @@ Implements: IDisposable
     void SetSegments(IList<LinePatternSegment> lineSegs)
       Description: Sets the sequence of segments that defines this line pattern.
       @lineSegs: The sequence of segments.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinePatternElement
 Full Name: Autodesk.Revit.DB.LinePatternElement
-
 Description: An element that represents a line pattern.
 Remarks: The LinePatternElement represents a line pattern in a project. It enables the user to retrieve, modify or create a line pattern in a project.
 Inherits: Element
-Implements: IDisposable
 
   METHODS:
     static LinePatternElement Create(Document document, LinePattern linePattern)
@@ -971,11 +1010,14 @@ Implements: IDisposable
       @document: The document in which to create the LinePatternElement.
       @linePattern: The LinePattern associated to the newly created LinePatternElement.
       Returns: The newly created LinePatternElement.
+      Throws ArgumentException: The Line Pattern is not valid.
+      Throws ArgumentNullException: A non-optional argument was null
     static LinePattern GetLinePattern(Document document, ElementId elementId)
       Description: Gets the LinePattern associated to an element or from a built-in line pattern.
       @document: The document in which to retrieve the LinePattern.
       @elementId: The ElementId of the LinePatternElement or the built-in line pattern id.
       Returns: A copy of LinePattern object. if the ElementId doesn't represent a line pattern element or built-in line pattern. for Solid.
+      Throws ArgumentNullException: A non-optional argument was null
     LinePattern GetLinePattern()
       Description: Gets the LinePattern associated to this element.
       Returns: A copy of LinePattern object.
@@ -984,25 +1026,31 @@ Implements: IDisposable
       @document: The document in which to retrieve the LinePatternElement.
       @name: The name of the LinePatternElement.
       Returns: The LinePatternElement.
+      Throws ArgumentNullException: A non-optional argument was null
     static ElementId GetSolidPatternId()
       Description: Gets the solid line pattern element id.
       Returns: The element id of the solid line pattern.
     void SetLinePattern(LinePattern newLinePattern)
       Description: Sets the LinePattern associated to this element.
       @newLinePattern: The new LinePattern object.
+      Throws ArgumentException: The Line Pattern is not valid.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinePatternSegment
 Full Name: Autodesk.Revit.DB.LinePatternSegment
-
 Description: Represents a segment in a line pattern.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new LinePatternSegment(LinePatternSegmentType type, double length)
+      Description: Creates a line pattern segment with given type and length.
+      @type: The segment type.
+      @length: The length.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     new LinePatternSegment()
+      Description: Creates a line pattern segment.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -1017,13 +1065,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LinePatternSegmentType
 Full Name: Autodesk.Revit.DB.LinePatternSegmentType
-
 Description: Represents the type of a line pattern segment.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Dash = 0
@@ -1031,12 +1076,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Dot = 2
     - Invalid = 3
 
+--------------------------------------------------------------------------------
 
 [CLASS] LineProperties
 Full Name: Autodesk.Revit.DB.LineProperties
-
 Description: A structure that has access to the pen properties of lines/curves that are currently being drawn/exported via an export context during a custom export process.
-Remarks: For more about using properties of this class refer to the interface and its methods which handle geometric objects such as , , etc. LineProperties are available as a read-only property on the respective output nodes, i.e. , , etc.
+Remarks: For more about using properties of this class refer to the interface Autodesk::Revit::DB::IModelExportContext and its methods which handle geometric objects such as Autodesk::Revit::DB::IModelExportContext::OnCurve, Autodesk::Revit::DB::IModelExportContext::OnLineSegment, etc. LineProperties are available as a read-only property on the respective output nodes, i.e. Autodesk::Revit::DB::CurveNode, Autodesk::Revit::DB::LineSegment, etc.
 Implements: IDisposable
 
   PROPERTIES:
@@ -1056,26 +1101,23 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LineScaling
 Full Name: Autodesk.Revit.DB.LineScaling
-
 Description: An enumerated type listing possible LineType scaling modes.
 Remarks: Whichever option is chosen, line type definitions are created so a dashed line always begins and ends with a dash. Using these options does change the default behavior of exported DWGs. Some lines expected to be dashed may appear solid or in a different scale.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ViewScale = 0
     - ModelSpace = 1
     - PaperSpace = 2
 
+--------------------------------------------------------------------------------
 
 [CLASS] LineSegment
 Full Name: Autodesk.Revit.DB.LineSegment
-
 Description: An output node that represents a tessellated line segment.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IModelExportContext::OnLineSegment.
 Implements: IDisposable
 
   PROPERTIES:
@@ -1097,10 +1139,8 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinkConversionData
 Full Name: Autodesk.Revit.DB.LinkConversionData
-
 Description: This class contains the information necessary to re-create a Revit document from an external source.
 Implements: IDisposable
 
@@ -1120,13 +1160,10 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LinkedFileStatus
 Full Name: Autodesk.Revit.DB.LinkedFileStatus
-
 Description: Enum displaying the loaded status of a linked file
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Loaded = 0
@@ -1138,16 +1175,21 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - LocallyUnloaded = 6
     - Invalid = -1
 
+--------------------------------------------------------------------------------
 
 [CLASS] LinkElementId
 Full Name: Autodesk.Revit.DB.LinkElementId
-
 Description: LinkElementId represents an element in a linked document.
 Remarks: The id contains two element ids: The id of the linked model element in host document.The id of the element in the linked model document.
 
   CONSTRUCTORS:
     new LinkElementId(ElementId linkInstanceId, ElementId elementId)
+      Description: Creates a new LinkElementId representing an element in a linked document.
+      @linkInstanceId: The id of the linked model element in the host document.
+      @elementId: The id of the element in the linked model document.
     new LinkElementId(ElementId elementId)
+      Description: Creates a new LinkElementId representing an element in the host document.
+      @elementId: The id of the element in the host document.
 
   PROPERTIES:
     ElementId HostElementId { get; }
@@ -1159,19 +1201,16 @@ Remarks: The id contains two element ids: The id of the linked model element in 
 
   METHODS:
     bool Equals(object obj)
-      Description: Determines whether the specified is equal to the current .
+      Description: Determines whether the specified Object is equal to the current Object.
       @obj: Another object.
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinkLoadContent
 Full Name: Autodesk.Revit.DB.LinkLoadContent
-
 Description: This class is used by IExternalResourceServers to return Link data to Revit when their LoadResource method is invoked. It also contains additional information used by IExternalResourceUIServers to display link load status results to the user.
-Remarks: This class handles Revit links. Revit links must be loaded from a path accessible to Revit. Server implementors should provide Revit with a ModelPath representing a location from which to load the link. Revit will handle the actual file loading. Servers which represent non-local file locations will need to create their own implementation for copying or moving files to a Revit-accessible location.The link data path used for link loading may be different from the path displayed to the user. The link data path represents the literal location of the file, whereas the link's display path represents what the user sees as the name of the link. See for more details on display paths.
+Remarks: This class handles Revit links.Revit links must be loaded from a path accessible to Revit. Server implementors should provide Revit with a ModelPath representing a location from which to load the link. Revit will handle the actual file loading.Servers which represent non-local file locations will need to create their own implementation for copying or moving files to a Revit-accessible location.The link data path used for link loading may be different from the path displayed to the user. The link data path represents the literal location of the file, whereas the link's display path represents what the user sees as the name of the link. See Autodesk::Revit::DB::ExternalResourceReference::InSessionPath for more details on display paths.
 Inherits: ExternalResourceLoadContent
-Implements: IDisposable
 
   METHODS:
     ModelPath GetLinkDataPath()
@@ -1183,19 +1222,21 @@ Implements: IDisposable
     void SetLinkDataPath(ModelPath linkPath)
       Description: Sets the Link data path owned by this LinkLoadContent object.
       @linkPath: The Links data path set for this LinkLoadContent object.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinkLoadResult
 Full Name: Autodesk.Revit.DB.LinkLoadResult
-
 Description: This class stores the results of trying to load a single linked model.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new LinkLoadResult(LinkLoadResult other)
+      Description: Constructs a new copy of the input LinkLoadResult object.
+      Throws ArgumentNullException: A non-optional argument was null
     new LinkLoadResult()
+      Description: Constructs a new uninitialized LinkLoadResult object.
 
   PROPERTIES:
     ElementId ElementId { get; }
@@ -1223,6 +1264,7 @@ Implements: IDisposable
       Description: Searches this LinkLoadResult and all nested LinkLoadResults for the load operation results of a specified ExternalResourceReference.
       @matchExtResRef: An ExternalResourceReference whose LinkLoadResults are contained in this object.
       Returns: A LinkLoadResult object with the load results for the specified ExternalResourceReference.
+      Throws ArgumentNullException: A non-optional argument was null
     ModelPath GetModelName()
       Description: Gets the name of the model.
     IDictionary<string, LinkLoadResult> GetNestedLinkLoadResults()
@@ -1234,17 +1276,15 @@ Implements: IDisposable
       Description: Check if load result code signifies success.
       @code: Load result code to be verified.
       Returns: True if LinkLoadResultType argument is success, false otherwise.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LinkLoadResultType
 Full Name: Autodesk.Revit.DB.LinkLoadResultType
-
 Description: Enum listing the possible results after loading a linked model.
 Remarks: For all values except LinkLoadResultType.LinkLoaded, the linked model is not loaded and no new link is created (if Revit was trying to create a link).
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Uninitialized = 0
@@ -1261,14 +1301,13 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - CouldNotChangeViewReference = 12
     - UsedExisting = 13
 
+--------------------------------------------------------------------------------
 
 [CLASS] LinkNode
 Full Name: Autodesk.Revit.DB.LinkNode
-
 Description: An output node that represents a linked Revit document.
-Remarks: See also: .
+Remarks: See also: Autodesk::Revit::DB::IExportContext::OnLinkBegin.
 Inherits: GroupNode
-Implements: IDisposable
 
   PROPERTIES:
     ElementId SymbolId { get; }
@@ -1281,10 +1320,8 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LinkOperations
 Full Name: Autodesk.Revit.DB.LinkOperations
-
 Description: This class is used to extend the IExternalResourceServer interface with methods to support operations for elements that are LinkTypes.
 Implements: IDisposable
 
@@ -1297,41 +1334,37 @@ Implements: IDisposable
     void SetOnLocalLinkSharedCoordinatesSavedCallback(IOnLocalLinkSharedCoordinatesSavedCallback onLocalLinkSharedCoordinatesSaved)
       Description: Sets the callback that will be called when the Revit user saves new shared coordinate settings to a linked document obtained from an IExternalResourceServer.
       @onLocalLinkSharedCoordinatesSaved: An IOnLocalLinkSharedCoordinatesSavedCallback object that can respond when the user saves new shared coordinates to a Revit link document obtained from IExternalResourceServer.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LinkOriginFileType
 Full Name: Autodesk.Revit.DB.LinkOriginFileType
-
 Description: Enum determining whether the source type of a temporary rvt link is an ifc.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - RVT = 0
     - IFC = 1
 
+--------------------------------------------------------------------------------
 
 [ENUM] LinkVisibility
 Full Name: Autodesk.Revit.DB.LinkVisibility
-
 Description: Link visibility types.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ByHostView = 0
     - ByLinkView = 1
     - Custom = 2
 
+--------------------------------------------------------------------------------
 
 [ENUM] ListType
 Full Name: Autodesk.Revit.DB.ListType
-
-Description: An enumerated type indicating the style of list item for paragraphs that are part of ordered or unordered lists in .
+Description: An enumerated type indicating the style of list item for paragraphs that are part of ordered or unordered lists in FormattedText.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Mixed = 0
@@ -1341,10 +1374,10 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - LowerCaseLetters = 4
     - UpperCaseLetters = 5
 
+--------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] LoadedFamilyIntegrityCheck
 Full Name: Autodesk.Revit.DB.LoadedFamilyIntegrityCheck
-
 Description: Functions for checking the integrity of loaded families.
 
   METHODS:
@@ -1353,40 +1386,39 @@ Description: Functions for checking the integrity of loaded families.
       @ADoc: The host document.
       @corruptFamilyIds: Return ids of families that need to be reloaded because their content documents are missing.
       Returns: Returns true if all loaded families have their content documents.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool CheckAllFamiliesSlow(Document ADoc, ISet<ElementId> corruptFamilyIds)
       Description: Check integrity of content documents of all families loaded in the host document.
       @ADoc: The host document.
       @corruptFamilyIds: Return ids of families that need to be reloaded because their content documents are missing or corrupt.
       Returns: Returns true if all content documents are usable.
+      Throws ArgumentNullException: A non-optional argument was null
     static bool CheckFamily(Document ADoc, ElementId familyId)
       Description: Check that the loaded family has its content document.
       @ADoc: The host document.
       @familyId: The id of the family to check.
       Returns: Returns true if the family has its content document.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [ENUM] LoadOperationType
 Full Name: Autodesk.Revit.DB.LoadOperationType
-
 Description: An enum indicating whether a resource load operation was triggered by a user action or an automatic process.
 Remarks: This enum is provided so that an external resource server can decide how much feedback it wishes to provide to the user.For example, Revit automatically loads all resources on file open. This may cause many external resources to load at once. The server may wish to provide truncated error messages.Reload() and LoadFrom() operations from the API are considered to be LoadOperationType.Explicit.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Automatic = 0
     - Explicit = 1
 
+--------------------------------------------------------------------------------
 
 [CLASS] Location
 Full Name: Autodesk.Revit.DB.Location
-
 Description: Provides location functionality for all elements.
 Remarks: The location object provides the ability to translate and rotate elements. More detailed location information and control can be found by using the derivatives of this object, such as LocationPoint or LocationCurve.
 Inherits: APIObject
-Implements: IDisposable
 
   METHODS:
     bool Move(XYZ translation)
@@ -1401,14 +1433,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LocationCurve
 Full Name: Autodesk.Revit.DB.LocationCurve
-
 Description: Provides location functionality for all elements that are based upon a curve.
 Remarks: The location line objects adds additional functionality to its base location object class. This includes reading and writing the curve contained within the element.
 Inherits: Location
-Implements: IDisposable
 
   PROPERTIES:
     Curve Curve { get; set; }
@@ -1418,14 +1447,11 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LocationPoint
 Full Name: Autodesk.Revit.DB.LocationPoint
-
 Description: Provides location functionality for all elements that have a single insertion point.
 Remarks: The location point objects adds additional functionality to its base location object class. This includes setting the elements location to a specific point and retrieving its rotation around its insertion point. Inplace families do not have a single insertion point and therefore do not have meaningful LocationPoint data.
 Inherits: Location
-Implements: IDisposable
 
   PROPERTIES:
     XYZ Point { get; set; }
@@ -1435,33 +1461,43 @@ Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LogicalAndFilter
 Full Name: Autodesk.Revit.DB.LogicalAndFilter
-
 Description: A filter that contains a set of filters. The filter passes when all filters in the set pass.
 Remarks: The component filters may be reordered by Revit to cause the quickest acting filters to be evaluated first.
 Inherits: ElementLogicalFilter
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LogicalAndFilter(IList<ElementFilter> filters)
+      Description: Constructs a new instance of the logical filter with any number of input filters.
+      @filters: A collection of input filters.
+      Throws ArgumentException: The filter collection is empty, or contains invalid inputs.
+      Throws ArgumentNullException: A non-optional argument was null
     new LogicalAndFilter(ElementFilter filter1, ElementFilter filter2)
+      Description: Constructs a new instance of the logical filter with two input filters.
+      @filter1: The first filter.
+      @filter2: The second filter.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
-
 [CLASS] LogicalOrFilter
 Full Name: Autodesk.Revit.DB.LogicalOrFilter
-
 Description: A filter that contains a set of filters. The filter passes when any filter in the set passes.
 Remarks: The component filters may be reordered by Revit to cause the quickest acting filters to be evaluated first.
 Inherits: ElementLogicalFilter
-Implements: IDisposable
 
   CONSTRUCTORS:
     new LogicalOrFilter(IList<ElementFilter> filters)
+      Description: Constructs a new instance of the logical filter with any number of input filters.
+      @filters: A collection of input filters.
+      Throws ArgumentException: The filter collection is empty, or contains invalid inputs.
+      Throws ArgumentNullException: A non-optional argument was null
     new LogicalOrFilter(ElementFilter filter1, ElementFilter filter2)
+      Description: Constructs a new instance of the logical filter with two input filters.
+      @filter1: The first filter.
+      @filter2: The second filter.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 

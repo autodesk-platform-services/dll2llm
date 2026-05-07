@@ -1,24 +1,19 @@
 ﻿# Autodesk.Revit.DB.Events
 
-
 NAMESPACE: Autodesk.Revit.DB.Events
 --------------------------------------------------------------------------------
 
 [CLASS] ApplicationInitializedEventArgs
 Full Name: Autodesk.Revit.DB.Events.ApplicationInitializedEventArgs
-
 Description: The event arguments used by the ApplicationLaunched event.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] CreateRelatedFileProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.CreateRelatedFileProgressChangedEventArgs
-
-Description: The event arguments used during creating related file phase of in model open operation.
+Description: The event arguments used during creating related file phase of Autodesk::Revit::ApplicationServices::Application::WorksharedOperationProgressChanged in model open operation.
 Inherits: DataTransferProgressChangedEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool CreatingCloudSharedLocal { get; }
@@ -32,23 +27,21 @@ Implements: IDisposable
 
 [ENUM] DataTransferMode
 Full Name: Autodesk.Revit.DB.Events.DataTransferMode
-
 Description: Describes the data transfer mode.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Download = 0
     - Upload = 1
     - Undefined = -1
 
+--------------------------------------------------------------------------------
+
 [CLASS] DataTransferProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DataTransferProgressChangedEventArgs
-
-Description: The event arguments used during the data transferring phase of .
+Description: The event arguments used during the data transferring phase of Autodesk::Revit::ApplicationServices::Application::WorksharedOperationProgressChanged.
 Remarks: It is NOT recommended to do any time-consuming work when handling WorksharedOperationProgressChanged event. This can increase workshared operation time.
 Inherits: WorksharedOperationProgressChangedEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     double FinishedSize { get; }
@@ -64,10 +57,8 @@ Implements: IDisposable
 
 [CLASS] DocumentChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentChangedEventArgs
-
 Description: The event arguments used by the DocumentChanged event.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     UndoOperation Operation { get; }
@@ -78,6 +69,7 @@ Implements: IDisposable
       Description: Returns set of newly added elements that pass the filter.
       @filter: The element filter to be applied.
       Returns: The set of ElementId for newly added elements that pass the filter. Returns empty set if no elements are found which pass the filter.
+      Throws ArgumentNullException: A non-optional argument was null
     ICollection<ElementId> GetAddedElementIds()
       Description: Returns set of elements newly added to the document.
       Returns: The set of ElementId for elements newly added to the document.
@@ -91,6 +83,7 @@ Implements: IDisposable
       Description: Returns set of elements that were modified according to the given element filter.
       @filter: The element filter to be applied.
       Returns: The set of ElementId for modified elements that pass the filter. Returns empty set if no elements are found which pass the filter.
+      Throws ArgumentNullException: A non-optional argument was null
     ICollection<ElementId> GetModifiedElementIds()
       Description: Returns set of elements that were modified.
       Returns: The set of ElementId for elements that were modified.
@@ -102,10 +95,8 @@ Implements: IDisposable
 
 [CLASS] DocumentClosedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentClosedEventArgs
-
 Description: The event arguments used by the DocumentClosed event.
 Inherits: RevitAPIPostEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     int DocumentId { get; }
@@ -115,10 +106,8 @@ Implements: IDisposable
 
 [CLASS] DocumentClosingEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentClosingEventArgs
-
 Description: The event arguments used by the DocumentClosing event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     int DocumentId { get; }
@@ -128,20 +117,16 @@ Implements: IDisposable
 
 [CLASS] DocumentCreatedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentCreatedEventArgs
-
 Description: The event arguments used by the DocumentCreated event.
 Remarks: The newly created document is supplied in these arguments.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentCreatingEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentCreatingEventArgs
-
 Description: The event arguments used by the DocumentCreating event.
 Inherits: RevitAPIPreEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     DocumentType DocumentType { get; }
@@ -153,19 +138,15 @@ Implements: IDisposable
 
 [CLASS] DocumentOpenedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentOpenedEventArgs
-
 Description: The event arguments used by the DocumentOpened event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentOpeningEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentOpeningEventArgs
-
 Description: The event arguments used by the DocumentOpening event.
 Inherits: RevitAPIPreEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     DocumentType DocumentType { get; }
@@ -177,10 +158,8 @@ Implements: IDisposable
 
 [CLASS] DocumentPrintedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentPrintedEventArgs
-
 Description: The event arguments used by the DocumentPrinted event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   METHODS:
     IList<ElementId> GetFailedViewElementIds()
@@ -194,10 +173,8 @@ Implements: IDisposable
 
 [CLASS] DocumentPrintingEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentPrintingEventArgs
-
 Description: The event arguments used by the DocumentPrinting event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   METHODS:
     IPrintSetting GetSettings()
@@ -211,10 +188,8 @@ Implements: IDisposable
 
 [CLASS] DocumentReloadedLatestEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentReloadedLatestEventArgs
-
 Description: The event arguments used by the DocumentReloadedLatestEvent event. This event will be raised when executing pull a latest changes from a central model.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string Location { get; set; }
@@ -224,20 +199,16 @@ Implements: IDisposable
 
 [CLASS] DocumentReloadingLatestEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentReloadingLatestEventArgs
-
 Description: The event arguments used by the DocumentReloadingLatest event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentReloadLatestProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentReloadLatestProgressChangedEventArgs
-
-Description: The event arguments used during the reload latest phase of .
+Description: The event arguments used during the reload latest phase of Autodesk::Revit::ApplicationServices::Application::WorksharedOperationProgressChanged.
 Remarks: It is NOT recommended to do any time-consuming work when handling WorksharedOperationProgressChanged event. This can increase workshared operation time. Name correction - it is renamed from 'DocumentReloadLatestProgessChangedEventArgs' released since 2017 Subscription Update.
 Inherits: DataTransferProgressChangedEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool IsMerging { get; }
@@ -251,10 +222,8 @@ Implements: IDisposable
 
 [CLASS] DocumentSavedAsEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSavedAsEventArgs
-
 Description: The event arguments used by the DocumentSavedAs event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool IsSavingAsCentralFile { get; }
@@ -266,20 +235,16 @@ Implements: IDisposable
 
 [CLASS] DocumentSavedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSavedEventArgs
-
 Description: The event arguments used by the DocumentSaved event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentSaveToCentralProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSaveToCentralProgressChangedEventArgs
-
-Description: The event arguments used during the save to central phase of .
+Description: The event arguments used during the save to central phase of Autodesk::Revit::ApplicationServices::Application::WorksharedOperationProgressChanged.
 Remarks: It is NOT recommended to do any time-consuming work when handling WorksharedOperationProgressChanged event. This can increase workshared operation time. Name correction - it is renamed from 'DocumentSaveToCentralProgessChangedEventArgs' released since 2017 Subscription Update.
 Inherits: DataTransferProgressChangedEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool FailureDueToConflicts { get; }
@@ -293,11 +258,9 @@ Implements: IDisposable
 
 [CLASS] DocumentSaveToLocalProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSaveToLocalProgressChangedEventArgs
-
-Description: The event arguments used during the save to local phase of .
+Description: The event arguments used during the save to local phase of Autodesk::Revit::ApplicationServices::Application::WorksharedOperationProgressChanged.
 Remarks: It is NOT recommended to do any time-consuming work when handling WorksharedOperationProgressChanged event. This can increase workshared operation time. Name correction - it is renamed from 'DocumentSaveToLocalProgessChangedEventArgs' released since 2017 Subscription Update.
 Inherits: WorksharedOperationProgressChangedEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool BeforeSaveToCentral { get; }
@@ -313,10 +276,8 @@ Implements: IDisposable
 
 [CLASS] DocumentSavingAsEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSavingAsEventArgs
-
 Description: The event arguments used by the DocumentSavingAs event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool IsSavingAsCentralFile { get; }
@@ -328,28 +289,22 @@ Implements: IDisposable
 
 [CLASS] DocumentSavingEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSavingEventArgs
-
 Description: The event arguments used by the DocumentSaving event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentSynchronizedWithCentralEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSynchronizedWithCentralEventArgs
-
 Description: The event arguments used by the DocumentSynchronizedWithCentralEventArgs event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] DocumentSynchronizingWithCentralEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentSynchronizingWithCentralEventArgs
-
 Description: The event arguments used by the DocumentSynchronizingWithCentralEventArgs event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string Comments { get; }
@@ -363,10 +318,8 @@ Implements: IDisposable
 
 [CLASS] DocumentWorksharingEnabledEventArgs
 Full Name: Autodesk.Revit.DB.Events.DocumentWorksharingEnabledEventArgs
-
 Description: The event arguments used by the DocumentWorksharingEnabled event.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
   METHODS:
     Document GetDocument()
@@ -377,10 +330,8 @@ Implements: IDisposable
 
 [CLASS] ElementTypeDuplicatedEventArgs
 Full Name: Autodesk.Revit.DB.Events.ElementTypeDuplicatedEventArgs
-
 Description: The event arguments used by the ElementTypeDuplicated event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId NewElementTypeId { get; }
@@ -394,10 +345,8 @@ Implements: IDisposable
 
 [CLASS] ElementTypeDuplicatingEventArgs
 Full Name: Autodesk.Revit.DB.Events.ElementTypeDuplicatingEventArgs
-
 Description: The event arguments used by the ElementTypeDuplicating event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId ElementTypeId { get; }
@@ -407,22 +356,20 @@ Implements: IDisposable
 
 [ENUM] EventStatus
 Full Name: Autodesk.Revit.DB.Events.EventStatus
-
 Description: Describes the status of an action which triggered a post event.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Succeeded = 0
     - Cancelled = 1
     - Failed = -1
 
+--------------------------------------------------------------------------------
+
 [CLASS] ExternalDataInstanceAddedIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataInstanceAddedIntoDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataInstanceAddedInto event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string ItemId { get; }
@@ -438,10 +385,8 @@ Implements: IDisposable
 
 [CLASS] ExternalDataInstanceAddingIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataInstanceAddingIntoDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataInstanceAddingInto event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId TypeId { get; }
@@ -451,10 +396,8 @@ Implements: IDisposable
 
 [CLASS] ExternalDataInstanceRemovedFromDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataInstanceRemovedFromDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataInstanceRemovedFrom event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId TypeId { get; }
@@ -464,10 +407,8 @@ Implements: IDisposable
 
 [CLASS] ExternalDataInstanceRemovingFromDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataInstanceRemovingFromDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataInstanceRemovingFrom event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId InstanceId { get; }
@@ -479,19 +420,15 @@ Implements: IDisposable
 
 [CLASS] ExternalDataTypeServerFailureResolutionExecutingEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataTypeServerFailureResolutionExecutingEventArgs
-
 Description: The event arguments used by the ExternalDataTypeServerFailureResolutionExecuting event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
 
 [CLASS] ExternalDataTypeUpdatedDataSourceIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataTypeUpdatedDataSourceIntoDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataTypeUpdatedInto event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string ItemId { get; }
@@ -505,10 +442,8 @@ Implements: IDisposable
 
 [CLASS] ExternalDataTypeUpdatingDataSourceIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.ExternalDataTypeUpdatingDataSourceIntoDocumentEventArgs
-
 Description: The event arguments used by the ExternalDataTypeUpdatingDataSourceInto event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ElementId TypeId { get; }
@@ -518,11 +453,9 @@ Implements: IDisposable
 
 [CLASS] FailuresProcessingEventArgs
 Full Name: Autodesk.Revit.DB.Events.FailuresProcessingEventArgs
-
 Description: The event arguments used by the FailuresProcessing event.
-Remarks: The event arguments provide access to the FailuresAccessor via which contains the details of the errors and/or warnings that caused the event to trigger. The arguments also allow you to set a processing result via . The processing result determines if Revit will attempt to recommit the currently failing transaction, roll it back, or continue. If you are explicitly dismissing warnings from the event callback, a processing result of Continue is sufficient. But if you are explicitly resolving errors from the event callback, you must change the processing result to ProceedWithCommit to ensure that the user is not shown the dismissed errors. If you wish to cancel the transaction silently without showing the errors to the user, set the processing result to ProceedWithRollback, however you must also call in order to dismiss the errors and silently cancel the transaction.
+Remarks: The event arguments provide access to the FailuresAccessor via GetFailuresAccessor which contains the details of the errors and/or warnings that caused the event to trigger.The arguments also allow you to set a processing result via FailureProcessingResult). The processing result determines if Revit will attempt to recommit the currently failing transaction, roll it back, or continue. If you are explicitly dismissing warnings from the event callback, a processing result of Continue is sufficient. But if you are explicitly resolving errors from the event callback, you must change the processing result to ProceedWithCommit to ensure that the user is not shown the dismissed errors. If you wish to cancel the transaction silently without showing the errors to the user, set the processing result to ProceedWithRollback, however you must also call Boolean) in order to dismiss the errors and silently cancel the transaction.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
   METHODS:
     FailuresAccessor GetFailuresAccessor()
@@ -534,15 +467,14 @@ Implements: IDisposable
     void SetProcessingResult(FailureProcessingResult result)
       Description: Sets the result of the failures processing accomplished during this event callback.
       @result: The result.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
 [CLASS] FamilyLoadedIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.FamilyLoadedIntoDocumentEventArgs
-
 Description: The event arguments used by the FamilyLoadedInto event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string FamilyName { get; }
@@ -558,10 +490,8 @@ Implements: IDisposable
 
 [CLASS] FamilyLoadingIntoDocumentEventArgs
 Full Name: Autodesk.Revit.DB.Events.FamilyLoadingIntoDocumentEventArgs
-
 Description: The event arguments used by the FamilyLoadingInto event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string FamilyName { get; }
@@ -573,10 +503,8 @@ Implements: IDisposable
 
 [CLASS] FileExportedEventArgs
 Full Name: Autodesk.Revit.DB.Events.FileExportedEventArgs
-
 Description: The event arguments used by the FileExported event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool BackgroundOperation { get; }
@@ -590,10 +518,8 @@ Implements: IDisposable
 
 [CLASS] FileExportingEventArgs
 Full Name: Autodesk.Revit.DB.Events.FileExportingEventArgs
-
 Description: The event arguments used by the FileExporting event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     bool BackgroundOperation { get; }
@@ -607,10 +533,8 @@ Implements: IDisposable
 
 [CLASS] FileImportedEventArgs
 Full Name: Autodesk.Revit.DB.Events.FileImportedEventArgs
-
 Description: The event arguments used by the FileImported event.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ImportExportFileFormat Format { get; }
@@ -624,10 +548,8 @@ Implements: IDisposable
 
 [CLASS] FileImportingEventArgs
 Full Name: Autodesk.Revit.DB.Events.FileImportingEventArgs
-
 Description: The event arguments used by the FileImporting event.
 Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     ImportExportFileFormat Format { get; }
@@ -639,10 +561,8 @@ Implements: IDisposable
 
 [CLASS] LinkedResourceOpenedEventArgs
 Full Name: Autodesk.Revit.DB.Events.LinkedResourceOpenedEventArgs
-
-Description: The event arguments used by .
+Description: The event arguments used by Autodesk::Revit::ApplicationServices::Application::LinkedResourceOpened.
 Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string LinkedResourcePathName { get; }
@@ -656,10 +576,8 @@ Implements: IDisposable
 
 [CLASS] LinkedResourceOpeningEventArgs
 Full Name: Autodesk.Revit.DB.Events.LinkedResourceOpeningEventArgs
-
-Description: The event arguments used by .
+Description: The event arguments used by Autodesk::Revit::ApplicationServices::Application::LinkedResourceOpening.
 Inherits: RevitAPIPreEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string LinkedResourcePathName { get; }
@@ -671,7 +589,6 @@ Implements: IDisposable
 
 [CLASS] PostDocEventArgs
 Full Name: Autodesk.Revit.DB.Events.PostDocEventArgs
-
 Description: The class is used as base class for arguments of any post-event that is associated to a particular Document.
 Inherits: PostEventArgs
 
@@ -683,7 +600,6 @@ Inherits: PostEventArgs
 
 [CLASS] PostEventArgs
 Full Name: Autodesk.Revit.DB.Events.PostEventArgs
-
 Description: The class is used as a base class for arguments of any post-event.
 Inherits: RevitEventArgs
 
@@ -695,7 +611,6 @@ Inherits: RevitEventArgs
 
 [CLASS] PreDocEventArgs
 Full Name: Autodesk.Revit.DB.Events.PreDocEventArgs
-
 Description: The class is used as base class for the arguments of any pre-event arguments that is associated to a particular Document.
 Inherits: PreEventArgs
 
@@ -707,7 +622,6 @@ Inherits: PreEventArgs
 
 [CLASS] PreEventArgs
 Full Name: Autodesk.Revit.DB.Events.PreEventArgs
-
 Description: The class is used as a base class for the arguments for any pre-event.
 Inherits: RevitEventArgs
 
@@ -715,10 +629,8 @@ Inherits: RevitEventArgs
 
 [CLASS] ProgressChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.ProgressChangedEventArgs
-
 Description: The event arguments used by the ProgressChanged event.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
   PROPERTIES:
     string Caption { get; }
@@ -735,15 +647,14 @@ Implements: IDisposable
   METHODS:
     void Cancel()
       Description: Requests to cancel the progress bar's operation.
+      Throws InvalidOperationException: The operation cannot be cancelled.
 
 --------------------------------------------------------------------------------
 
 [ENUM] ProgressStage
 Full Name: Autodesk.Revit.DB.Events.ProgressStage
-
 Description: The associated action of a ProgressChanged event
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - Started = 0
@@ -753,245 +664,12 @@ Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
     - Unchanged = 4
     - Finished = 5
 
+--------------------------------------------------------------------------------
+
 [CLASS] ProjectBrowserDataChangedEventArgs
 Full Name: Autodesk.Revit.DB.Events.ProjectBrowserDataChangedEventArgs
-
 Description: The event arguments used by the ProjectBrowserDataChanged event.
 Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
 
 --------------------------------------------------------------------------------
-
-[CLASS] RevitAPIEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPIEventArgs
-
-Description: The class is used as base class for all event argument classes.
-Inherits: EventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    bool Cancellable { get; }
-      Description: Indicates whether an event may be cancelled by an event delegate.
-    bool IsValidObject { get; }
-      Description: Specifies whether the .NET object represents a valid Revit entity.
-
-  METHODS:
-    void Dispose()
-    bool IsCancelled()
-      Description: Indicates whether the event is being cancelled.
-
---------------------------------------------------------------------------------
-
-[ENUM] RevitAPIEventStatus
-Full Name: Autodesk.Revit.DB.Events.RevitAPIEventStatus
-
-Description: Describes the status of an action which triggered a post event.
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - Succeeded = 0
-    - Cancelled = 1
-    - Failed = -1
-
-[CLASS] RevitAPIPostDocEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPIPostDocEventArgs
-
-Description: The base class used for post events where the arguments must supply access to the document.
-Inherits: RevitAPIPostEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    Document Document { get; }
-      Description: The document associated with the event.
-
---------------------------------------------------------------------------------
-
-[CLASS] RevitAPIPostEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPIPostEventArgs
-
-Description: The class is used as a base class for arguments of any post-event.
-Remarks: A post-event is the event raised after execution of the process that was related with the event.
-Inherits: RevitAPIEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    RevitAPIEventStatus Status { get; }
-      Description: Indicates whether the action associated with this event succeeded, failed, or was cancelled (by an API event handler).
-
---------------------------------------------------------------------------------
-
-[CLASS] RevitAPIPreDocEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPIPreDocEventArgs
-
-Description: The base class used for pre events where the arguments must supply access to the document.
-Inherits: RevitAPIPreEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    Document Document { get; }
-      Description: The document associated with the event.
-
---------------------------------------------------------------------------------
-
-[CLASS] RevitAPIPreEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPIPreEventArgs
-
-Description: The class is used as a base class for the arguments for any pre-event.
-Remarks: A pre-event is the event raised before executing the process that was related with the event.
-Inherits: RevitAPIEventArgs
-Implements: IDisposable
-
-  METHODS:
-    void Cancel()
-      Description: When the event is cancellable, may call the Cancel() method to cancel it.
-
---------------------------------------------------------------------------------
-
-[CLASS] RevitAPISingleEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitAPISingleEventArgs
-
-Description: The class is used as a base class for arguments of any single-event.
-Remarks: A single event is an event that is not directly related to another event, meaning that there is no corresponding pre-event or post-event surrounding a single event.
-Inherits: RevitAPIEventArgs
-Implements: IDisposable
-
---------------------------------------------------------------------------------
-
-[CLASS] RevitEventArgs
-Full Name: Autodesk.Revit.DB.Events.RevitEventArgs
-
-Description: The class is used as base class for all event argument classes.
-Inherits: EventArgs
-
-  PROPERTIES:
-    bool Cancel { get; set; }
-      Description: Indicates whether the event is being cancelled. When the event is cancellable, set the property to True to cancel it.
-    bool Cancellable { get; }
-      Description: Indicates whether an event may be cancelled by an event delegate.
-
---------------------------------------------------------------------------------
-
-[ENUM] UndoOperation
-Full Name: Autodesk.Revit.DB.Events.UndoOperation
-
-Description: The operation associated with DocumentChanged event
-Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
-
-  Values:
-    - TransactionCommitted = 0
-    - TransactionRolledBack = 1
-    - TransactionGroupRolledBack = 2
-    - TransactionUndone = 3
-    - TransactionRedone = 4
-
-[CLASS] ViewExportedEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewExportedEventArgs
-
-Description: The event arguments used by the ViewExported event.
-Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    ElementId ViewId { get; }
-      Description: Identifies the view that was exported.
-
---------------------------------------------------------------------------------
-
-[CLASS] ViewExportingEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewExportingEventArgs
-
-Description: The event arguments used by the ViewExporting event.
-Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    ElementId ViewId { get; }
-      Description: Identifies the view about to be exported.
-
---------------------------------------------------------------------------------
-
-[CLASS] ViewPrintedEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewPrintedEventArgs
-
-Description: The event arguments used by the ViewPrinted event.
-Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    int Index { get; }
-      Description: The index of the view being printed out of the set of all views being printed.
-    int TotalViews { get; }
-      Description: The number of all views being printed.
-    View View { get; }
-      Description: The view that was printed.
-
---------------------------------------------------------------------------------
-
-[CLASS] ViewPrintingEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewPrintingEventArgs
-
-Description: The event arguments used by the ViewPrinting event.
-Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    int Index { get; }
-      Description: The index of the view being printed out of the set of all views being printed.
-    int TotalViews { get; }
-      Description: The number of all views being printed.
-    View View { get; }
-      Description: The view to be printed.
-
-  METHODS:
-    IPrintSetting GetSettings()
-      Description: Get the print settings of the active printing session.
-
---------------------------------------------------------------------------------
-
-[CLASS] ViewsExportedByContextEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewsExportedByContextEventArgs
-
-Description: The event arguments used by the ViewsExportedByContext event.
-Inherits: RevitAPIPostDocEventArgs
-Implements: IDisposable
-
-  METHODS:
-    IList<ElementId> GetViewIds()
-      Description: Gets the views that were exported by CustomExporter.
-      Returns: The views that were exported by CustomExporter.
-
---------------------------------------------------------------------------------
-
-[CLASS] ViewsExportingByContextEventArgs
-Full Name: Autodesk.Revit.DB.Events.ViewsExportingByContextEventArgs
-
-Description: The event arguments used by the ViewsExportingByContext event.
-Inherits: RevitAPIPreDocEventArgs
-Implements: IDisposable
-
-  METHODS:
-    IList<ElementId> GetViewIds()
-      Description: Gets the views about to be exported by CustomExporter.
-      Returns: The views about to be exported by CustomExporter.
-
---------------------------------------------------------------------------------
-
-[CLASS] WorksharedOperationProgressChangedEventArgs
-Full Name: Autodesk.Revit.DB.Events.WorksharedOperationProgressChangedEventArgs
-
-Description: The event arguments used by the WorksharedOperationProgressChanged event, this event will be raised when executing following workshared operations.
-Remarks: For synchronizing with central operation, there are 4 steps. 1) Save to local (before save to central) - Serializes the streams from memory to local disk cache; 2) Reload latest - Downloads the streams from central model on server and merge them into local memory; 3) Save to central - Uploads merged streams from local memory to server central model; 4) Save to local (after save to central) - Serializes the merged streams from memory to local disk cache; For document open operation, just download the model from server and then open it; It is NOT recommended to deal with time-consuming work when handling WorksharedOperationProgressChanged event, otherwise it would increase synchronizing with central or model open time.
-Inherits: RevitAPISingleEventArgs
-Implements: IDisposable
-
-  PROPERTIES:
-    string Location { get; }
-      Description: Full path of the central model which is to be operated.
-    RevitAPIEventStatus Status { get; }
-      Description: Gets API event status, reflect current operation execution status.
-
---------------------------------------------------------------------------------
-
 

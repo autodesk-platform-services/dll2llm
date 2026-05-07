@@ -1,22 +1,24 @@
 ﻿# Autodesk.Revit.DB.PointClouds
 
-
 NAMESPACE: Autodesk.Revit.DB.PointClouds
 --------------------------------------------------------------------------------
 
 [STRUCT] CloudPoint
 Full Name: Autodesk.Revit.DB.PointClouds.CloudPoint
-
 Description: Represents a point obtained from a Point cloud.
 
   CONSTRUCTORS:
     new CloudPoint(float x, float y, float z, int color)
+      Description: Creates a new cloud point.
+      @x: The X coordinate.
+      @y: The Y coordinate.
+      @z: The Z coordinate.
+      @color: The color.
 
 --------------------------------------------------------------------------------
 
 [INTERFACE] IPointCloudAccess
 Full Name: Autodesk.Revit.DB.PointClouds.IPointCloudAccess
-
 Description: An interface that provides functionality for working with an individual Point Cloud.
 Remarks: An instance of this interface is obtained from the associated point cloud engine when the engine's CreatePointCloudAccess method is called.An instance of this class will be requested by Revit when drawing the point cloud in the view. For performance reasons, when rendering every frame Revit asks the engine to fetch the necessary points split into multiple batches. The number of batches requested depends on the view: the smaller the projection of the cloud bounding box on the screen the fewer batches Revit requests. Revit assumes that each batch contains points uniformly distributed over the visible part of the cloud ("visible" as defined by the filter). Thus, the points supplied by the engine should not be geometrically distinct (e.g. divided into multiple independent volumes, because at distant zoom levels Revit will only request a few batches and only part of the cloud will be displayed.
 
@@ -61,7 +63,6 @@ Remarks: An instance of this interface is obtained from the associated point clo
 
 [INTERFACE] IPointCloudEngine
 Full Name: Autodesk.Revit.DB.PointClouds.IPointCloudEngine
-
 Description: An interface that controls the behavior of the link from Revit to a custom Point Cloud Engine.
 Remarks: An instance of this interface should be created by the engine provider and registered with the PointCloudEnginesRegistry. The engine may associated with a particular file name extension during registration (for example, Revit supplies a built-in engine for working with files with the extension "rcs" or "rcp"). Alternatively, the engine may be associated with an identifier which is not expected to the be the extension of a particular file.
 
@@ -77,7 +78,6 @@ Remarks: An instance of this interface should be created by the engine provider 
 
 [INTERFACE] IPointSetIterator
 Full Name: Autodesk.Revit.DB.PointClouds.IPointSetIterator
-
 Description: An interface that Revit will call when iterating through sets of points on the engine.
 Remarks: An instance of this interface is obtained from the Point Cloud engine when the engine's CreatePointSetIterator method is called.
 
@@ -94,27 +94,34 @@ Remarks: An instance of this interface is obtained from the Point Cloud engine w
 
 [ENUM] PointCloudColorEncoding
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudColorEncoding
-
 Description: The color encodings supported by Revit point clouds.
 Inherits: Enum
-Implements: IComparable, ISpanFormattable, IFormattable, IConvertible
 
   Values:
     - ARGB = 0
     - ABGR = 1
 
+--------------------------------------------------------------------------------
+
 [CLASS] PointCloudColorSettings
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudColorSettings
-
 Description: The color settings which are applied to a PointCloudInstance element, or one of its scans.
 Remarks: For different color modes (PointCloudColorMode), the color settings mean different things: for single color, color1 means the display colorfor other modes (intensity, elevation), color1 and color2 form a gradient from min to maxfor no overrides and normals, color1 and color2 are not used
 Implements: IDisposable
 
   CONSTRUCTORS:
     new PointCloudColorSettings(PointCloudColorSettings other)
+      Description: Constructs a copy of source object.
+      @other: Source object.
+      Throws ArgumentNullException: A non-optional argument was null
     new PointCloudColorSettings(Color color1, Color color2)
+      Description: Constructs color settings object from given colors.
+      Throws ArgumentNullException: A non-optional argument was null
     new PointCloudColorSettings(PointCloudColorMode mode)
+      Description: Constructs color settings object with default color for given color mode.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     new PointCloudColorSettings()
+      Description: Constructs color settings object with default colors.
 
   PROPERTIES:
     Color Color1 { get; }
@@ -128,19 +135,20 @@ Implements: IDisposable
     void Assign(PointCloudColorSettings other)
       Description: Assigns values of the source settings to this object.
       @other: The source settings.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
     bool IsEqual(PointCloudColorSettings other)
       Description: Check if the contents of two settings are equal.
       @other: The settings to be compared.
       Returns: True for equal, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] PointCloudEngineRegistry
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudEngineRegistry
-
 Description: This class supports registration of custom Point Cloud Engines in a Revit session.
-Remarks: This class is the start point for engine providers. A custom engine implementation consists of the following: An implementation of IPointCloudEngine registered to Revit via the PointCloudEngineRegistry.An implementation of IPointCloudAccess coded to respond to inquiries from Revit regarding the properties of a single point cloud.An implementation of IPointSetIterator code to return sets of points to Revit when requested. Engine implementations may be file-based or non-file-based: File-based implementations require that each point cloud be mapped to a single file on disk. Revit will allow users to create new point cloud instances in a document directly by selecting point cloud files whose extension matches the engine identifier. These files are treated as external links in Revit and may be reloaded and remapped when necessary from the Manage Links dialog. Non-file-based engine implementations may obtain point clouds from anywhere (e.g. from a database, from a server, or from one part of a larger aggregate file). Because there is no file that the user may select, Revit's user interface will not allow a user to create a point cloud of this type. The engine provider should supply a custom command using PointCloudType.Create() and PointCloudInstance.Create() to create and place point clouds of this type. The Manage Links dialog will show the point clouds of this type, but since there is no file associated to the point cloud, the user cannot manage, reload or remap point clouds of this type.Regardless of the type of engine used, the implementation must supply enough information to Revit to display the contents of the point cloud. There are two ReadPoints methods which must be implemented: IPointCloudAccess.ReadPoints() - this provides a single set of points in a one-time call from Revit. Revit uses this during some display activities including selection prehighlighting. It is also possible for API clients to call this method directly (via PointCloudInstance.GetPoints()).IPointSetIterator.ReadPoints() - this provides a subset of points as a part of a larger iteration of points in the cloud. Revit uses this method during normal display of the point cloud; quantities of points will be requested repeatedly until it obtains enough points or until something in the display changes. The engine implementation must keep track of which points have been returned to Revit during any given point set iteration.
+Remarks: This class is the start point for engine providers. A custom engine implementation consists of the following: An implementation of IPointCloudEngine registered to Revit via the PointCloudEngineRegistry.An implementation of IPointCloudAccess coded to respond to inquiries from Revit regarding the properties of a single point cloud.An implementation of IPointSetIterator code to return sets of points to Revit when requested.Engine implementations may be file-based or non-file-based: File-based implementations require that each point cloud be mapped to a single file on disk. Revit will allow users to create new point cloud instances in a document directly by selecting point cloud files whose extension matches the engine identifier. These files are treated as external links in Revit and may be reloaded and remapped when necessary from the Manage Links dialog.Non-file-based engine implementations may obtain point clouds from anywhere (e.g. from a database, from a server, or from one part of a larger aggregate file). Because there is no file that the user may select, Revit's user interface will not allow a user to create a point cloud of this type. The engine provider should supply a custom command using PointCloudType.Create() and PointCloudInstance.Create() to create and place point clouds of this type. The Manage Links dialog will show the point clouds of this type, but since there is no file associated to the point cloud, the user cannot manage, reload or remap point clouds of this type.Regardless of the type of engine used, the implementation must supply enough information to Revit to display the contents of the point cloud. There are two ReadPoints methods which must be implemented: IPointCloudAccess.ReadPoints() - this provides a single set of points in a one-time call from Revit. Revit uses this during some display activities including selection prehighlighting. It is also possible for API clients to call this method directly (via PointCloudInstance.GetPoints()).IPointSetIterator.ReadPoints() - this provides a subset of points as a part of a larger iteration of points in the cloud. Revit uses this method during normal display of the point cloud; quantities of points will be requested repeatedly until it obtains enough points or until something in the display changes. The engine implementation must keep track of which points have been returned to Revit during any given point set iteration.
 
   METHODS:
     static IList<string> GetSupportedEngines()
@@ -150,20 +158,23 @@ Remarks: This class is the start point for engine providers. A custom engine imp
       Description: Identifies if a given engine is file-based.
       @identifier: The engine identifier.
       Returns: True if the engine is file-based, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     static void RegisterPointCloudEngine(string identifier, IPointCloudEngine engine, bool isFileBased)
       Description: Registers a new point cloud engine and associates it to a particular file extension.
       @identifier: A string that distinguishes the engine being registered. If isFileBased is true, this should be the file extension (e.g. "rcs" or "rcp"). If isFileBased is false, this identifier is used only by API calls and should be unique.
       @engine: The point cloud engine that governs point clouds matching the input identifier.
       @isFileBased: Indicates to Revit if a single Point Cloud corresponds to a single file on disk.
+      Throws ArgumentException: The same identifier has already been registered by another engine.
+      Throws ArgumentNullException: A non-optional argument was null
     static void UnregisterPointCloudEngine(string identifier)
       Description: Unregisters the point cloud engine associated to a particular identifier.
       @identifier: The identifier of the engine to be unregistered.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] PointCloudFilter
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudFilter
-
 Description: A class used to describe the criteria an application desires when obtaining members of a point cloud.
 Remarks: Client applications which wish to obtain points from a point cloud will have to create a PointCloudFilter to define the volume of interest (see PointCloudFilterFactory). Engine implementations will need to use the methods contained within the point cloud to determine which points to return to Revit.
 Implements: IDisposable
@@ -182,11 +193,13 @@ Implements: IDisposable
       @min: The lower corner of the cell.
       @max: The upper corner of the cell.
       @numTests: The engine's estimate of the number of TestPoint() calls it is going to make for this cell.
+      Throws ArgumentNullException: A non-optional argument was null
     int TestCell(XYZ min, XYZ max)
       Description: Checks whether a given cell, i.e. a box aligned with the XYZ axes, is inside, outside or on the border of the volume of interest.
       @min: The lower corner of the cell.
       @max: The upper corner of the cell.
-      Returns: -1 -- The cell is entirely rejected. 0 -- The cell partially belongs to the volume of interest. Use PrepareForCell() and TestPoint() to evaluate individual points. 1 -- The cell is fully accepted.
+      Returns: -1 -- The cell is entirely rejected.0 -- The cell partially belongs to the volume of interest. Use PrepareForCell() and TestPoint() to evaluate individual points.1 -- The cell is fully accepted.
+      Throws ArgumentNullException: A non-optional argument was null
     bool TestPoint(CloudPoint point)
       Description: Checks if a point is inside the volume of interest.
       @point: The point to be tested.
@@ -196,7 +209,6 @@ Implements: IDisposable
 
 [ABSTRACT CLASS] PointCloudFilterFactory
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudFilterFactory
-
 Description: A factory class for creating point cloud filters.
 
   METHODS:
@@ -204,17 +216,18 @@ Description: A factory class for creating point cloud filters.
       Description: Creates a new point cloud filter based upon planar boundaries.
       @planes: All planes used for filtering; positive direction of the normal should point inside the volume of interest. Only points on the "positive" side of all planes will pass the filter.
       Returns: Filter object; can be used to get representative set of cloud points passing through the filter.
+      Throws ArgumentNullException: A non-optional argument was null
     static PointCloudFilter CreateMultiPlaneFilter(IList<Plane> planes, int exactPlaneCount)
       Description: Creates a new point cloud filter based upon planar boundaries.
       @planes: All planes used for filtering; positive direction of the normal should point inside the volume of interest.
       @exactPlaneCount: This value represents the number of planes (taken in order of their addition) which will be used for exact filtering of individual points. Other planes in the filter will be used for faster, but inexact filtering based on cells.
       Returns: Filter object; can be used to get representative set of cloud points passing through the filter.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [ABSTRACT CLASS] PointCloudFilterUtils
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudFilterUtils
-
 Description: Utilities specific to point cloud filters.
 
   METHODS:
@@ -223,17 +236,18 @@ Description: Utilities specific to point cloud filters.
       @filter: Point cloud filter.
       @box: A box aligned with coordinate axes.
       Returns: The bounding box of the set of all points within the original box that satisfy the filter. Not every point within the resulting outline satisfies the filter, but any point that is contained in the original box and satisfies the filter is guaranteed to be within the resulting outline.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] PointCloudOverrides
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudOverrides
-
 Description: Graphic overrides that are stored by a view to be applied to a PointCloudInstance element, or a scan within the element.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new PointCloudOverrides()
+      Description: Constructs empty overrides object.
 
   PROPERTIES:
     bool IsValidObject { get; }
@@ -244,9 +258,11 @@ Implements: IDisposable
       Description: Checks if PointCloudOverrideSettings are valid
       @tag: The tag identifying the particular scan/region within the PointCloudInstance element. Tags can be obtained from PointCloudInstance via method getScans/getRegions.
       @settings: Override settings to be checked.
+      Throws ArgumentNullException: A non-optional argument was null
     void Assign(PointCloudOverrides other)
       Description: Assigns values of the source overrides to this object.
       @other: The source overrides.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
     PointCloudOverrideSettings GetPointCloudRegionOverrideSettings(ElementId elementId, string regionTag, Document doc)
       Description: Gets override settings assigned to a particular region within a PointCloudInstance element.
@@ -254,56 +270,74 @@ Implements: IDisposable
       @regionTag: The tag identifying the particular region within the PointCloudInstance element. Tags can be obtained from PointCloudInstance via method getRegions.
       @doc: Document containing the overridden element.
       Returns: The override settings assigned to the region, if present, or a default override settings if nothing was found.
+      Throws ArgumentException: Thrown when supplied regionTag is not empty while doc is NULL
+      Throws ArgumentNullException: A non-optional argument was null
     PointCloudOverrideSettings GetPointCloudRegionOverrideSettings(ElementId elementId)
       Description: Gets region override settings assigned to the whole PointCloudInstance element.
       @elementId: Id of the overridden element.
       Returns: The override settings assigned to the element, if present, or a default override settings if nothing was found.
+      Throws ArgumentNullException: A non-optional argument was null
     PointCloudOverrideSettings GetPointCloudScanOverrideSettings(ElementId elementId, string scanTag, Document doc)
       Description: Gets override settings assigned to a particular scan within a PointCloudInstance element.
       @elementId: Id of the overridden element.
       @scanTag: The tag identifying the particular scan within the PointCloudInstance element. Tags can be obtained from PointCloudInstance via method getScans.
       @doc: Document containing the overridden element.
       Returns: The override settings assigned to the scan, if present, or a default override settings if nothing was found.
+      Throws ArgumentException: Thrown when supplied scanTag is not empty while doc is NULL
+      Throws ArgumentNullException: A non-optional argument was null
     PointCloudOverrideSettings GetPointCloudScanOverrideSettings(ElementId elementId)
       Description: Gets scan override settings assigned to the whole PointCloudInstance element.
       @elementId: Id of the overridden element.
       Returns: The override settings assigned to the element, if present, or a default override settings if nothing was found.
+      Throws ArgumentNullException: A non-optional argument was null
     bool IsEqual(PointCloudOverrides other)
       Description: Check if the contents of two overrides are equal.
       @other: The overrides to be compared.
       Returns: True for equal, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetPointCloudRegionOverrideSettings(ElementId elementId, PointCloudOverrideSettings newSettings, string regionTag, Document doc)
       Description: Assigns override settings to a particular region within a PointCloudInstance element.
       @elementId: Id of the element to be overridden.
       @newSettings: Override settings to be assigned.
       @regionTag: The tag identifying the particular region within the PointCloudInstance element. Tags can be obtained from PointCloudInstance via method getRegions.
       @doc: Document containing the element to be overridden.
+      Throws ArgumentException: Thrown when supplied regionTag is not empty while doc is NULL
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The override settings are not valid.
     void SetPointCloudRegionOverrideSettings(ElementId elementId, PointCloudOverrideSettings newSettings)
       Description: Assigns region override settings to the whole PointCloudInstance element.
       @elementId: Id of the element to be overridden.
       @newSettings: Override settings to be assigned.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetPointCloudScanOverrideSettings(ElementId elementId, PointCloudOverrideSettings newSettings, string scanTag, Document doc)
       Description: Assigns scan override settings to a particular scan within a PointCloudInstance element.
       @elementId: Id of the element to be overridden.
       @newSettings: Override settings to be assigned.
       @scanTag: The tag identifying the particular scan within the PointCloudInstance element. Tags can be obtained from PointCloudInstance via method getScans.
       @doc: Document containing the element to be overridden.
+      Throws ArgumentException: Thrown when supplied scanTag is not empty while doc is NULL
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: The override settings are not valid.
     void SetPointCloudScanOverrideSettings(ElementId elementId, PointCloudOverrideSettings newSettings)
       Description: Assigns scan override settings to the whole PointCloudInstance element.
       @elementId: Id of the element to be overridden.
       @newSettings: Override settings to be assigned.
+      Throws ArgumentNullException: A non-optional argument was null
 
 --------------------------------------------------------------------------------
 
 [CLASS] PointCloudOverrideSettings
 Full Name: Autodesk.Revit.DB.PointClouds.PointCloudOverrideSettings
-
 Description: The graphic override settings for one PointCloudInstance element or one of its scans.
 Implements: IDisposable
 
   CONSTRUCTORS:
     new PointCloudOverrideSettings(PointCloudOverrideSettings other)
+      Description: Constructs a copy of source object.
+      @other: Source object.
+      Throws ArgumentNullException: A non-optional argument was null
     new PointCloudOverrideSettings()
+      Description: Constructs a settings object with default values.
 
   PROPERTIES:
     PointCloudColorMode ColorMode { get; set; }
@@ -317,27 +351,31 @@ Implements: IDisposable
     void Assign(PointCloudOverrideSettings other)
       Description: Assigns values of the source settings to this object.
       @other: The source settings.
+      Throws ArgumentNullException: A non-optional argument was null
     void Dispose()
     PointCloudColorSettings GetModeOverride(PointCloudColorMode mode)
       Description: Lookup color settings for the given color mode.
       @mode: Color mode for which to lookup the color settings.
       Returns: Color settings stored for the given color mode or default color settings if nothing is stored for the given color mode.
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
     bool IsEqual(PointCloudOverrideSettings other)
       Description: Checks if the contents of two settings are equal.
       @other: The settings to be compared.
       Returns: True for equal, false otherwise.
+      Throws ArgumentNullException: A non-optional argument was null
     void SetModeOverride(PointCloudColorMode mode, PointCloudColorSettings colorSettings)
       Description: Sets color settings for the given color mode.
       @mode: Color mode for which color settings are set.
       @colorSettings: Color settings to be set for the given color mode.
+      Throws ArgumentNullException: A non-optional argument was null
+      Throws ArgumentOutOfRangeException: A value passed for an enumeration argument is not a member of that enumeration
 
 --------------------------------------------------------------------------------
 
 [CLASS] PointCollection
 Full Name: Autodesk.Revit.DB.PointClouds.PointCollection
-
 Description: A class that represents a set of points created and returned by Revit in response to a query.
-Implements: IEnumerable`1, IEnumerable, IDisposable
+Implements: IEnumerable<CloudPoint>, IEnumerable, IDisposable
 
   PROPERTIES:
     int Count { get; }
@@ -361,10 +399,9 @@ Implements: IEnumerable`1, IEnumerable, IDisposable
 
 [CLASS] PointIterator
 Full Name: Autodesk.Revit.DB.PointClouds.PointIterator
-
 Description: A class used to iterate individual points in a PointCollection.
 Remarks: Points may be iterated in two different ways: In the traditional IEnumerable interface, you can iterate the resulting points directly from the PointCollection.In an unsafe interface usable only from C# and C++/CLI, you can get a pointer to the point storage of the collection and access the points directly in memory. Although you must deal with pointers directly, there may be performance improvements when traversing large buffers of points. Regardless of the approach used to obtain the points, the points are reported in the coordinate system of the point cloud. If you need the points in the coordinate system of the model, you will need to transform the point in those coordinates. The most direct way to do this is to obtain the transformation matrix from the PointCloudInstance (GetTransform()), convert the CloudPoint to an XYZ using the implicit conversion operator, and use Transform.OfPoint(XYZ).
-Implements: IEnumerator`1, IDisposable, IEnumerator
+Implements: IEnumerator<CloudPoint>, IDisposable, IEnumerator
 
   PROPERTIES:
     CloudPoint Current { get; }
@@ -386,5 +423,4 @@ Implements: IEnumerator`1, IDisposable, IEnumerator
       Description: Resets the iterator to the beginning of the collection.
 
 --------------------------------------------------------------------------------
-
 

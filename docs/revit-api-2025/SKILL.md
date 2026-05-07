@@ -1,90 +1,64 @@
+﻿---
+name: revitapi
+description: >-
+  RevitAPI API reference for writing plugins, add-ins, and automation code.
+  Provides classes, methods, properties, events, and enums.
+  Use when writing RevitAPI code, implementing RevitAPI workflows,
+  or asking about RevitAPI API types, methods, or namespaces.
 ---
-name: revit-api-docs
-description: Revit API 2025 documentation lookup. Use when writing Revit plugins, add-ins, or macros in C#. Helps find classes, methods, properties, and enums in the Autodesk.Revit namespace for Revit automation and customization.
----
 
-# Revit API 2025 Documentation
+# RevitAPI API
 
-This skill provides access to the Revit API 2025 documentation for developing Revit add-ins, plugins, and macros.
+## How to use this skill
 
-## How to Use This Documentation
+1. Read [INDEX.md](INDEX.md) to find the type or namespace you need.
+2. Open the relevant topic file listed in the index.
+3. Each topic file covers one namespace group with full type documentation.
 
-### Step 1: Consult the Index First
+## Topic files
 
-Always start by reading `INDEX.md` to find the correct documentation file:
-
-1. **Quick Lookup by Topic** - Find files by functional area (Elements, Geometry, MEP, etc.)
-2. **File Structure Table** - See all files with namespace scope and type counts
-3. **Type Directory** - Full listing of all types per file
-
-### Step 2: Load the Specific File
-
-Once you identify the relevant file from the index, read that file to get:
-- Full class/interface/enum definitions
-- Property descriptions and types
-- Method signatures with parameter descriptions
-- Inheritance and interface information
-
-## File Organization
-
-| Category | Files |
-|----------|-------|
-| **Core DB Types (A-Z)** | `db-a-b.md`, `db-c.md`, `db-d.md`, `db-e.md`, `db-f-g.md`, `db-h-i.md`, `db-j-l.md`, `db-m-o.md`, `db-p.md`, `db-r.md`, `db-s.md`, `db-t-u.md`, `db-v-z.md` |
-| **Application** | `application-services.md`, `attributes.md`, `creation.md` |
-| **MEP** | `db-mechanical.md`, `db-electrical.md`, `db-plumbing.md` |
-| **Structure** | `db-structure.md`, `db-structure-sections.md` |
-| **Architecture** | `db-architecture.md`, `db-analysis.md` |
-| **Specialized** | `db-visual.md`, `db-events.md`, `db-fabrication.md`, `db-directcontext3d.md` |
-| **Support** | `exceptions.md`, `db-extensiblestorage.md`, `db-externalservice.md` |
-
-## Common Lookups
-
-### Creating Elements
-- **Document** class: `db-d.md`
-- **Element**, **ElementId**: `db-e.md`
-- **FamilyInstance**, **FamilySymbol**: `db-f-g.md`
-- **Transaction**: `db-t-u.md`
-
-### Geometry Operations
-- **XYZ**, **Vector**: `db-v-z.md`
-- **Curve**, **CurveLoop**: `db-c.md`
-- **Solid**, **Surface**: `db-s.md`
-- **Face**, **Geometry**: `db-f-g.md`
-
-### Filtering Elements
-- **FilteredElementCollector**: `db-f-g.md`
-- **ElementFilter**, **ElementCategoryFilter**: `db-e.md`
-- **BuiltInCategory**, **BuiltInParameter**: `db-a-b.md`
-
-### Parameters
-- **Parameter**, **ParameterFilter**: `db-p.md`
-- **Definition**, **DefinitionFile**: `db-d.md`
-
-### Views
-- **View**, **ViewPlan**, **ViewSection**: `db-v-z.md`
-- **GraphicsStyle**: `db-f-g.md`
-
-### Events & Transactions
-- **Transaction**, **TransactionGroup**: `db-t-u.md`
-- **DocumentChanged**, event args: `db-events.md`
-- **IExternalCommand**: `db-h-i.md`
-
-## Search Strategy
-
-If you don't know which file contains a type:
-
-1. **By first letter**: Core DB types are split alphabetically (e.g., `Wall` → `db-v-z.md`)
-2. **By namespace**: Sub-namespaces have dedicated files (e.g., `Autodesk.Revit.DB.Structure` → `db-structure.md`)
-3. **By topic**: Use the Quick Lookup section in `INDEX.md`
-4. **Type Directory**: Scan the comma-separated type lists in `INDEX.md`
-
-## Documentation Format
-
-Each type entry includes:
-- **Type tag**: `[CLASS]`, `[ENUM]`, `[INTERFACE]`, `[ABSTRACT CLASS]`, `[STRUCT]`
-- **Full Name**: Complete namespace path
-- **Description**: What the type does
-- **Inherits/Implements**: Base class and interfaces
-- **Properties**: With types and descriptions
-- **Methods**: With signatures, parameter descriptions, and return values
-- **Events**: For event-enabled classes
+- [applicationservices.md](applicationservices.md) — Autodesk.Revit.ApplicationServices (4 types)
+- [attributes.md](attributes.md) — Autodesk.Revit.Attributes (6 types)
+- [creation.md](creation.md) — Autodesk.Revit.Creation (7 types)
+- [db-a.md](db-a.md) — Autodesk.Revit.DB [A] (50 types)
+- [db-b-c.md](db-b-c.md) — Autodesk.Revit.DB [B-C] (155 types)
+- [db-d.md](db-d.md) — Autodesk.Revit.DB [D] (89 types)
+- [db-e.md](db-e.md) — Autodesk.Revit.DB [E] (118 types)
+- [db-f.md](db-f.md) — Autodesk.Revit.DB [F] (139 types)
+- [db-g-i.md](db-g-i.md) — Autodesk.Revit.DB [G-I] (118 types)
+- [db-j-l.md](db-j-l.md) — Autodesk.Revit.DB [J-L] (65 types)
+- [db-m.md](db-m.md) — Autodesk.Revit.DB [M] (52 types)
+- [db-n-p.md](db-n-p.md) — Autodesk.Revit.DB [N-P] (137 types)
+- [db-r.md](db-r.md) — Autodesk.Revit.DB [R] (64 types)
+- [db-s.md](db-s.md) — Autodesk.Revit.DB [S] (129 types)
+- [db-t.md](db-t.md) — Autodesk.Revit.DB [T] (65 types)
+- [db-u-v.md](db-u-v.md) — Autodesk.Revit.DB [U-V] (61 types)
+- [db-w-z.md](db-w-z.md) — Autodesk.Revit.DB [W-Z] (36 types)
+- [db-analysis-a-e.md](db-analysis-a-e.md) — Autodesk.Revit.DB.Analysis [A-E] (52 types)
+- [db-analysis-f-v.md](db-analysis-f-v.md) — Autodesk.Revit.DB.Analysis [F-V] (46 types)
+- [db-architecture-b-s.md](db-architecture-b-s.md) — Autodesk.Revit.DB.Architecture [B-S] (69 types)
+- [db-architecture-t-w.md](db-architecture-t-w.md) — Autodesk.Revit.DB.Architecture [T-W] (7 types)
+- [db-directcontext3d.md](db-directcontext3d.md) — Autodesk.Revit.DB.DirectContext3D (32 types)
+- [db-electrical-a-e.md](db-electrical-a-e.md) — Autodesk.Revit.DB.Electrical [A-E] (64 types)
+- [db-electrical-g-w.md](db-electrical-g-w.md) — Autodesk.Revit.DB.Electrical [G-W] (41 types)
+- [db-events-a-p.md](db-events-a-p.md) — Autodesk.Revit.DB.Events [A-P] (51 types)
+- [db-events-r-w.md](db-events-r-w.md) — Autodesk.Revit.DB.Events [R-W] (16 types)
+- [db-extensiblestorage.md](db-extensiblestorage.md) — Autodesk.Revit.DB.ExtensibleStorage (9 types)
+- [db-externalservice.md](db-externalservice.md) — Autodesk.Revit.DB.ExternalService (16 types)
+- [db-fabrication.md](db-fabrication.md) — Autodesk.Revit.DB.Fabrication (18 types)
+- [db-ifc.md](db-ifc.md) — Autodesk.Revit.DB.IFC (3 types)
+- [db-lighting.md](db-lighting.md) — Autodesk.Revit.DB.Lighting (29 types)
+- [db-macros.md](db-macros.md) — Autodesk.Revit.DB.Macros (4 types)
+- [db-mechanical-a-r.md](db-mechanical-a-r.md) — Autodesk.Revit.DB.Mechanical [A-R] (50 types)
+- [db-mechanical-s-z.md](db-mechanical-s-z.md) — Autodesk.Revit.DB.Mechanical [S-Z] (19 types)
+- [db-plumbing.md](db-plumbing.md) — Autodesk.Revit.DB.Plumbing (29 types)
+- [db-pointclouds.md](db-pointclouds.md) — Autodesk.Revit.DB.PointClouds (14 types)
+- [db-steel.md](db-steel.md) — Autodesk.Revit.DB.Steel (1 types)
+- [db-structure-a-d.md](db-structure-a-d.md) — Autodesk.Revit.DB.Structure [A-D] (50 types)
+- [db-structure-e-r.md](db-structure-e-r.md) — Autodesk.Revit.DB.Structure [E-R] (139 types)
+- [db-structure-s-z.md](db-structure-s-z.md) — Autodesk.Revit.DB.Structure [S-Z] (32 types)
+- [db-structure-structuralsections-s.md](db-structure-structuralsections-s.md) — Autodesk.Revit.DB.Structure.StructuralSections [S] (55 types)
+- [db-visual-a-g.md](db-visual-a-g.md) — Autodesk.Revit.DB.Visual [A-G] (51 types)
+- [db-visual-h-w.md](db-visual-h-w.md) — Autodesk.Revit.DB.Visual [H-W] (52 types)
+- [exceptions-a-r.md](exceptions-a-r.md) — Autodesk.Revit.Exceptions [A-R] (55 types)
+- [exceptions-s-w.md](exceptions-s-w.md) — Autodesk.Revit.Exceptions [S-W] (7 types)
