@@ -1,5 +1,7 @@
 # dll2llm
 
+## This is a work in progress
+
 A command-line tool that generates LLM-friendly documentation from .NET DLL files, with built-in support for generating ready-to-use **Cursor Agent Skills** directly from any .NET assembly.
 
 ## Overview
