@@ -288,22 +288,38 @@ namespace DllToLLMDoc
                 .Distinct()
                 .ToList();
 
+            // Tracks assembly names currently being resolved to prevent infinite re-entrancy.
+            // Assembly.Load() inside the handler can re-fire AssemblyResolve for the same name
+            // when the assembly is not found, causing a stack overflow without this guard.
+            var resolving = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
             AppDomain.CurrentDomain.AssemblyResolve += (_, resolveArgs) =>
             {
                 var assemblyName = resolveArgs.Name.Split(',')[0];
-                foreach (var dir in dllDirs)
+
+                if (!resolving.Add(assemblyName))
+                    return null; // already in-progress for this name — break the cycle
+
+                try
                 {
-                    var candidate = Path.Combine(dir, assemblyName + ".dll");
-                    if (File.Exists(candidate))
+                    foreach (var dir in dllDirs)
                     {
-                        try { return Assembly.LoadFrom(candidate); } catch { }
+                        var candidate = Path.Combine(dir, assemblyName + ".dll");
+                        if (File.Exists(candidate))
+                        {
+                            try { return Assembly.LoadFrom(candidate); } catch { }
+                        }
+                    }
+                    try { return Assembly.Load(resolveArgs.Name); }
+                    catch
+                    {
+                        Console.WriteLine($"Warning: Could not resolve dependency: {assemblyName}");
+                        return null;
                     }
                 }
-                try { return Assembly.Load(resolveArgs.Name); }
-                catch
+                finally
                 {
-                    Console.WriteLine($"Warning: Could not resolve dependency: {assemblyName}");
-                    return null;
+                    resolving.Remove(assemblyName);
                 }
             };
         }
@@ -772,8 +788,15 @@ namespace DllToLLMDoc
                 sb.AppendLine("  CONSTRUCTORS:");
                 foreach (var ctor in constructors)
                 {
-                    sb.AppendLine($"    new {type.Name}({GetParameterList(ctor.GetParameters())})");
-                    AppendMemberDocs(sb, GetXmlMemberName(ctor), ctor.GetParameters(), false);
+                    try
+                    {
+                        sb.AppendLine($"    new {type.Name}({GetParameterList(ctor.GetParameters())})");
+                        AppendMemberDocs(sb, GetXmlMemberName(ctor), ctor.GetParameters(), false);
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine($"    [SKIPPED CONSTRUCTOR]: {ex.Message}");
+                    }
                 }
                 sb.AppendLine();
             }
@@ -789,13 +812,20 @@ namespace DllToLLMDoc
                 sb.AppendLine("  PROPERTIES:");
                 foreach (var prop in properties)
                 {
-                    var access = prop.CanRead && prop.CanWrite ? "get; set;" :
-                                 prop.CanRead ? "get;" : "set;";
-                    var staticMod = prop.GetMethod?.IsStatic == true ? "static " : "";
-                    sb.AppendLine($"    {staticMod}{GetFriendlyTypeName(prop.PropertyType)} {prop.Name} {{ {access} }}");
-                    var propXml = GetXmlMemberName(prop);
-                    var propDesc = _xmlDoc.GetSummary(propXml) ?? _xmlDoc.GetValue(propXml);
-                    if (!string.IsNullOrEmpty(propDesc)) sb.AppendLine($"      Description: {propDesc}");
+                    try
+                    {
+                        var access = prop.CanRead && prop.CanWrite ? "get; set;" :
+                                     prop.CanRead ? "get;" : "set;";
+                        var staticMod = prop.GetMethod?.IsStatic == true ? "static " : "";
+                        sb.AppendLine($"    {staticMod}{GetFriendlyTypeName(prop.PropertyType)} {prop.Name} {{ {access} }}");
+                        var propXml = GetXmlMemberName(prop);
+                        var propDesc = _xmlDoc.GetSummary(propXml) ?? _xmlDoc.GetValue(propXml);
+                        if (!string.IsNullOrEmpty(propDesc)) sb.AppendLine($"      Description: {propDesc}");
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine($"    [SKIPPED PROPERTY] {prop.Name}: {ex.Message}");
+                    }
                 }
                 sb.AppendLine();
             }
@@ -811,13 +841,20 @@ namespace DllToLLMDoc
                 sb.AppendLine("  METHODS:");
                 foreach (var method in methods)
                 {
-                    var staticMod = method.IsStatic ? "static " : "";
-                    var returnType = GetFriendlyTypeName(method.ReturnType);
-                    var genericParams = method.IsGenericMethodDefinition
-                        ? $"<{string.Join(", ", method.GetGenericArguments().Select(g => g.Name))}>"
-                        : "";
-                    sb.AppendLine($"    {staticMod}{returnType} {method.Name}{genericParams}({GetParameterList(method.GetParameters())})");
-                    AppendMemberDocs(sb, GetXmlMemberName(method), method.GetParameters(), method.ReturnType != typeof(void));
+                    try
+                    {
+                        var staticMod = method.IsStatic ? "static " : "";
+                        var returnType = GetFriendlyTypeName(method.ReturnType);
+                        var genericParams = method.IsGenericMethodDefinition
+                            ? $"<{string.Join(", ", method.GetGenericArguments().Select(g => g.Name))}>"
+                            : "";
+                        sb.AppendLine($"    {staticMod}{returnType} {method.Name}{genericParams}({GetParameterList(method.GetParameters())})");
+                        AppendMemberDocs(sb, GetXmlMemberName(method), method.GetParameters(), method.ReturnType != typeof(void));
+                    }
+                    catch (Exception ex)
+                    {
+                        sb.AppendLine($"    [SKIPPED METHOD] {method.Name}: {ex.Message}");
+                    }
                 }
                 sb.AppendLine();
             }
