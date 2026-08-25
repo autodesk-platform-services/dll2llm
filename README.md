@@ -2,14 +2,11 @@
 
 ## This is a work in progress
 
-A command-line tool that generates LLM-friendly documentation from .NET DLL files, with built-in support for generating ready-to-use **Cursor Agent Skills** directly from any .NET assembly.
+A command-line tool that generates ready-to-use **Cursor Agent Skills** directly from any .NET assembly.
 
 ## Overview
 
-dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into structured documentation optimized for LLM consumption. It supports two output modes:
-
-- **Monolithic mode** — single `.llm.txt` file (good for small APIs, <~20k lines)
-- **Split skill mode** — a Cursor skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files (required for large APIs like Revit, AutoCAD)
+dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into a Cursor skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files, optimized for LLM consumption.
 
 This repository includes pre-built examples under **`docs/revit-api-2025/`** and **`docs/revit-api-2026/`**, generated from the Revit API for those releases.
 
@@ -47,17 +44,15 @@ dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2026\AcDbMgd.dll" ^
             --install
 ```
 
-`--install` implies `--split` and copies the generated skill folder to `%USERPROFILE%\.cursor\skills\<folder-name>\`, where `<folder-name>` is the basename of your `--output` directory (see below). Restart Cursor after running.
+`--install` copies the generated skill folder to `%USERPROFILE%\.cursor\skills\<folder-name>\`, where `<folder-name>` is the basename of your `--output` directory (see below). Restart Cursor after running.
 
 ## CLI usage
 
-### Split mode (recommended for large APIs)
-
 ```bash
-dll2llm.exe RevitAPI.dll RevitAPIUI.dll --split --output ./revit-api-skill
+dll2llm.exe RevitAPI.dll RevitAPIUI.dll --output ./revit-api-skill
 ```
 
-If you omit `--output` in split mode, the default is **`<directory-of-first-dll>\<first-assembly-name-lower>-skill`** (for example, pointing at `RevitAPI.dll` yields `revitapi-skill` next to that DLL).
+If you omit `--output`, the default is **`<directory-of-first-dll>\<first-assembly-name-lower>-skill`** (for example, pointing at `RevitAPI.dll` yields `revitapi-skill` next to that DLL).
 
 Produces:
 
@@ -70,27 +65,13 @@ revit-api-skill/
 └── ...            ← one or more files per namespace; large namespaces are split alphabetically
 ```
 
-### Monolithic mode
-
-```bash
-# Default output filename (<DllName>.llm.txt next to the DLL)
-dll2llm.exe MyLibrary.dll
-
-# Custom output path
-dll2llm.exe MyLibrary.dll MyLibrary_docs.txt
-
-# Multiple DLLs merged into one file
-dll2llm.exe RevitAPI.dll RevitAPIUI.dll --output RevitAPI_full.llm.txt
-```
-
 ### All options
 
 | Option | Description |
 |--------|-------------|
 | `<dll> [dll2] ...` | One or more DLL paths to process |
-| `--split` | Generate split skill folder instead of a single file |
-| `--install` | Generate split skill folder and copy it to `%USERPROFILE%\.cursor\skills\<output-folder-name>\` (implies `--split`) |
-| `--output <path>` | Output file (monolithic) or directory (split) |
+| `--install` | Copy the generated skill folder to `%USERPROFILE%\.cursor\skills\<output-folder-name>\` |
+| `--output <path>` | Output directory for the skill folder |
 | `--xml <path>` | Load an additional XML documentation file (useful when XML is not co-located with the DLL) |
 
 ### Interactive mode
@@ -103,17 +84,13 @@ dll2llm.exe
 
 ## Output format
 
-### Split skill folder
+### Skill folder
 
 Large namespaces are split into multiple topic files when they exceed **50 public types**, using consecutive letter ranges in the filename (for example `db-b-c.md`, `db-architecture-t-w.md`). Small namespaces still get a single file (for example `creation.md`).
 
 Each topic file groups types with the same header pattern: namespace title, `NAMESPACE:` line, separator, then per-type blocks.
 
-### Monolithic `.llm.txt`
-
-Same conceptual content as the split topics, written as a single file with a header, overview section, and all namespaces in sequence.
-
-### Per-type sections (split and monolithic)
+### Per-type sections
 
 Documentation includes, when applicable:
 
@@ -122,9 +99,9 @@ Documentation includes, when applicable:
 - For enums: numeric values (best-effort for non-`int`/`long` underlying types)
 - **CONSTRUCTORS**, **PROPERTIES**, **METHODS** (with parameter/return/exception text from XML), **EVENTS**, **CONSTANTS/STATIC FIELDS**
 
-## Why split mode for large APIs
+## Why a skill folder for large APIs
 
-A full Revit API export is on the order of tens of thousands of lines and millions of tokens. The split skill approach keeps token usage predictable:
+A full Revit API export is on the order of tens of thousands of lines and millions of tokens. The skill folder approach keeps token usage predictable:
 
 - `SKILL.md` stays small; the agent loads it first
 - `INDEX.md` lists every type and which topic file contains it (this file grows with API size)

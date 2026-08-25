@@ -152,7 +152,6 @@ namespace DllToLLMDoc
         static void Main(string[] args)
         {
             var dllPaths = new List<string>();
-            bool splitMode = false;
             bool install = false;
             string outputPath = null;
             string extraXmlPath = null;
@@ -161,12 +160,8 @@ namespace DllToLLMDoc
             {
                 switch (args[i])
                 {
-                    case "--split":
-                        splitMode = true;
-                        break;
                     case "--install":
                         install = true;
-                        splitMode = true; // --install implies --split
                         break;
                     case "--output":
                         if (i + 1 < args.Length) outputPath = args[++i].Trim('"');
@@ -182,7 +177,7 @@ namespace DllToLLMDoc
             }
 
             if (dllPaths.Count == 0)
-                RunInteractive(ref dllPaths, ref splitMode, ref install, ref outputPath, ref extraXmlPath);
+                RunInteractive(ref dllPaths, ref install, ref outputPath, ref extraXmlPath);
 
             if (dllPaths.Count == 0)
             {
@@ -201,11 +196,9 @@ namespace DllToLLMDoc
 
             if (outputPath == null)
             {
-                outputPath = splitMode
-                    ? Path.Combine(
-                        Path.GetDirectoryName(Path.GetFullPath(dllPaths[0])),
-                        Path.GetFileNameWithoutExtension(dllPaths[0]).ToLower() + "-skill")
-                    : Path.ChangeExtension(dllPaths[0], ".llm.txt");
+                outputPath = Path.Combine(
+                    Path.GetDirectoryName(Path.GetFullPath(dllPaths[0])),
+                    Path.GetFileNameWithoutExtension(dllPaths[0]).ToLower() + "-skill");
             }
 
             try
@@ -213,19 +206,9 @@ namespace DllToLLMDoc
                 RegisterAssemblyResolver(dllPaths);
                 LoadXmlDocs(dllPaths, extraXmlPath);
 
-                if (splitMode)
-                {
-                    GenerateSplitSkill(dllPaths, outputPath);
-                    if (install)
-                        InstallSkill(outputPath);
-                }
-                else
-                {
-                    var doc = GenerateLLMDocumentation(dllPaths);
-                    File.WriteAllText(outputPath, doc, Encoding.UTF8);
-                    Console.WriteLine($"Documentation generated: {outputPath}");
-                    Console.WriteLine($"File size: {new FileInfo(outputPath).Length / 1024} KB");
-                }
+                GenerateSplitSkill(dllPaths, outputPath);
+                if (install)
+                    InstallSkill(outputPath);
             }
             catch (Exception ex)
             {
@@ -236,7 +219,6 @@ namespace DllToLLMDoc
 
         static void RunInteractive(
             ref List<string> dllPaths,
-            ref bool splitMode,
             ref bool install,
             ref string outputPath,
             ref string extraXmlPath)
@@ -257,22 +239,13 @@ namespace DllToLLMDoc
 
             if (dllPaths.Count == 0) return;
 
-            Console.Write("Generate split skill folder? (y/N): ");
-            var ans = Console.ReadLine()?.Trim().ToLower();
-            splitMode = ans == "y" || ans == "yes";
+            Console.Write("Install to ~/.cursor/skills/ when done? (y/N): ");
+            var installAns = Console.ReadLine()?.Trim().ToLower();
+            install = installAns == "y" || installAns == "yes";
 
-            if (splitMode)
-            {
-                Console.Write("Install to ~/.cursor/skills/ when done? (y/N): ");
-                var installAns = Console.ReadLine()?.Trim().ToLower();
-                install = installAns == "y" || installAns == "yes";
-            }
-
-            string defaultOutput = splitMode
-                ? Path.Combine(
-                    Path.GetDirectoryName(Path.GetFullPath(dllPaths[0])),
-                    Path.GetFileNameWithoutExtension(dllPaths[0]).ToLower() + "-skill")
-                : Path.ChangeExtension(dllPaths[0], ".llm.txt");
+            string defaultOutput = Path.Combine(
+                Path.GetDirectoryName(Path.GetFullPath(dllPaths[0])),
+                Path.GetFileNameWithoutExtension(dllPaths[0]).ToLower() + "-skill");
 
             Console.Write($"Output path [{defaultOutput}]: ");
             var userOut = Console.ReadLine()?.Trim().Trim('"');
@@ -377,68 +350,7 @@ namespace DllToLLMDoc
             return types.OrderBy(t => t.Namespace).ThenBy(t => t.Name).ToList();
         }
 
-        // ── Monolithic .llm.txt generation ───────────────────────────────────
-
-        static string GenerateLLMDocumentation(IEnumerable<string> dllPaths)
-        {
-            var dllList = dllPaths.ToList();
-            var types = LoadTypes(dllList);
-            var sb = new StringBuilder();
-
-            sb.AppendLine("# LLM-FRIENDLY LIBRARY DOCUMENTATION");
-            sb.AppendLine($"# Generated from: {string.Join(", ", dllList.Select(Path.GetFileName))}");
-            sb.AppendLine($"# Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            sb.AppendLine();
-
-            AppendOverview(sb, types);
-            AppendDetailedDocs(sb, types);
-
-            return sb.ToString();
-        }
-
-        static void AppendOverview(StringBuilder sb, List<Type> types)
-        {
-            sb.AppendLine("=".PadRight(80, '='));
-            sb.AppendLine("OVERVIEW");
-            sb.AppendLine("=".PadRight(80, '='));
-            sb.AppendLine();
-            sb.AppendLine($"Total Public Types: {types.Count}");
-            sb.AppendLine($"  - Classes: {types.Count(t => t.IsClass && !t.IsAbstract)}");
-            sb.AppendLine($"  - Abstract Classes: {types.Count(t => t.IsClass && t.IsAbstract)}");
-            sb.AppendLine($"  - Interfaces: {types.Count(t => t.IsInterface)}");
-            sb.AppendLine($"  - Enums: {types.Count(t => t.IsEnum)}");
-            sb.AppendLine($"  - Structs: {types.Count(t => t.IsValueType && !t.IsEnum)}");
-            sb.AppendLine();
-            sb.AppendLine("NAMESPACES:");
-            foreach (var ns in types.GroupBy(t => t.Namespace ?? "(Global)").OrderBy(g => g.Key))
-                sb.AppendLine($"  - {ns.Key} ({ns.Count()} types)");
-            sb.AppendLine();
-        }
-
-        static void AppendDetailedDocs(StringBuilder sb, List<Type> types)
-        {
-            sb.AppendLine("=".PadRight(80, '='));
-            sb.AppendLine("DETAILED TYPE DOCUMENTATION");
-            sb.AppendLine("=".PadRight(80, '='));
-            sb.AppendLine();
-            foreach (var ns in types.GroupBy(t => t.Namespace ?? "(Global)").OrderBy(g => g.Key))
-            {
-                sb.AppendLine($"NAMESPACE: {ns.Key}");
-                sb.AppendLine(new string('-', 80));
-                sb.AppendLine();
-                foreach (var type in ns.OrderBy(t => t.Name))
-                {
-                    try { DocumentType(type, sb); }
-                    catch (Exception ex)
-                    {
-                        sb.AppendLine($"[ERROR DOCUMENTING TYPE] {type.Name}: {ex.Message}");
-                        sb.AppendLine();
-                    }
-                }
-            }
-        }
-
-        // ── Split skill generation ────────────────────────────────────────────
+        // ── Skill generation ──────────────────────────────────────────────────
 
         static void GenerateSplitSkill(List<string> dllPaths, string outputDir)
         {
