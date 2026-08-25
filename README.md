@@ -1,5 +1,12 @@
 # dll2llm
 
+![Platforms](https://img.shields.io/badge/Platform-Windows-lightgray.svg)
+![.NET](https://img.shields.io/badge/.NET-10-blue.svg)
+[![Revit](https://img.shields.io/badge/Revit-2025|2026-lightblue.svg)](http://developer.autodesk.com/)
+[![AutoCAD](https://img.shields.io/badge/AutoCAD-2026-lightblue.svg)](http://developer.autodesk.com/)
+
+![Intermediate](https://img.shields.io/badge/Level-Intermediate-yellow.svg)
+
 A command-line tool that generates ready-to-use **Agent Skills** directly from any .NET assembly.
 
 ## Overview
@@ -10,7 +17,7 @@ This repository includes pre-built examples under **`docs/revit-api-2025/`** and
 
 ## Prerequisites
 
-- .NET 8 SDK
+- .NET 10 SDK
 - Windows (required for most Autodesk desktop APIs due to native dependencies)
 - The target product must be **installed on the machine running dll2llm**, so its native and managed dependencies can be resolved
 
@@ -20,7 +27,7 @@ This repository includes pre-built examples under **`docs/revit-api-2025/`** and
 dotnet build -c Release
 ```
 
-The executable is emitted under `bin/Release/net8.0/` (or `bin/Debug/net8.0/` after a Debug build).
+The executable is emitted under `bin/Release/net10.0/` (or `bin/Debug/net10.0/` after a Debug build).
 
 ## Quick start — generate and install a skill in one command
 
