@@ -152,7 +152,7 @@ namespace DllToLLMDoc
         static void Main(string[] args)
         {
             var dllPaths = new List<string>();
-            bool install = false;
+            string installDir = null;
             string outputPath = null;
             string extraXmlPath = null;
 
@@ -161,7 +161,7 @@ namespace DllToLLMDoc
                 switch (args[i])
                 {
                     case "--install":
-                        install = true;
+                        if (i + 1 < args.Length) installDir = args[++i].Trim('"');
                         break;
                     case "--output":
                         if (i + 1 < args.Length) outputPath = args[++i].Trim('"');
@@ -177,7 +177,7 @@ namespace DllToLLMDoc
             }
 
             if (dllPaths.Count == 0)
-                RunInteractive(ref dllPaths, ref install, ref outputPath, ref extraXmlPath);
+                RunInteractive(ref dllPaths, ref installDir, ref outputPath, ref extraXmlPath);
 
             if (dllPaths.Count == 0)
             {
@@ -207,8 +207,8 @@ namespace DllToLLMDoc
                 LoadXmlDocs(dllPaths, extraXmlPath);
 
                 GenerateSplitSkill(dllPaths, outputPath);
-                if (install)
-                    InstallSkill(outputPath);
+                if (installDir != null)
+                    InstallSkill(outputPath, installDir);
             }
             catch (Exception ex)
             {
@@ -219,7 +219,7 @@ namespace DllToLLMDoc
 
         static void RunInteractive(
             ref List<string> dllPaths,
-            ref bool install,
+            ref string installDir,
             ref string outputPath,
             ref string extraXmlPath)
         {
@@ -239,9 +239,14 @@ namespace DllToLLMDoc
 
             if (dllPaths.Count == 0) return;
 
-            Console.Write("Install to ~/.cursor/skills/ when done? (y/N): ");
+            Console.Write("Install to a skills directory when done? (y/N): ");
             var installAns = Console.ReadLine()?.Trim().ToLower();
-            install = installAns == "y" || installAns == "yes";
+            if (installAns == "y" || installAns == "yes")
+            {
+                Console.Write("Install directory: ");
+                var dir = Console.ReadLine()?.Trim().Trim('"');
+                if (!string.IsNullOrWhiteSpace(dir)) installDir = dir;
+            }
 
             string defaultOutput = Path.Combine(
                 Path.GetDirectoryName(Path.GetFullPath(dllPaths[0])),
@@ -439,19 +444,16 @@ namespace DllToLLMDoc
             Console.WriteLine($"Skill generated: {outputDir}");
             Console.WriteLine($"  {buckets.Count} topic files, {types.Count} total public types");
             Console.WriteLine();
-            Console.WriteLine("To install as a personal Cursor skill:");
-            Console.WriteLine($"  xcopy /E /I \"{outputDir}\" \"%USERPROFILE%\\.cursor\\skills\\{Path.GetFileName(outputDir)}\"");
+            Console.WriteLine("To install this Agent Skill, copy the folder to your tool's skills directory,");
+            Console.WriteLine("or re-run this command with --install <path> to do it automatically.");
         }
 
-        static void InstallSkill(string skillDir)
+        static void InstallSkill(string skillDir, string installDir)
         {
             var skillName = Path.GetFileName(skillDir.TrimEnd(Path.DirectorySeparatorChar));
-            var cursorSkillsRoot = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".cursor", "skills");
-            var dest = Path.Combine(cursorSkillsRoot, skillName);
+            var dest = Path.Combine(installDir, skillName);
 
-            Directory.CreateDirectory(cursorSkillsRoot);
+            Directory.CreateDirectory(installDir);
 
             foreach (var file in Directory.GetFiles(skillDir, "*", SearchOption.AllDirectories))
             {
@@ -463,7 +465,7 @@ namespace DllToLLMDoc
 
             Console.WriteLine();
             Console.WriteLine($"Installed to: {dest}");
-            Console.WriteLine("Restart Cursor to pick up the new skill.");
+            Console.WriteLine("Restart your agent/tool to pick up the new skill.");
         }
 
         static void WriteIndexFile(

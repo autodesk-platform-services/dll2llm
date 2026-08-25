@@ -2,11 +2,11 @@
 
 ## This is a work in progress
 
-A command-line tool that generates ready-to-use **Cursor Agent Skills** directly from any .NET assembly.
+A command-line tool that generates ready-to-use **Agent Skills** directly from any .NET assembly.
 
 ## Overview
 
-dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into a Cursor skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files, optimized for LLM consumption.
+dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into an Agent Skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files, optimized for LLM consumption.
 
 This repository includes pre-built examples under **`docs/revit-api-2025/`** and **`docs/revit-api-2026/`**, generated from the Revit API for those releases.
 
@@ -26,25 +26,25 @@ The executable is emitted under `bin/Release/net8.0/` (or `bin/Debug/net8.0/` af
 
 ## Quick start — generate and install a skill in one command
 
-Adjust the year and install path to match your Revit version.
+Adjust the year and install path to match your Revit version and the skills directory your agent/tool reads from.
 
 ```bash
-# Revit API — generate skill and install to %USERPROFILE%\.cursor\skills\
-dll2llm.exe "C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll" --install
+# Revit API — generate skill and install to a skills directory
+dll2llm.exe "C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll" --install "<path-to-your-skills-directory>"
 
 # Revit API — merge DB + UI layers
 dll2llm.exe "C:\Program Files\Autodesk\Revit 2026\RevitAPI.dll" ^
             "C:\Program Files\Autodesk\Revit 2026\RevitAPIUI.dll" ^
-            --install
+            --install "<path-to-your-skills-directory>"
 
 # AutoCAD .NET API (adjust year to your install)
 dll2llm.exe "C:\Program Files\Autodesk\AutoCAD 2026\AcDbMgd.dll" ^
             "C:\Program Files\Autodesk\AutoCAD 2026\AcMgd.dll" ^
             "C:\Program Files\Autodesk\AutoCAD 2026\AcCoreMgd.dll" ^
-            --install
+            --install "<path-to-your-skills-directory>"
 ```
 
-`--install` copies the generated skill folder to `%USERPROFILE%\.cursor\skills\<folder-name>\`, where `<folder-name>` is the basename of your `--output` directory (see below). Restart Cursor after running.
+`--install <path>` copies the generated skill folder into `<path>\<folder-name>\`, where `<folder-name>` is the basename of your `--output` directory (see below). Restart your agent/tool after running so it picks up the new skill.
 
 ## CLI usage
 
@@ -58,7 +58,7 @@ Produces:
 
 ```
 revit-api-skill/
-├── SKILL.md       ← Cursor skill (YAML frontmatter + links to topics)
+├── SKILL.md       ← Agent Skill (YAML frontmatter + links to topics)
 ├── INDEX.md       ← Topic table + per-type file lookup
 ├── db-architecture-b-s.md
 ├── db-mechanical-a-r.md
@@ -70,7 +70,7 @@ revit-api-skill/
 | Option | Description |
 |--------|-------------|
 | `<dll> [dll2] ...` | One or more DLL paths to process |
-| `--install` | Copy the generated skill folder to `%USERPROFILE%\.cursor\skills\<output-folder-name>\` |
+| `--install <path>` | Copy the generated skill folder into `<path>\<output-folder-name>\` after generation |
 | `--output <path>` | Output directory for the skill folder |
 | `--xml <path>` | Load an additional XML documentation file (useful when XML is not co-located with the DLL) |
 
@@ -109,23 +109,21 @@ A full Revit API export is on the order of tens of thousands of lines and millio
 
 ## Using the generated skill
 
-### Cursor IDE
+### Any Agent-Skills-compatible tool
 
-The easiest way is `--install`, which copies to your user skills directory automatically.
+The generated folder is a standard Agent Skill — copy it wherever your agent/tool reads skills from and restart it to pick up the new skill.
 
-Or copy manually:
+The easiest way is `--install <path>`, which copies it there automatically. Or copy manually:
 
 ```powershell
 # Windows
-xcopy /E /I ".\revit-api-skill" "%USERPROFILE%\.cursor\skills\revit-api-skill"
+xcopy /E /I ".\revit-api-skill" "<path-to-your-skills-directory>\revit-api-skill"
 ```
 
 ```bash
 # macOS/Linux
-cp -r ./revit-api-skill ~/.cursor/skills/revit-api-skill
+cp -r ./revit-api-skill <path-to-your-skills-directory>/revit-api-skill
 ```
-
-Restart Cursor. The skill appears in the agent's skill list.
 
 ### Claude Desktop (MCP filesystem)
 
