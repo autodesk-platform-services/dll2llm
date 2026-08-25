@@ -1,7 +1,5 @@
 # dll2llm
 
-## This is a work in progress
-
 A command-line tool that generates ready-to-use **Agent Skills** directly from any .NET assembly.
 
 ## Overview
