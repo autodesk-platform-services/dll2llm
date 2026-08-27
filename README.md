@@ -15,6 +15,11 @@ dll2llm reflects .NET assemblies and extracts public types, constructors, method
 
 This repository includes pre-built examples under **`docs/revit-api-2025/`** and **`docs/revit-api-2026/`**, generated from the Revit API for those releases.
 
+## Videos
+
+1. [Creating Agent Skills from DLLs](https://www.youtube.com/watch?v=h3k3p_5MlMM)
+2. [Creating plugins with the Revit API Agent Skill](https://www.youtube.com/watch?v=laa-S8Zvqjg)
+
 ## Prerequisites
 
 - .NET 10 SDK
