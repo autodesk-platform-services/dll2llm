@@ -171,6 +171,8 @@ Add to `claude_desktop_config.json`:
 
 Restart Claude Desktop and the docs are available as a resource.
 
+> **Tip:** dll2llm's output organizes types by namespace, not by use case. You could also consider running the generated skill through an AI to categorize namespaces/classes/etc. based on use cases, which can make it easier for an agent to find the right type for a given task.
+
 ---
 
 ## Known limitations
