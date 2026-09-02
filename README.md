@@ -13,7 +13,6 @@ A command-line tool that generates ready-to-use **Agent Skills** directly from a
 
 dll2llm reflects .NET assemblies and extracts public types, constructors, methods, properties, events, and constants — formatting them into an Agent Skill folder with `SKILL.md` (including YAML frontmatter), `INDEX.md`, and topic Markdown files, optimized for LLM consumption.
 
-This repository includes pre-built examples under **`docs/revit-api-2025/`** and **`docs/revit-api-2026/`**, generated from the Revit API for those releases.
 
 ## Videos
 
